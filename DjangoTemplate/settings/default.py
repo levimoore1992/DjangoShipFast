@@ -140,7 +140,7 @@ ENABLE_SENTRY = os.environ.get("ENABLE_SENTRY", "TRUE").upper() == "TRUE"
 
 SENTRY_DSN = os.getenv("SENTRY_DSN")
 
-SENTRY_ENV = os.getenv("SENTRY_ENVIRONMENT", "unknown")
+SENTRY_ENV = os.getenv("SENTRY_ENV", "unknown")
 
 LOGGING = {
     "version": 1,
