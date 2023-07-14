@@ -168,3 +168,7 @@ LOGGING = {
         },
     },
 }
+
+STRIPE_API_PK = os.getenv("STRIPE_PK_KEY")
+STRIPE_API_SK = os.getenv("STRIPE_SK_KEY")
+STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
