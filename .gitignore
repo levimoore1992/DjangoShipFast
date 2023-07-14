@@ -2,3 +2,4 @@
 .idea/vcs.xml
 *.pyc
 DjangoTemplate/settings/local.py
+.env
