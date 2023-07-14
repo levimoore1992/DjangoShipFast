@@ -25,6 +25,9 @@ SECRET_KEY = 'django-insecure-q-gq+%y1uayyre&!v*x9m$p$v4e##jwhpq8c5r+(^v&60s!51+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+# Version of Application
+VERSION = os.getenv("VERSION")
+
 ALLOWED_HOSTS = []
 
 
@@ -131,3 +134,37 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Media files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+# Sentry variables
+ENABLE_SENTRY = os.environ.get("ENABLE_SENTRY", "TRUE").upper() == "TRUE"
+
+SENTRY_DSN = os.getenv("SENTRY_DSN")
+
+SENTRY_ENV = os.getenv("SENTRY_ENV", "unknown")
+
+LOGGING = {
+    "version": 1,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "admin": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
+        "event": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
+        "migration": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
+        "sherpa": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
+    },
+}
