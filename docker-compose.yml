@@ -36,5 +36,15 @@ services:
         command: "python manage.py runserver 0.0.0.0:8000"
         env_file:
             -   .env
+
+    sass:
+        build:
+            context: .
+            dockerfile: source_scss/Dockerfile
+        volumes:
+            - .:/app
+        command: "npx sass source_scss:static --watch --no-source-map --style=compressed"
+
+
 volumes:
     postgres_data:
