@@ -15,7 +15,12 @@ ALLOWED_HOSTS.extend(
 MIDDLEWARE.append(
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 )
-INSTALLED_APPS.append("debug_toolbar")
+INSTALLED_APPS.extend(
+    [
+        "debug_toolbar",
+        "django_extensions",
+    ]
+)
 DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": lambda request: DEBUG}
 DEBUG_TOOLBAR_PANELS = [
     "debug_toolbar_user_switcher.panels.UserPanel",
