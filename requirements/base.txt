@@ -1,5 +1,5 @@
 Django==4.2.3
-psycopg2-binary==2.9.6
+psycopg2==2.9.6
 
 pytest==6.1.2
 pytest-cov==2.10.1

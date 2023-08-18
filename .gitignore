@@ -4,3 +4,4 @@ DjangoTemplate/settings/local.py
 .env
 /DjangoTemplate/staticfiles/
 /static/css/
+restore.dump
