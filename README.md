@@ -30,6 +30,46 @@ docker compose up --build
 <li>The first django "app" is main if you want to change that you'll need to change it in settings</li>
 </ul>
 
+### Linters
+
+Before committing your code it is the best practice to run the linters locally, so they
+pass code inspection in Github Actions. To do that follow these steps
+* In your local machine terminal type 
+```
+pip3 install black==21.7
+pip3 install flake8==4.0.1
+```
+
+
+#### Black
+
+* To run black make sure it is installed locally and from the root directory type
+```
+black .
+```
+* To edit on save follow these instructions if your using pycharm
+```
+https://black.readthedocs.io/en/stable/integrations/editors.html
+```
+* and here for if your using VScode
+```
+https://marcobelo.medium.com/setting-up-python-black-on-visual-studio-code-5318eba4cd00
+```
+
+#### Flake8
+
+* To run flake8 make sure it is installed locally and from the root directory type
+
+```
+flake8 --ignore=E501,F405,W503
+```
+If the above fails you may also try 
+```
+python3 -m flake8 --ignore=E501,F405,W503
+```
+
+After black lints your code, and you make any changes needed from flake 8 it is then ok
+to push your code and create a PR
 
 ## How to Use `restore_local_db` Management Command
 

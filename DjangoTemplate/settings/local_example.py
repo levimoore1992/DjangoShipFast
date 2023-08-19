@@ -1,4 +1,8 @@
-from DjangoTemplate.settings.default import ALLOWED_HOSTS, BASE_DIR, MIDDLEWARE, INSTALLED_APPS
+from DjangoTemplate.settings.default import (
+    ALLOWED_HOSTS,
+    MIDDLEWARE,
+    INSTALLED_APPS,
+)
 
 
 DEBUG = True
@@ -32,13 +36,10 @@ DEBUG_TOOLBAR_PANELS = [
     "debug_toolbar.panels.templates.TemplatesPanel",
     "debug_toolbar.panels.logging.LoggingPanel",
     "debug_toolbar.panels.redirects.RedirectsPanel",
-
 ]
 INSTALLED_APPS.append("django_extensions")
 
 
-
-
 # Local Email
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
