@@ -4,6 +4,24 @@ on: pull_request
 
 jobs:
 
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Checkout Github Action'
+        uses: actions/checkout@v2
+
+      - name: 'Build `docker-compose` Environment'
+        run: |
+          cp .env.example .env
+          docker-compose up -d
+
+      - name: 'Check Running Containers'
+        run: docker ps -a
+
+      - name: 'Run Python Unit Tests'
+        run: docker-compose run web pytest
+
 
   run-linter:
     name: Lint Code Base

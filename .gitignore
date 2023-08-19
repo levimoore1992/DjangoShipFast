@@ -5,3 +5,4 @@ DjangoTemplate/settings/local.py
 /DjangoTemplate/staticfiles/
 /static/css/
 restore.dump
+/.pytest_cache/
