@@ -10,7 +10,7 @@ host_names = {
     "local": os.environ.get("DB_HOST"),
     "test": os.environ.get("TEST_DB_HOST"),
     "develop": os.environ.get("DEV_DB_HOST"),
-    "production": os.environ.get("PROD_DB_HOST")
+    "production": os.environ.get("PROD_DB_HOST"),
 }
 
 db_names = {
@@ -159,7 +159,6 @@ class Command(BaseCommand):
         target_env = os.environ.copy()
         target_env["PGPASSWORD"] = target_password
 
-
         # ======================================================================
         # Create "target" commands
         # "target_commands" use the "target" env dictionary and a ran after
@@ -212,4 +211,3 @@ class Command(BaseCommand):
 
         for command in target_commands:
             subprocess.check_call(command, env=target_env, shell=True)
-
