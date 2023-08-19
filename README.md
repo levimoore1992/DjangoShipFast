@@ -6,6 +6,14 @@ The application assumes you will have a main or core piece of the application
 the default name for that is main but you can of course change it to whatever you want. 
 Just be sure to change it in the settings and app files 
 
+The template assumes you have 3 branches for the deployment process.
+<ul>
+<li>test</li>
+<li>develop</li>
+<li>production</li>
+</ul>
+
+Its made this way for github actions to work on each push to those branches
 
 To start the docker container with the application you only need 1 command
 
