@@ -157,22 +157,11 @@ LOGGING = {
         },
     },
     "loggers": {
-        "admin": {
+        "admin": { # for loggers in the admin
             "handlers": ["console"],
             "level": "INFO",
         },
-        "event": {
-            "handlers": ["console"],
-            "level": "INFO",
-        },
-        "migration": {
-            "handlers": ["console"],
-            "level": "INFO",
-        },
-        "sherpa": {
-            "handlers": ["console"],
-            "level": "INFO",
-        },
+
     },
 }
 
