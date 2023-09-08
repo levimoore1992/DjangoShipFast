@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "ckeditor",
+    # project apps
     "main",
 ]
 
@@ -177,3 +179,45 @@ LOGGING = {
 STRIPE_API_PK = os.getenv("STRIPE_PK_KEY")
 STRIPE_API_SK = os.getenv("STRIPE_SK_KEY")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
+
+
+# CK Editor Config
+CKEDITOR_CONFIGS = {
+    "default": {
+        "toolbar_Basic": (
+            (
+                "Bold",
+                "Italic",
+                "Underline",
+                "Strike",
+            ),
+            (
+                "Link",
+                "Unlink",
+            ),
+            (
+                "Undo",
+                "Redo",
+            ),
+            (
+                "RemoveFormat",
+                "Source",
+            ),
+        ),
+        "toolbar_Custom": [
+            ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"],
+            ["Bold", "Italic", "Underline", "Strike"],
+            ["Outdent", "Indent"],
+            ["NumberedList", "BulletedList"],
+            ["Link", "Unlink"],
+            ["Undo", "Redo"],
+            ["RemoveFormat", "Source"],
+            [
+                "TextColor",
+            ],
+        ],
+        "toolbar": "Custom",
+        "height": 120,
+        "width": 600,
+    }
+}
