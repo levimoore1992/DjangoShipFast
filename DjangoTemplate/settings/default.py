@@ -157,11 +157,10 @@ LOGGING = {
         },
     },
     "loggers": {
-        "admin": { # for loggers in the admin
+        "admin": {  # for loggers in the admin
             "handlers": ["console"],
             "level": "INFO",
         },
-
     },
 }
 
