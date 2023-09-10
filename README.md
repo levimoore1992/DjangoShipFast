@@ -28,8 +28,9 @@ docker compose up --build
 <li>The name of the root django project is called "DjangoTemplate". You would need to change it in settings.py file as well</li>
 <li>The container name for the app is called djangoTemplate. You may want to change that as well</li>
 <li>The first django "app" is main if you want to change that you'll need to change it in settings</li>
-<li>In the github actions the variable to see changed files is called template_diff. YOu may want to change that based on your app but it isnt required</li>
+<li>In the github actions the variable to see changed files is called template_diff. You may want to change that based on your app but it isnt required</li>
 <li>If you want to change the branch style of your deployment then you would need to change the name of the workflows files to match the branch you want</li>
+<li>Change the colors in source_css/css/base/_colors.scss to be colors reflecting your brand</li>
 </ul>
 
 ### Linters
