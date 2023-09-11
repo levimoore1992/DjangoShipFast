@@ -1,0 +1,46 @@
+<!--
+    Component: Loading Container
+
+    Description:
+    This component displays a loading spinner that utilizes SVG and linear gradients.
+
+    Dependencies:
+    - jQuery for the JavaScript code snippet below
+    - The following CSS classes are required for this component to function correctly:
+        1. pl
+        2. pl__ring
+        3. pl__ball
+
+    Attributes:
+    - id: The ID of the loading container. Default is "loading-container".
+    - viewBox: The viewbox attribute for the SVG. Default is "0 0 200 200".
+    - width: The width of the SVG. Default is "200".
+    - height: The height of the SVG. Default is "200".
+
+    How to Use:
+    1. Embed the component by using the 'include' templatetag with the path to this component block into your template or the base template.
+    2. Add a CSS class 'active' to make the loading spinner visible. Remove the class to hide it.
+       - JavaScript Example:
+         const loadingContainer = document.getElementById("loading-container");
+         loadingContainer.classList.add('active'); // To show
+         loadingContainer.classList.remove('active'); // To hide
+
+    Note: If you wish to customize this component, ensure to update the corresponding CSS classes and attributes accordingly.
+-->
+
+<div id="loading-container">
+    <svg class="pl" viewBox="0 0 200 200" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="pl-grad1" x1="1" y1="0.5" x2="0" y2="0.5">
+                <stop offset="0%" stop-color="var(--primary-stop-color)" />
+                <stop offset="100%" stop-color="var(--secondary-stop-color)" />
+            </linearGradient>
+            <linearGradient id="pl-grad2" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="var(--primary-stop-color)" />
+                <stop offset="100%" stop-color="var(--secondary-stop-color)" />
+            </linearGradient>
+        </defs>
+        <circle class="pl__ring" cx="100" cy="100" r="82" fill="none" stroke="url(#pl-grad1)" stroke-width="36" stroke-dasharray="0 257 1 257" stroke-dashoffset="0.01" stroke-linecap="round" transform="rotate(-90,100,100)" />
+        <line class="pl__ball" stroke="url(#pl-grad2)" x1="100" y1="18" x2="100.01" y2="182" stroke-width="36" stroke-dasharray="1 165" stroke-linecap="round" />
+    </svg>
+</div>
