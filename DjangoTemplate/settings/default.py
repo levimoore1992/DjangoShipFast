@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "ckeditor",
     # project apps
     "main",
+    "users",
 ]
 
 MIDDLEWARE = [
@@ -209,3 +210,9 @@ CKEDITOR_CONFIGS = {
         "width": 600,
     }
 }
+
+# Authentication settings
+
+AUTH_USER_MODEL = "users.User"
+
+LOGIN_URL = "login"

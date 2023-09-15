@@ -1,0 +1,31 @@
+
+// Container for the form
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+// Individual form box
+.form-box {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    margin-bottom: 1rem;
+  }
+
+  .form-actions {
+    margin-top: 1rem;
+  }
+
+  .alternative-login {
+    margin-top: 1rem;
+    text-align: center;
+  }
+
+  // Add other sub-styles here
+}
