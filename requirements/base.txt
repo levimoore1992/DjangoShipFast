@@ -8,4 +8,4 @@ django-ckeditor==6.7.0
 
 
 # Debugging Libraries
-sentry-sdk==1.10.1
+sentry-sdk==1.14.0
