@@ -11,11 +11,12 @@
     {% endblock %}
 </head>
 <body>
-<div class="main-wrapper">
+    <div class="main-wrapper">
         <!-- Content area -->
         <div class="content-area">
             {% block content %}{% endblock %}
         </div>
+        {% include 'components/footer.html' %}
     </div>
 </body>
 
