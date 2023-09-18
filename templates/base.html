@@ -11,8 +11,12 @@
     {% endblock %}
 </head>
 <body>
-{% block content %}
-{% endblock %}
+<div class="main-wrapper">
+        <!-- Content area -->
+        <div class="content-area">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
 </body>
 
 {% block javascript %}
