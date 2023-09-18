@@ -30,6 +30,7 @@ docker compose up --build
 <li>The first django "app" is main if you want to change that you'll need to change it in settings</li>
 <li>In the github actions the variable to see changed files is called template_diff. You may want to change that based on your app but it isnt required</li>
 <li>If you want to change the branch style of your deployment then you would need to change the name of the workflows files to match the branch you want</li>
+<li>In the footer change "Your App Name" to its value</li>
 <li>Change the colors in source_css/css/base/_colors.scss to be colors reflecting your brand</li>
 </ul>
 
