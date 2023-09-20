@@ -1,12 +1,4 @@
-from DjangoTemplate.settings.default import (
-    ALLOWED_HOSTS,
-    MIDDLEWARE,
-    INSTALLED_APPS,
-)
-
-
-DEBUG = True
-
+from DjangoTemplate.settings.default import *  # noqa: F401,F403
 
 ALLOWED_HOSTS.extend(
     [
