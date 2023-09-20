@@ -10,12 +10,14 @@ class ErrorViewsTestCase(TestCase):
 
     factory = RequestFactory()
 
-    def check_view_response(self, view_class, expected_response_class, expected_status_code) -> None:
+    def check_view_response(
+        self, view_class, expected_response_class, expected_status_code
+    ) -> None:
         """
         Utility method to test the response of a given view class.
         """
         view = view_class.as_view()
-        request = self.factory.get('/')
+        request = self.factory.get("/")
         response = view(request)
         self.assertIsInstance(response, expected_response_class)
         self.assertEqual(response.status_code, expected_status_code)
