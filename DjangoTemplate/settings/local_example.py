@@ -32,8 +32,8 @@ DEBUG_TOOLBAR_PANELS = [
 
 
 # Local Email
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'admin@localhost'
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = "admin@localhost"
 
 
 LOGGING = {
