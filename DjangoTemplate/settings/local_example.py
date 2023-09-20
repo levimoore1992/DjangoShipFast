@@ -4,10 +4,6 @@ from DjangoTemplate.settings.default import (
     INSTALLED_APPS,
 )
 
-
-DEBUG = True
-
-
 ALLOWED_HOSTS.extend(
     [
         "localhost",
