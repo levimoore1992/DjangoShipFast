@@ -10,5 +10,8 @@ django-ckeditor==6.7.0
 celery==5.3.4
 redis==5.0.1
 
+# Payments
+dj-stripe==2.8.2
+
 # Debugging Libraries
 sentry-sdk==1.14.0

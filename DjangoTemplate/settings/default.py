@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "ckeditor",
+    # payments
+    "djstripe",
     # project apps
     "main",
     "users",
@@ -225,3 +227,9 @@ REDIS_PORT = int(os.getenv("REDIS_PORT"))
 # settings.py
 CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
 CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
+
+# Stripe Settings
+STRIPE_LIVE_MODE = not DEBUG  # Live Mode is the opposite of DEBUG mode
+DJSTRIPE_USE_NATIVE_JSONFIELD = True
+DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
+DJSTRIPE_WEBHOOK_SECRET = os.getenv("DJSTRIPE_WEBHOOK_SECRET")
