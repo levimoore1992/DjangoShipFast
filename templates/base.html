@@ -17,7 +17,12 @@
 </head>
 <body>
     <div class="main-wrapper">
+
         {% include 'components/navbar.html' %}
+        <!-- Messages area -->
+        {% include 'components/django_messages.html' %}
+
+
         <!-- Content area -->
         <div class="content-area">
             {% block content %}{% endblock %}
