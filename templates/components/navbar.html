@@ -19,5 +19,20 @@
             </li>
             <!-- Add more nav links as needed -->
         </ul>
+        <ul class="navbar-nav custom-nav ms-auto">
+        {% if user.is_authenticated %}
+          <li class="nav-item custom-item">
+            <!-- Add Links a logged in user would see -->
+          </li>
+          <li class="nav-item custom-item">
+            <a class="nav-link custom-link" href="{% url 'logout' %}">Logout</a>
+          </li>
+        {% else %}
+          <li class="nav-item custom-item">
+            <a class="nav-link custom-link" href="{% url 'login' %}">Login</a>
+          </li>
+        {% endif %}
+</ul>
+
     </div>
 </nav>
