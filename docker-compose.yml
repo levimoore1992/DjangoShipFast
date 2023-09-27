@@ -16,6 +16,7 @@ services:
             interval: 10s
             timeout: 5s
             retries: 5
+
     web:
         container_name: djangoTemplate
         build:
@@ -26,6 +27,8 @@ services:
             - DB_USER=django
             - DB_PASS=django
             - DB_HOST=db
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
         volumes:
             - .:/app
         ports:
@@ -33,6 +36,8 @@ services:
         depends_on:
             db:
                 condition: service_healthy
+            redis:
+                condition: service_started
         restart: on-failure:1
         command: "python manage.py runserver 0.0.0.0:8000"
         env_file:
@@ -46,6 +51,26 @@ services:
             - .:/app
         command: "npx sass source_scss:static --watch --no-source-map --style=compressed"
 
+    redis:
+        image: "redis:latest"
+        ports:
+            - "6379:6379"
+
+    celery:
+        user: "1000:1000"
+        build:
+            context: .
+            dockerfile: Dockerfile
+        command: "celery -A DjangoTemplate worker --loglevel=info"
+        volumes:
+            - .:/app
+        depends_on:
+            db:
+                condition: service_healthy
+            redis:
+                condition: service_started
+        env_file:
+            - .env
 
 volumes:
     postgres_data:
