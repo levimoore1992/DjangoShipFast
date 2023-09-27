@@ -12,6 +12,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    {# Stripe #}
+    <script src="https://js.stripe.com/v3/"></script>
+
     {% block extraheader %}
     {% endblock %}
 </head>
@@ -32,5 +36,15 @@
 </body>
 
 {% block javascript %}
+
+    <script>
+    const stripe = Stripe('{{ STRIPE_PUBLISHABLE_KEY }}');  // Initialize Stripe
+    const elements = stripe.elements();
+
+    const cardElement = elements.create('card');
+    cardElement.mount('#card-element');
+
+    </script>
+
 {% endblock %}
 </html>

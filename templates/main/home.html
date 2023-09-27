@@ -1,7 +1,48 @@
 {% extends 'base.html' %}
 
+{% comment %}
+ Test page to work on features experimental to the template. Delete all ode when working on real project.
+{% endcomment %}
+
 {% block content %}
 
     <h1>Home</h1>
+    <form id="payment-form">
+      <div id="card-element">
+        <!-- A Stripe Element will be inserted here. -->
+      </div>
+      <button id="submit-button">Pay $20</button>
+    </form>
+{% endblock %}
 
+{% block javascript %}
+    {{ block.super }}
+
+    <script>
+
+    // JavaScript code
+document.getElementById("submit-button").addEventListener('click', async function(event) {
+    event.preventDefault();  // prevent default form submission
+    console.log("Button clicked.");  // debug log
+
+    const { paymentMethod, error } = await stripe.createPaymentMethod({
+        type: 'card',
+        card: cardElement,
+    });
+
+    if (error) {
+        console.error("Stripe error:", error);
+    } else {
+        console.log("Sending to server:", paymentMethod.id);  // debug log
+        const response = await fetch('{% url "create_payment" %}', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ payment_method_id: paymentMethod.id })
+        });
+        const data = await response.json();
+        console.log("Server response:", data);  // debug log
+    }
+});
+
+    </script>
 {% endblock %}
