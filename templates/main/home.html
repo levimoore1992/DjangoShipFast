@@ -7,12 +7,17 @@
 {% block content %}
 
     <h1>Home</h1>
-    <form id="payment-form">
-      <div id="card-element">
-        <!-- A Stripe Element will be inserted here. -->
-      </div>
-      <button id="submit-button">Pay $20</button>
-    </form>
+    {% if has_card %}
+        <h2>You already have a card on file.</h2>
+        <button id="use-saved-card-button">Pay $20 using saved card</button>
+    {% else %}
+        <form id="payment-form">
+            <div id="card-element">
+                <!-- A Stripe Element will be inserted here. -->
+            </div>
+            <button id="submit-button">Pay $20</button>
+        </form>
+    {% endif %}
 {% endblock %}
 
 {% block javascript %}

@@ -16,6 +16,15 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 class HomeView(TemplateView):
     template_name = "main/home.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        has_card = False
+        if user.is_authenticated:
+            customer, created = Customer.get_or_create(subscriber=user)
+            has_card = bool(customer.default_payment_method)
+        context['has_card'] = has_card
+        return context
 
 class BadRequestView(TemplateView):
     """
