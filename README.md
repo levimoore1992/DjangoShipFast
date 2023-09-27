@@ -32,6 +32,7 @@ docker compose up --build
 <li>If you want to change the branch style of your deployment then you would need to change the name of the workflows files to match the branch you want</li>
 <li>In the footer change "Your App Name" to its value</li>
 <li>Change the colors in source_css/css/base/_colors.scss to be colors reflecting your brand</li>
+<li>Change the redis project name in docker-compose.yml</li>
 </ul>
 
 ### Linters
