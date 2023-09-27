@@ -13,6 +13,7 @@ from django.http import JsonResponse
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
+
 class HomeView(TemplateView):
     template_name = "main/home.html"
 
@@ -23,8 +24,9 @@ class HomeView(TemplateView):
         if user.is_authenticated:
             customer, created = Customer.get_or_create(subscriber=user)
             has_card = bool(customer.default_payment_method)
-        context['has_card'] = has_card
+        context["has_card"] = has_card
         return context
+
 
 class BadRequestView(TemplateView):
     """
@@ -50,9 +52,8 @@ class ServerErrorView(TemplateView):
         return HttpResponseServerError(response.rendered_content)
 
 
-@method_decorator([login_required, csrf_exempt], name='dispatch')
+@method_decorator([login_required, csrf_exempt], name="dispatch")
 class CreatePaymentView(View):
-
     def post(self, request, *args, **kwargs) -> JsonResponse:
         data = json.loads(request.body)
         payment_method_id: str = data.get("payment_method_id")
@@ -62,10 +63,7 @@ class CreatePaymentView(View):
         customer.api_retrieve()
 
         # Attach the payment method to Stripe customer
-        stripe.PaymentMethod.attach(
-            payment_method_id,
-            customer=customer.id
-        )
+        stripe.PaymentMethod.attach(payment_method_id, customer=customer.id)
 
         # Manually sync PaymentMethod
         stripe_payment_method = stripe.PaymentMethod.retrieve(payment_method_id)
@@ -87,7 +85,7 @@ class CreatePaymentView(View):
                 currency="usd",
                 customer=customer.id,
                 payment_method=payment_method_id,
-                confirm=True  # Auto-confirm the payment
+                confirm=True,  # Auto-confirm the payment
             )
         except stripe.error.StripeError as e:
             return JsonResponse({"error": str(e)}, status=400)
@@ -118,9 +116,7 @@ class StripeWebhookView(View):
 
         try:
             # Verify the webhook signature
-            event = stripe.Webhook.construct_event(
-                payload, sig_header, endpoint_secret
-            )
+            event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
         except stripe.error.SignatureVerificationError as e:
             # Invalid signature
             return HttpResponse(status=400)
