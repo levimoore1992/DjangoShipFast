@@ -57,18 +57,17 @@ services:
             - "6379:6379"
 
     celery:
+        user: "1000:1000"
         build:
             context: .
             dockerfile: Dockerfile
-        command: "celery -A djangoTemplate worker --loglevel=info"
+        command: "celery -A DjangoTemplate worker --loglevel=info"
         volumes:
             - .:/app
         depends_on:
             - db
             - redis
-        environment:
-            - REDIS_HOST=redis
-            - REDIS_PORT=6379
+
         env_file:
             - .env
 

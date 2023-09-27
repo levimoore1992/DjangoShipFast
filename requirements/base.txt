@@ -6,6 +6,9 @@ Pillow==9.3.0
 # General Libraries
 django-ckeditor==6.7.0
 
+# Celery and Redis
+celery==5.3.4
+redis==5.0.1
 
 # Debugging Libraries
 sentry-sdk==1.14.0
