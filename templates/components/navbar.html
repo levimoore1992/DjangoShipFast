@@ -21,9 +21,7 @@
         </ul>
         <ul class="navbar-nav custom-nav ms-auto">
         {% if user.is_authenticated %}
-          <li class="nav-item custom-item">
-            <!-- Add Links a logged in user would see -->
-          </li>
+          {% include 'components/notifications.html' %}
           <li class="nav-item custom-item">
             <a class="nav-link custom-link" href="{% url 'logout' %}">Logout</a>
           </li>
