@@ -6,13 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0001_initial'),
+        ("main", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='notification',
-            name='type',
-            field=models.CharField(choices=[('info', 'Info'), ('warning', 'Warning'), ('danger', 'Danger'), ('success', 'Success')], default='info', max_length=10),
+            model_name="notification",
+            name="type",
+            field=models.CharField(
+                choices=[
+                    ("info", "Info"),
+                    ("warning", "Warning"),
+                    ("danger", "Danger"),
+                    ("success", "Success"),
+                ],
+                default="info",
+                max_length=10,
+            ),
         ),
     ]

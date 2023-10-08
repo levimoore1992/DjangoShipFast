@@ -19,7 +19,7 @@
     {% if request.unread_notifications %}
       {% for notification in request.unread_notifications %}
         <li class="d-flex align-items-start p-3 {% if not forloop.last %}border-bottom{% endif %}" >
-          <a class="dropdown-item d-flex align-items-center" href="{{ notification.link }}" style="width: 100%;">
+          <a class="dropdown-item d-flex align-items-center" href="{{ notification.get_absolute_url }}" style="width: 100%;">
             <!-- You can set a specific icon based on the type of the notification -->
             <div class="me-3">
                 {% if notification.type == 'info' %}
@@ -27,6 +27,8 @@
                 {% elif notification.type == 'warning' %}
                   <i class="fas fa-exclamation-triangle"></i>
                 {% elif notification.type == 'danger' %}
+                  <i class="fas fa-exclamation-circle"></i>
+                {% elif notification.type == 'success' %}
                   <i class="fas fa-exclamation-circle"></i>
                 {% endif %}
               </div>
