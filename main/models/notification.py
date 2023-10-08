@@ -1,7 +1,5 @@
-from urllib.parse import quote
-
 from django.db import models
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 
 from users.models import User
 

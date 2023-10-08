@@ -62,9 +62,12 @@ class MarkAsReadAndRedirectView(RedirectView):
 
         # Its important the next line returns a 404 if it doesn't match because otherwise a malicious user could
         # use the redirect parameter to redirect any user to any site they want. Using our domain to gain credibility.
-        notification = get_object_or_404(
-            Notification, id=notification_id, link=destination_url
-        )
+        try:
+            notification = Notification.objects.get(
+                id=notification_id, link=destination_url
+            )
+        except Notification.DoesNotExist:
+            return HttpResponse(status=404)
 
         # Mark the notification as read
         notification.mark_as_read()
