@@ -1,0 +1,7 @@
+
+// This helps force wraps whenever we may use a ckeditor and the tags below wont get wrapped with bootstrap classes
+.force-wrap {
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+}

@@ -1,5 +1,5 @@
 <!-- notifications.html -->
-<div class="dropdown">
+<div class="dropdown px-5">
   <a class="btn btn-primary position-relative dropdown-toggle" href="#" role="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
     <i class="fas fa-bell"></i>
     {% if request.unread_notifications %}
@@ -15,35 +15,32 @@
   </a>
 
   <!-- Dropdown Menu -->
-  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown" style="background-color: #f7f7f7;">
-    {% if request.unread_notifications %}
-      {% for notification in request.unread_notifications %}
-        <li class="d-flex align-items-start p-3 {% if not forloop.last %}border-bottom{% endif %}" >
-          <a class="dropdown-item d-flex align-items-center" href="{{ notification.get_absolute_url }}" style="width: 100%;">
-            <!-- You can set a specific icon based on the type of the notification -->
-            <div class="me-3">
-                {% if notification.type == 'info' %}
-                  <i class="fas fa-info-circle"></i>
-                {% elif notification.type == 'warning' %}
-                  <i class="fas fa-exclamation-triangle"></i>
-                {% elif notification.type == 'danger' %}
-                  <i class="fas fa-exclamation-circle"></i>
-                {% elif notification.type == 'success' %}
-                  <i class="fas fa-exclamation-circle"></i>
-                {% endif %}
-              </div>
-            <div style="flex-grow: 1;">
-              <div class="fw-bold" style="margin-bottom: 5px;">{{ notification.title }}</div>
-              <div class="text-truncate" style="max-width: 200px; margin-bottom: 5px;">{{ notification.message|truncatechars:50 }}</div>
-              <small class="text-muted">{{ notification.timestamp|date:"SHORT_DATETIME_FORMAT" }}</small>
-            </div>
-          </a>
-        </li>
-
-
-      {% endfor %}
-    {% else %}
-      <li><a class="dropdown-item" href="#">No notifications at this time</a></li>
-    {% endif %}
-  </ul>
+<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown" style="background-color: #f7f7f7; width:300px; max-width:300px">
+  {% if request.unread_notifications %}
+    {% for notification in request.unread_notifications %}
+      <li class="d-flex align-items-start p-3 {% if not forloop.last %}border-bottom{% endif %}">
+        <a class="dropdown-item d-flex align-items-start" href="{{ notification.get_absolute_url }}" target="_blank" style="width: 100%;">
+          <div class="me-3">
+            {% if notification.type == 'info' %}
+              <i class="fas fa-info-circle text-info"></i>
+            {% elif notification.type == 'warning' %}
+              <i class="fas fa-exclamation-triangle text-warning"></i>
+            {% elif notification.type == 'danger' %}
+              <i class="fas fa-exclamation-circle text-danger"></i>
+            {% elif notification.type == 'success' %}
+              <i class="fas fa-exclamation-circle text-success"></i>
+            {% endif %}
+          </div>
+          <div style="flex-grow: 1;">
+            <div class="fw-bold mb-2">{{ notification.title }}</div>
+            <div class="mb-2 force-wrap" style="max-width: 250px;">{{ notification.message|safe }}</div>
+            <small class="text-muted">{{ notification.timestamp|date:"SHORT_DATETIME_FORMAT" }}</small>
+          </div>
+        </a>
+      </li>
+    {% endfor %}
+  {% else %}
+    <li><a class="dropdown-item" href="#">No notifications at this time</a></li>
+  {% endif %}
+</ul>
 </div>
