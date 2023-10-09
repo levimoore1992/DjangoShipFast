@@ -8,11 +8,23 @@ from django.http import (
     HttpResponse,
 )
 
-from main.models import Notification
+from main.models import Notification, TermsAndConditions
 
 
 class HomeView(TemplateView):
     template_name = "main/home.html"
+
+
+class TermsAndConditionsView(TemplateView):
+
+    """View to the terms and conditions page."""
+
+    template_name = "main/terms_and_conditions.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["terms"] = TermsAndConditions.objects.latest("created_at").terms
+        return context
 
 
 class BadRequestView(TemplateView):
