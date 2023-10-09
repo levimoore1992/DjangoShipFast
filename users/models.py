@@ -1,13 +1,11 @@
 from django.contrib.auth.models import AbstractUser
-from django.db import models
+from django.contrib.postgres.fields import CIEmailField
 
 
 class User(AbstractUser):
 
     # override the default email field so that we can make it unique
-    email = models.EmailField(
-        max_length=255, unique=True, verbose_name="Email Address", db_collation="nocase"
-    )
+    email = CIEmailField(max_length=255, unique=True, verbose_name="Email Address")
 
     # Add any custom fields for your application here
 
