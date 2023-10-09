@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {{ block.super }}
+
+    <div class="container mt-5">
+        {{ terms|safe }}
+    </div>
+
+{% endblock %}
