@@ -1,49 +1,79 @@
-import logging
 import os
 import subprocess
+from typing import Dict, List
 
 from django.conf import settings
 from django.core.management import BaseCommand
 
-host_names = {
-    "": os.environ.get("DB_HOST"),
-    "local": os.environ.get("DB_HOST"),
-    "test": os.environ.get("TEST_DB_HOST"),
-    "develop": os.environ.get("DEV_DB_HOST"),
-    "production": os.environ.get("PROD_DB_HOST"),
-}
 
-db_names = {
-    "local": os.environ.get("DB_NAME"),
-    "test": os.environ.get("TEST_DB_NAME"),
-    "develop": os.environ.get("DEV_DB_NAME"),
-    "production": os.environ.get("PROD_DB_NAME"),
-}
+def create_command(db_config: Dict[str, str], command_template: str, *args) -> str:
+    """
+    Create a command based on the command template and given arguments.
 
-usernames = {
-    "local": os.environ.get("DB_USER"),
-    "test": os.environ.get("TEST_DB_USER"),
-    "develop": os.environ.get("DEV_DB_USER"),
-    "production": os.environ.get("PROD_DB_USER"),
-}
+    Args:
+        db_config (Dict[str, str]): Database configuration.
+        command_template (str): Command template.
+        *args: Additional arguments for the command template.
 
-logger = logging.getLogger("management")
+    Returns:
+        str: Formatted command.
+    """
+    return command_template.format(
+        db_config["host"], db_config["username"], db_config["dbname"], *args
+    )
+
+
+ERROR_CANNOT_DUMP_PROD = "Cannot dump into production."
+ERROR_DB_NOT_VALID = "{} is not a valid {}. Available options: {}"
+ERROR_SAME_DB = "Source and target databases are the same. Exiting."
+ERROR_BACKUP_FILE_MISSING = "The backup file '{}' does not exist. Exiting."
+WARNING_ON_LIVE_SERVER = "Running the `restore_local_db` command on a live server."
+NO_COMMANDS_MESSAGE = "No commands to be run. Exiting."
+CONFIRM_RUN_COMMANDS = "\nThe following commands will be run:"
 
 
 class Command(BaseCommand):
+    help = (
+        "A management command to restore the database from a source database to a targeted database excluding "
+        "production."
+    )
 
-    help = """This command is purely for local development because on a clean database these options wont exist"""
+    DATABASE_CONFIG: Dict[str, Dict[str, str]] = {
+        "local": {
+            "host": os.environ.get("DB_HOST"),
+            "dbname": os.environ.get("DB_NAME"),
+            "username": os.environ.get("DB_USER"),
+            "password": os.environ.get("DB_PASS"),
+        },
+        "test": {
+            "host": os.environ.get("TEST_DB_HOST"),
+            "dbname": os.environ.get("TEST_DB_NAME"),
+            "username": os.environ.get("TEST_DB_USER"),
+            "password": os.environ.get("TEST_DB_PASSWORD"),
+        },
+        "develop": {
+            "host": os.environ.get("DEV_DB_HOST"),
+            "dbname": os.environ.get("DEV_DB_NAME"),
+            "username": os.environ.get("DEV_DB_USER"),
+            "password": os.environ.get("DEV_DB_PASSWORD"),
+        },
+        "production": {
+            "host": os.environ.get("PROD_DB_HOST"),
+            "dbname": os.environ.get("PROD_DB_NAME"),
+            "username": os.environ.get("PROD_DB_USER"),
+            "password": os.environ.get("PROD_DB_PASSWORD"),
+        },
+    }
 
     def add_arguments(self, parser):
         parser.add_argument(
             "-s",
             "--source",
             type=str,
+            required=False,
             help="Indicates what database you want to get the dump file from, "
-            "options are local, test-1, test-2, develop, production. If no "
-            "source is given, it will first try to use an existing dump. "
-            "If no dump is found, one will be created from develop.",
-            default="",
+            "options are local, test, develop, production.",
+            default=None,
         )
 
         parser.add_argument(
@@ -51,7 +81,7 @@ class Command(BaseCommand):
             "--target",
             type=str,
             help="Indicates what database you want to load the dump file to, "
-            "options are local, test-1, test-2, qa1, qa2, develop",
+            "options are local, test, develop",
             default="local",
         )
 
@@ -90,124 +120,152 @@ class Command(BaseCommand):
             action="store_true",
         )
 
-    def handle(self, *args, **kwargs):
-        if not settings.DEBUG:
-            logger.error("Running the `restore_local_db` command on a live server")
-            exit()
+    def validate_arguments(self, source: str, target: str, file_name: str) -> None:
+        """
+        Validate the provided command arguments and exit if they are not valid.
+        """
+        available_dbs = self.DATABASE_CONFIG.keys()
 
-        # Get arguments or set defaults
+        if target == "production":
+            self.stdout.write(ERROR_CANNOT_DUMP_PROD)
+            exit(1)
+
+        if target not in available_dbs:
+            self.stdout.write(
+                ERROR_DB_NOT_VALID.format(target, "target", ", ".join(available_dbs))
+            )
+            exit(1)
+
+        if source:
+            if source not in available_dbs:
+                self.stdout.write(
+                    ERROR_DB_NOT_VALID.format(
+                        source, "source", ", ".join(available_dbs)
+                    )
+                )
+                exit(1)
+            if source == target:
+                self.stdout.write(ERROR_SAME_DB)
+                exit(0)
+        else:
+            if not os.path.exists(file_name):
+                self.stdout.write(ERROR_BACKUP_FILE_MISSING.format(file_name))
+                exit(1)
+
+    def run_commands(self, commands: List[str], env: Dict) -> None:
+        """
+        Execute the given commands.
+        """
+        for command in commands:
+            try:
+                subprocess.check_call(command, env=env, shell=True)
+            except subprocess.CalledProcessError as e:
+                self.stdout.write(f"Command failed with error: {e}")
+
+    def handle(self, *args, **kwargs):
+        """
+        Handle the management command.
+        """
+        if not settings.DEBUG:
+            self.stdout.write(WARNING_ON_LIVE_SERVER)
+            exit(1)
+
         source = kwargs["source"]
         target = kwargs["target"]
         file_name = kwargs["file_name"]
 
-        # ======================================================================
-        # Validating command line arguments
-        # ======================================================================
-        if target == "production":
-            print("You cannot dump into production")
-            exit()
+        self.validate_arguments(source, target, file_name)
 
-        if target not in host_names.keys():
-            print(
-                f"{target} is not a valid name please choose from {', '.join(host_names.keys())}"
-            )
-            exit()
-        if source not in host_names.keys():
-            print(
-                f"{source} is not a valid name please choose from {', '.join(host_names.keys())}"
-            )
-            exit()
+        source_commands = self.generate_source_commands(source, file_name)
+        target_commands = self.generate_target_commands(target, kwargs, file_name)
 
-        if not (source or os.path.exists(file_name)):
-            print(
-                "Must specify either a --source database or a --file-name that exists"
-            )
-            print('Try "python manage.py restore_db --source develop"')
-            exit()
+        all_commands = source_commands + target_commands
+        if not all_commands:
+            self.stdout.write(NO_COMMANDS_MESSAGE)
+            exit(0)
 
-        # ======================================================================
-        # Create "source" commands
-        # source commands use the "source" env dictionary, and a ran first.
-        # ======================================================================
+        self.stdout.write(CONFIRM_RUN_COMMANDS)
+        for command in all_commands:
+            self.stdout.write(f"\t- {command}")
+
+        if (
+            not kwargs["no_input"]
+            and input("Would you like to continue? (y/n) ").lower() != "y"
+        ):
+            self.stdout.write("Exiting.")
+            exit(0)
+        if source:
+            self.run_commands(source_commands, self.get_env_for_db(source))
+        self.run_commands(target_commands, self.get_env_for_db(target))
+
+    def generate_source_commands(self, source: str, file_name: str) -> List[str]:
+        """
+        Generate the source commands based on the provided source and file_name.
+        """
         source_commands = []
-        # Download the file
-        if kwargs["source"]:
+        if source and source != "local":
             if os.path.exists(file_name):
-                prompt = f"The file {file_name} already exists do you want to override it? Type 'y' or 'n' "
-                if input(prompt) != "y":
-                    print(f"Not overriding {file_name}, stopping now.")
-                    exit()
+                prompt = f"Do you want to override {file_name}? (y/n) "
+                if input(prompt).lower() != "y":
+                    self.stdout.write(f"Not overriding {file_name}. Exiting.")
+                    exit(0)
 
+            command_template = (
+                "pg_dump -Fc -v --host={} --username={} --dbname={} -f {}"
+            )
             source_commands.append(
-                f"pg_dump -Fc -v --host={host_names[source]} --username={usernames[source]} --dbname={db_names[source]} -f {file_name}"
+                create_command(
+                    self.DATABASE_CONFIG[source], command_template, file_name
+                )
             )
+        return source_commands
 
-        # Configure postgres passwords and create environments.
-        source_password = (
-            os.environ.get("DB_PASS")
-            if kwargs["source"] in ("local", "")
-            else input(f"Enter the password for {source} database ")
-        )
-        source_env = os.environ.copy()
-        source_env["PGPASSWORD"] = source_password
-
-        target_password = (
-            os.environ.get("DB_PASS")
-            if target == "local"
-            else input(f"Enter the password for {target} database ")
-        )
-        target_env = os.environ.copy()
-        target_env["PGPASSWORD"] = target_password
-
-        # ======================================================================
-        # Create "target" commands
-        # "target_commands" use the "target" env dictionary and a ran after
-        # source commands.
-        # ======================================================================
+    def generate_target_commands(
+        self, target: str, kwargs: Dict, file_name: str
+    ) -> List[str]:
+        """
+        Generate the target commands based on the provided target, kwargs, and file_name.
+        """
         target_commands = []
-
-        current_directory = os.path.dirname(os.path.abspath(__file__))
-
-        # Dropping tables on target database
         if kwargs["drop"] and kwargs["restore"]:
-            drop_table_path = os.path.join(current_directory, "sql/drop_tables.sql")
-
+            command_template = (
+                "psql --host={} --port=5432 --username={} --dbname={} -f {}"
+            )
+            drop_table_path = os.path.join(
+                settings.BASE_DIR, "main/management/commands/sql/drop_tables.sql"
+            )
             target_commands.append(
-                f"psql --host={host_names[target]} --port=5432 --username={usernames[target]} --dbname={db_names[target]} -f {drop_table_path}"
+                create_command(
+                    self.DATABASE_CONFIG[target], command_template, drop_table_path
+                )
             )
 
-        # Restoring target database.
         if kwargs["restore"]:
-            setup_path = os.path.join(current_directory, "sql/setup.sql")
-
-            target_commands.append(
-                f"psql --host={host_names[target]} --port=5432 --username={usernames[target]} --dbname={db_names[target]} -f {setup_path}"
+            command_template = (
+                "psql --host={} --port=5432 --username={} --dbname={} -f {}"
+            )
+            setup_path = os.path.join(
+                settings.BASE_DIR, "main/management/commands/sql/setup.sql"
             )
             target_commands.append(
-                f"pg_restore -v  --no-owner --host={host_names[target]} --port=5432 --username={usernames[target]} --dbname={db_names[target]} {file_name}"
+                create_command(
+                    self.DATABASE_CONFIG[target], command_template, setup_path
+                )
             )
 
-        # ======================================================================
-        # Run commands.
-        # ======================================================================
-        if len(source_commands + target_commands) == 0:
-            print("No commands to be ran")
-            exit()
+            command_template = "pg_restore -v  --no-owner --host={} --port=5432 --username={} --dbname={} {}"
+            target_commands.append(
+                create_command(
+                    self.DATABASE_CONFIG[target], command_template, file_name
+                )
+            )
 
-        print("\nThe following commands will be ran:")
-        for command in source_commands + target_commands:
-            print(f"\t- {command}")
+        return target_commands
 
-        if kwargs["copy_media"]:
-            print(f"\t- Copy media files from production to {target}")
-
-        if not kwargs["no_input"]:
-            if input("Would you like to continue? Type 'y' or 'n' ") != "y":
-                print("Exiting now")
-                exit()
-
-        for command in source_commands:
-            subprocess.check_call(command, env=source_env, shell=True)
-
-        for command in target_commands:
-            subprocess.check_call(command, env=target_env, shell=True)
+    def get_env_for_db(self, db_name: str) -> Dict:
+        """
+        Get the environment for the provided database name.
+        """
+        env = os.environ.copy()
+        env["PGPASSWORD"] = self.DATABASE_CONFIG[db_name]["password"]
+        return env
