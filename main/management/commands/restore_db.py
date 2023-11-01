@@ -33,7 +33,10 @@ CONFIRM_RUN_COMMANDS = "\nThe following commands will be run:"
 
 
 class Command(BaseCommand):
-    help = "Command description here..."
+    help = (
+        "A management command to restore the database from a source database to a targeted database excluding "
+        "production."
+    )
 
     DATABASE_CONFIG: Dict[str, Dict[str, str]] = {
         "local": {
