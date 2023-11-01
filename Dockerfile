@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.11
 
 # Next line is needed for restore_db command
 RUN apt-get update && apt-get install -y postgresql-client
