@@ -86,4 +86,4 @@ jobs:
           python3 -m pip install -r requirements/linter.txt
 
       - name: 'Run Pylint'
-        run: docker exec django_template pylint django_template main tests users
+        run: python3 -m pylint django_template main tests users
