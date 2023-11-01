@@ -5,6 +5,10 @@ from tests.factories.users import UserFactory
 
 
 class NotificationFactory(factory.django.DjangoModelFactory):
+    """
+    A factory for creating notifications
+    """
+
     class Meta:
         model = Notification
 

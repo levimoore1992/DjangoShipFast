@@ -2,6 +2,10 @@ from django.db import models
 
 
 class TermsAndConditions(models.Model):
+    """
+    Model for the Terms and Conditions
+    """
+
     terms = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 

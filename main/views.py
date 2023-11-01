@@ -4,7 +4,6 @@ from django.http import (
     HttpResponseBadRequest,
     HttpResponseServerError,
     HttpResponseRedirect,
-    HttpRequest,
     HttpResponse,
 )
 
@@ -12,6 +11,8 @@ from main.models import Notification, TermsAndConditions
 
 
 class HomeView(TemplateView):
+    """View to the home page."""
+
     template_name = "main/home.html"
 
 
@@ -58,9 +59,7 @@ class MarkAsReadAndRedirectView(RedirectView):
 
     permanent = False  # Make the redirect non-permanent
 
-    def get(
-        self, request: HttpRequest, notification_id: int, destination_url: str
-    ) -> HttpResponse:
+    def get(self, request, *args, **kwargs) -> HttpResponse:
         """
         Handle GET requests.
 
@@ -69,6 +68,9 @@ class MarkAsReadAndRedirectView(RedirectView):
         :param destination_url: Encoded URL to redirect to after marking the notification as read
         :return: HttpResponse object
         """
+        notification_id = kwargs.get("notification_id")
+        destination_url = kwargs.get("destination_url")
+
         decoded_url = unquote(destination_url)  # Decode the URL
 
         # Its important the next line returns a 404 if it doesn't match because otherwise a malicious user could

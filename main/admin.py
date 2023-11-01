@@ -27,6 +27,10 @@ class TermsAndConditionsAdmin(admin.ModelAdmin):
 
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
+    """
+    The Admin View for the Notification Model.
+    """
+
     form = NotificationAdminForm
     list_display = ("user", "message", "is_read", "created_at")
     list_filter = ("is_read", "created_at")

@@ -3,6 +3,8 @@ from main.tasks import add
 
 
 class TestTask(TestCase):
+    """A test task to test celery tasks."""
+
     def test_my_task(self):
         """Test my_task()"""
 

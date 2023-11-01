@@ -5,6 +5,10 @@ from main.models import Notification, TermsAndConditions
 
 
 class NotificationAdminForm(forms.ModelForm):
+    """
+    The form for the Notification Model specifically in the admin.
+    """
+
     class Meta:
         model = Notification
         fields = "__all__"

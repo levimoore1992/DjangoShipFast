@@ -71,3 +71,20 @@ jobs:
       - name: 'Check for Missing Migrations'
         run: docker-compose run web python manage.py makemigrations --dry-run --check
 
+
+  run-pylint:
+    name: Pylint Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Checkout Github Action'
+        uses: actions/checkout@v2
+
+      - name: 'Build `docker-compose` Environment'
+        run: |
+          cp .env.example .env
+          docker-compose up -d
+
+      - name: 'Run Pylint'
+        run: docker exec django_template pylint django_template main tests users
+

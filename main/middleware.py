@@ -1,6 +1,7 @@
 from main.models import Notification
 
 
+# pylint: disable=too-few-public-methods
 class NotificationMiddleware:
     """
     Middleware to attach unread notifications to every authenticated user's request object.

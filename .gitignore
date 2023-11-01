@@ -1,8 +1,8 @@
 .idea/vcs.xml
 *.pyc
-DjangoTemplate/settings/local.py
+django_template/settings/local.py
 .env
-/DjangoTemplate/staticfiles/
+/django_template/staticfiles/
 /static/css/
 restore.dump
 /.pytest_cache/

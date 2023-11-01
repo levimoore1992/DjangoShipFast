@@ -1,4 +1,6 @@
-from DjangoTemplate.settings.default import *  # noqa: F401,F403
+# pylint: disable=duplicate-code
+
+from django_template.settings.default import *  # noqa: F401,F403
 
 ALLOWED_HOSTS.extend(
     [
