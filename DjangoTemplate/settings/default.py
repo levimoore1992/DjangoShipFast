@@ -26,6 +26,9 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "FALSE").upper() == "TRUE"
 
+# This is in case a user types in the http:// url domain. It will redirect to the https:// version
+SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT", "FALSE").upper() == "TRUE"
+
 # Version of Application
 VERSION = os.getenv("VERSION")
 
