@@ -51,3 +51,23 @@ jobs:
         if: ${{ env.template_py_diff != '' }}
         run: python3 -m flake8 ${{env.template_py_diff}} --ignore=E501,F405,W503
 
+  run-migration-check:
+    name: Check for Migrations
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 'Checkout Github Action'
+        uses: actions/checkout@v2
+
+      - name: 'Build `docker-compose` Environment'
+        run: |
+          cp .env.example .env
+          docker-compose up -d
+
+      - name: 'Check Running Containers'
+        run: docker ps -a
+
+      - name: 'Check for Missing Migrations'
+        run: docker-compose run web python manage.py makemigrations --dry-run --check
+
