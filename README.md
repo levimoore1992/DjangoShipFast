@@ -124,3 +124,5 @@ This command is highly beneficial in the following scenarios:
 **Note**: This command is intended for local development, and precautions should be taken not to run it on live servers. The code includes checks to prevent misuse.
 
 By leveraging this command, you can maintain consistent and up-to-date data across various environments, facilitating a smooth development and testing process.
+
+You may also need to edit some sql files depending on the setup of your database. Because you may need to change the role name from 'web' to a more appropriate name
