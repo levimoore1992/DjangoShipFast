@@ -18,7 +18,7 @@ services:
             retries: 5
 
     web:
-        container_name: djangoTemplate
+        container_name: django_template
         build:
             context: .
             dockerfile: Dockerfile
@@ -61,7 +61,7 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
-        command: "celery -A DjangoTemplate worker --loglevel=info"
+        command: "celery -A django_template worker --loglevel=info"
         volumes:
             - .:/app
         depends_on:

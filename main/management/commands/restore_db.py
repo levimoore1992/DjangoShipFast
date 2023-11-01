@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 from typing import Dict, List
 
 from django.conf import settings
@@ -33,6 +34,10 @@ CONFIRM_RUN_COMMANDS = "\nThe following commands will be run:"
 
 
 class Command(BaseCommand):
+    """
+    A management command to restore the database from a source database to a targeted database excluding production.
+    """
+
     help = (
         "A management command to restore the database from a source database to a targeted database excluding "
         "production."
@@ -128,13 +133,13 @@ class Command(BaseCommand):
 
         if target == "production":
             self.stdout.write(ERROR_CANNOT_DUMP_PROD)
-            exit(1)
+            sys.exit(1)
 
         if target not in available_dbs:
             self.stdout.write(
                 ERROR_DB_NOT_VALID.format(target, "target", ", ".join(available_dbs))
             )
-            exit(1)
+            sys.exit(1)
 
         if source:
             if source not in available_dbs:
@@ -143,14 +148,14 @@ class Command(BaseCommand):
                         source, "source", ", ".join(available_dbs)
                     )
                 )
-                exit(1)
+                sys.exit(1)
             if source == target:
                 self.stdout.write(ERROR_SAME_DB)
-                exit(0)
+                sys.exit(0)
         else:
             if not os.path.exists(file_name):
                 self.stdout.write(ERROR_BACKUP_FILE_MISSING.format(file_name))
-                exit(1)
+                sys.exit(1)
 
     def run_commands(self, commands: List[str], env: Dict) -> None:
         """
@@ -168,7 +173,7 @@ class Command(BaseCommand):
         """
         if not settings.DEBUG:
             self.stdout.write(WARNING_ON_LIVE_SERVER)
-            exit(1)
+            sys.exit(1)
 
         source = kwargs["source"]
         target = kwargs["target"]
@@ -182,7 +187,7 @@ class Command(BaseCommand):
         all_commands = source_commands + target_commands
         if not all_commands:
             self.stdout.write(NO_COMMANDS_MESSAGE)
-            exit(0)
+            sys.exit(0)
 
         self.stdout.write(CONFIRM_RUN_COMMANDS)
         for command in all_commands:
@@ -193,7 +198,7 @@ class Command(BaseCommand):
             and input("Would you like to continue? (y/n) ").lower() != "y"
         ):
             self.stdout.write("Exiting.")
-            exit(0)
+            sys.exit(0)
         if source:
             self.run_commands(source_commands, self.get_env_for_db(source))
         self.run_commands(target_commands, self.get_env_for_db(target))
@@ -208,7 +213,7 @@ class Command(BaseCommand):
                 prompt = f"Do you want to override {file_name}? (y/n) "
                 if input(prompt).lower() != "y":
                     self.stdout.write(f"Not overriding {file_name}. Exiting.")
-                    exit(0)
+                    sys.exit(0)
 
             command_template = (
                 "pg_dump -Fc -v --host={} --username={} --dbname={} -f {}"

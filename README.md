@@ -25,8 +25,8 @@ docker compose up --build
 ## Things you may consider replacing
 
 <ul>
-<li>The name of the root django project is called "DjangoTemplate". You would need to change it in settings.py file as well</li>
-<li>The container name for the app is called djangoTemplate. You may want to change that as well</li>
+<li>The name of the root django project is called "django_template". You would need to change it in settings.py file as well</li>
+<li>The container name for the app is called django_template. You may want to change that as well</li>
 <li>The first django "app" is main if you want to change that you'll need to change it in settings</li>
 <li>In the github actions the variable to see changed files is called template_diff. You may want to change that based on your app but it isnt required</li>
 <li>If you want to change the branch style of your deployment then you would need to change the name of the workflows files to match the branch you want</li>
@@ -126,3 +126,26 @@ This command is highly beneficial in the following scenarios:
 By leveraging this command, you can maintain consistent and up-to-date data across various environments, facilitating a smooth development and testing process.
 
 You may also need to edit some sql files depending on the setup of your database. Because you may need to change the role name from 'web' to a more appropriate name
+
+
+## Using Pylint in Our Django Project
+### Local Execution:
+To lint your Django apps and other relevant Python directories, run the following command:
+
+```
+docker exec -it django_template pylint django_template main tests users
+```
+This command explicitly specifies which directories should be linted.
+
+### GitHub Actions:
+Our GitHub Action for linting also uses a similar command. If you add a new Django app or a directory containing Python files that should be linted, remember to update the GitHub Action configuration.
+
+
+
+### Important Note:
+After creating your app, update the pylint command to include your new app:
+
+```
+docker exec -it django_template pylint django_template main tests users your_app_name
+```
+Also, make sure to update the GitHub Action configuration  and this documentation with the name of the new app.

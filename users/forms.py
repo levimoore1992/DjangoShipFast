@@ -26,6 +26,10 @@ class UserCreationForm(forms.ModelForm):
     )
 
     def clean_password2(self):
+        """
+        Overriding the default clean_password2 method to check if the passwords match
+        :return:
+        """
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
 
@@ -35,6 +39,11 @@ class UserCreationForm(forms.ModelForm):
         return password2
 
     def save(self, commit=True):
+        """
+        Overriding the default save method to hash the password
+        :param commit:
+        :return:
+        """
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password1"])
         if commit:

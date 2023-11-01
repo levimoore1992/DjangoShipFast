@@ -3,6 +3,10 @@ from users.models import User
 
 
 class UserFactory(factory.django.DjangoModelFactory):
+    """
+    A factory for creating users
+    """
+
     class Meta:
         model = User
 

@@ -4,6 +4,10 @@ from tests.factories.users import UserFactory
 
 
 class BaseTestCase(TestCase):
+    """
+    The base test for all tests. This is to setup the database and create
+    users.
+    """
 
     databases = "__all__"
 
