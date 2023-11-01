@@ -80,7 +80,7 @@ jobs:
       - name: 'Checkout Github Action'
         uses: actions/checkout@v2
 
-      - name: Setup Python Linter
+      - name: 'Setup Python Linter'
         if: ${{ env.template_py_diff != '' }}
         run: |
           python3 -m pip install -r requirements/linter.txt
