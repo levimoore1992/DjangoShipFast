@@ -80,9 +80,11 @@ jobs:
       - name: 'Checkout Github Action'
         uses: actions/checkout@v2
 
-      - name: Setup Python Linter
+      - name: 'Build `docker-compose` Environment'
         run: |
-          python3 -m pip install -r requirements/linter.txt
+          cp .env.example .env
+          docker-compose up -d
 
       - name: 'Run Pylint'
-        run: python3 -m pylint django_template main tests users
+        run: docker exec django_template pylint django_template main tests users
+
