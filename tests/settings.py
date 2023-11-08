@@ -9,7 +9,7 @@ DATABASES = {
         "NAME": "django-test",
         "USER": "django",
         "PASSWORD": "django",
-        "HOST": os.environ.get("DB_HOST"),
+        "HOST": "django-host",
         "PORT": "5432",
         "ATOMIC_REQUESTS": True,
     }
