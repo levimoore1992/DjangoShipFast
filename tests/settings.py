@@ -9,7 +9,7 @@ DATABASES = {
         "NAME": "django-test",
         "USER": "django",
         "PASSWORD": "django",
-        "HOST": "localhost",
+        "HOST": "db",  # it is db because it is the container hostname
         "PORT": "5432",
         "ATOMIC_REQUESTS": True,
     }
