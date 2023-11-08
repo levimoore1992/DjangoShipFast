@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # celery apps
+    "django_celery_beat",
+    "django_celery_results",
     "ckeditor",
     # project apps
     "main",
@@ -228,4 +231,5 @@ REDIS_PORT = int(os.getenv("REDIS_PORT"))
 
 # settings.py
 CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
-CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_RESULT_EXTENDED = True  # needed for django-celery results

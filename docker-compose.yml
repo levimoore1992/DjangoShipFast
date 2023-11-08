@@ -22,13 +22,6 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
-        environment:
-            - DB_NAME=django
-            - DB_USER=django
-            - DB_PASS=django
-            - DB_HOST=db
-            - REDIS_HOST=redis
-            - REDIS_PORT=6379
         volumes:
             - .:/app
         ports:
@@ -62,6 +55,23 @@ services:
             context: .
             dockerfile: Dockerfile
         command: "celery -A django_template worker --loglevel=info"
+        volumes:
+            - .:/app
+        depends_on:
+            db:
+                condition: service_healthy
+            redis:
+                condition: service_started
+        env_file:
+            - .env
+
+
+    celery-beat:
+        container_name: django_celery_beat
+        build:
+            context: .
+            dockerfile: Dockerfile
+        command: "celery -A django_template beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler"
         volumes:
             - .:/app
         depends_on:
