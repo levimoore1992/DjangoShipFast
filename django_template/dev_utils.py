@@ -1,5 +1,4 @@
 import os
-
 import requests
 from debug_toolbar.panels import Panel
 from django.conf import settings
@@ -8,23 +7,48 @@ from django.views.static import serve
 
 
 class ReplaceImagesPanel(Panel):
+    """
+    Debug toolbar panel for replacing images with production images.
 
+    This panel allows developers to switch between using local and production media files.
+    """
     title = "Replace Media Images"
-
     has_content = False
 
     @property
-    def enabled(self):
-        """Have the default option be switched off."""
+    def enabled(self) -> bool:
+        """
+        Check if the panel is enabled based on the user's cookie settings.
 
+        The default option is switched off. The user's cookies can override this default value.
+
+        Returns:
+            bool: True if enabled, False otherwise.
+        """
         default = "off"
-        # The user's cookies should override the default value
         return self.toolbar.request.COOKIES.get("djdt" + self.panel_id, default) == "on"
+
+    @property
+    def template(self) -> str:
+        """
+        Override the abstract method 'template'. Required by the Django Debug Toolbar.
+
+        Returns an empty string as this panel does not require a template.
+
+        Returns:
+            str: An empty string.
+        """
+        return ""
 
 
 def save_local_media(path: str, content: bytes):
-    """Save content to the local media directory."""
+    """
+    Save content to the local media directory.
 
+    Args:
+        path (str): The path where the media should be saved.
+        content (bytes): The content of the media to be saved.
+    """
     full_path = os.path.join(settings.MEDIA_ROOT, path.strip("/"))
 
     # Make the directory if it does not exist yet.
@@ -37,50 +61,51 @@ def save_local_media(path: str, content: bytes):
         fh.write(content)
 
 
-def local_media_proxy(request, path, document_root=None, show_indexes=False):
-    """Used to handle media files locally. Reads from the django tool bar cookies
-    to see if the replace images flag is set. If so, after attempting to read
-    the media locally, it will attempt to fetch the asset from production.
-    This is purely a tool to help development, and save us from having to
-    download media files.
+def local_media_proxy(request, path: str, document_root=None, show_indexes=False) -> HttpResponse:
+    """
+    Handle media files locally for development purposes.
+
+    Reads from the Django toolbar cookies to determine if the 'replace images' flag is set. Attempts to fetch
+    the asset from production if the local file is not found. This is a development tool and should not be used
+    in production environments.
+
+    Args:
+        request: The Django request object.
+        path (str): The path of the media file.
+        document_root: The root directory for media files.
+        show_indexes (bool): Flag to show indexes.
+
+    Raises:
+        Http404: If the file is not found locally and the settings.DEBUG is False.
+
+    Returns:
+        HttpResponse: The HTTP response with the media content.
     """
     # Double make sure that we are only doing this if you have debug == True.
-    # This view should never be ran on production.
     if not settings.DEBUG:
         raise Http404
 
     # Check if the panel is ticked
-    replace_images = False
-    if "djdtReplaceImagesPanel" in request.COOKIES:
-        replace_images = request.COOKIES["djdtReplaceImagesPanel"] == "on"
+    replace_images = request.COOKIES.get("djdtReplaceImagesPanel", "off") == "on"
 
-    # Try to return the locally served files first. The means that you can
-    # still override the local state.
+    # Try to return the locally served files first.
     try:
         return serve(request, path, document_root, show_indexes)
 
-    # If the local file 404s, and we want to replace the image, request it
-    # from production and pretend it is coming from here.
     except Http404 as e:
-        # If we're not actually replacing images, raise the exemption now.
         if not replace_images:
             raise e
 
         url = "your url here" + path.strip("/")
-        prod_response = requests.get(url)
+        prod_response = requests.get(url, timeout=10)  # 10 seconds timeout
 
         if prod_response.status_code == 200:
-
-            # To save media locally, set SAVE_MEDIA to True in your local.py
             if getattr(settings, "SAVE_MEDIA", False):
                 save_local_media(path, prod_response.content)
 
-            # Return the response as if it was coming from us.
             return HttpResponse(
                 prod_response.content,
                 content_type=prod_response.headers["content-type"],
             )
 
-        # If we couldn't successfully get the response from prod, then re-raise
-        # the original 404 exception.
         raise e

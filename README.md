@@ -33,7 +33,7 @@ docker compose up --build
 <li>In the footer change "Your App Name" to its value</li>
 <li>Change the colors in source_css/css/base/_colors.scss to be colors reflecting your brand</li>
 <li>Change the redis project name in docker-compose.yml</li>
-<li>In django_template.dev_utils line 69 replace the url in the code with your actual production url for media</li>
+<li>In django_template.dev_utils line 99 replace the url in the code with your actual production url for media</li>
 </ul>
 
 ### Linters
