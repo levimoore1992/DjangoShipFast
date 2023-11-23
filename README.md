@@ -33,6 +33,7 @@ docker compose up --build
 <li>In the footer change "Your App Name" to its value</li>
 <li>Change the colors in source_css/css/base/_colors.scss to be colors reflecting your brand</li>
 <li>Change the redis project name in docker-compose.yml</li>
+<li>In django_template.dev_utils line 99 replace the url in the code with your actual production url for media</li>
 </ul>
 
 ### Linters
@@ -149,3 +150,5 @@ After creating your app, update the pylint command to include your new app:
 docker exec -it django_template pylint django_template main tests users your_app_name
 ```
 Also, make sure to update the GitHub Action configuration  and this documentation with the name of the new app.
+
+

@@ -25,7 +25,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("users/", include("users.urls")),
     path("", include("main.urls")),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
 
 
 # serve custom error views in production
@@ -35,7 +35,16 @@ if not settings.DEBUG:
 
 if settings.DEBUG:
     import debug_toolbar
+    from .dev_utils import local_media_proxy
 
     urlpatterns.append(
         path("__debug__/", include(debug_toolbar.urls)),
+    )
+
+    urlpatterns.extend(
+        static(
+            settings.MEDIA_URL,
+            view=local_media_proxy,
+            document_root=settings.MEDIA_ROOT,
+        )
     )
