@@ -6,6 +6,7 @@ from django.conf import settings
 from django.http import Http404, HttpResponse
 from django.views.static import serve
 
+
 class ReplaceImagesPanel(Panel):
 
     title = "Replace Media Images"
@@ -65,10 +66,7 @@ def local_media_proxy(request, path, document_root=None, show_indexes=False):
         if not replace_images:
             raise e
 
-        url = (
-            "your url here"
-            + path.strip("/")
-        )
+        url = "your url here" + path.strip("/")
         prod_response = requests.get(url)
 
         if prod_response.status_code == 200:
@@ -79,7 +77,8 @@ def local_media_proxy(request, path, document_root=None, show_indexes=False):
 
             # Return the response as if it was coming from us.
             return HttpResponse(
-                prod_response.content, content_type=prod_response.headers["content-type"]
+                prod_response.content,
+                content_type=prod_response.headers["content-type"],
             )
 
         # If we couldn't successfully get the response from prod, then re-raise
