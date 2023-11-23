@@ -15,3 +15,15 @@ class TermsAndConditions(models.Model):
     class Meta:
         verbose_name = "Terms and Conditions"
         verbose_name_plural = "Terms and Conditions"
+
+
+class PrivacyPolicy(models.Model):
+    """
+    Model for the Privacy Policy
+    """
+
+    policy = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Privacy Policy created at {self.created_at}"

@@ -1,7 +1,7 @@
 from ckeditor.widgets import CKEditorWidget
 from django import forms
 
-from main.models import Notification, TermsAndConditions
+from .models import Notification, TermsAndConditions, PrivacyPolicy
 
 
 class NotificationAdminForm(forms.ModelForm):
@@ -25,4 +25,15 @@ class TermsAndConditionsAdminForm(forms.ModelForm):
         fields = ["terms"]
         widgets = {
             "terms": CKEditorWidget,
+        }
+
+
+class PrivacyPolicyAdminForm(forms.ModelForm):
+    """The form for the PrivacyPolicy Model specifically in the admin."""
+
+    class Meta:
+        model = PrivacyPolicy
+        fields = ["policy"]
+        widgets = {
+            "policy": CKEditorWidget,
         }

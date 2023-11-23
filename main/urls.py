@@ -1,7 +1,12 @@
 from django.urls import path
 
 
-from .views import HomeView, MarkAsReadAndRedirectView, TermsAndConditionsView
+from .views import (
+    HomeView,
+    MarkAsReadAndRedirectView,
+    TermsAndConditionsView,
+    PrivacyPolicyView,
+)
 
 urlpatterns = [
     path("", HomeView.as_view(), name="home"),
@@ -10,6 +15,7 @@ urlpatterns = [
         TermsAndConditionsView.as_view(),
         name="terms_and_conditions",
     ),
+    path("privacy-policy/", PrivacyPolicyView.as_view(), name="privacy_policy"),
     # Notification views
     path(
         "mark_as_read_and_redirect/<int:notification_id>/<path:destination_url>/",

@@ -1,7 +1,21 @@
 from django.contrib import admin
 
-from main.forms import NotificationAdminForm, TermsAndConditionsAdminForm
-from main.models import Notification, TermsAndConditions
+from main.forms import (
+    NotificationAdminForm,
+    TermsAndConditionsAdminForm,
+    PrivacyPolicyAdminForm,
+)
+from main.models import Notification, TermsAndConditions, PrivacyPolicy
+
+
+@admin.register(PrivacyPolicy)
+class PrivacyPolicyAdmin(admin.ModelAdmin):
+    """
+    Admin for the PrivacyPolicy Model.
+    """
+
+    list_display = ("created_at",)
+    form = PrivacyPolicyAdminForm
 
 
 @admin.register(TermsAndConditions)
