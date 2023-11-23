@@ -20,7 +20,7 @@ jobs:
         run: docker ps -a
 
       - name: 'Run Python Unit Tests'
-        run: docker-compose run web pytest
+        run: docker-compose run web pytest -n auto
 
 
   run-linter:
