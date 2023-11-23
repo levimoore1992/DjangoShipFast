@@ -7,7 +7,7 @@ from django.http import (
     HttpResponse,
 )
 
-from main.models import Notification, TermsAndConditions
+from main.models import Notification, TermsAndConditions, PrivacyPolicy
 
 
 class HomeView(TemplateView):
@@ -25,6 +25,18 @@ class TermsAndConditionsView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["terms"] = TermsAndConditions.objects.latest("created_at").terms
+        return context
+
+
+class PrivacyPolicyView(TemplateView):
+
+    """View to the privacy policy page."""
+
+    template_name = "main/privacy_policy.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["privacy_policy"] = PrivacyPolicy.objects.latest("created_at")
         return context
 
 
