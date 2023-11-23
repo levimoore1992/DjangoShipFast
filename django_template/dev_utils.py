@@ -12,6 +12,7 @@ class ReplaceImagesPanel(Panel):
 
     This panel allows developers to switch between using local and production media files.
     """
+
     title = "Replace Media Images"
     has_content = False
 
@@ -61,7 +62,9 @@ def save_local_media(path: str, content: bytes):
         fh.write(content)
 
 
-def local_media_proxy(request, path: str, document_root=None, show_indexes=False) -> HttpResponse:
+def local_media_proxy(
+    request, path: str, document_root=None, show_indexes=False
+) -> HttpResponse:
     """
     Handle media files locally for development purposes.
 
