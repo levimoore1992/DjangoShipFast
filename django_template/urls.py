@@ -48,3 +48,7 @@ if settings.DEBUG:
             document_root=settings.MEDIA_ROOT,
         )
     )
+
+    urlpatterns.append(
+        path("hijack/", include("hijack.urls")),
+    )

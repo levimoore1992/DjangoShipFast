@@ -8,3 +8,6 @@ pytest-django==4.5.2
 pytest-mock==3.11.1
 pytest-xdist==3.5.0
 factory-boy==3.3.0
+
+# For user switching
+django-hijack==3.4.2
