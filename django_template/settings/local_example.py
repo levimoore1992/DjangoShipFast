@@ -10,13 +10,16 @@ ALLOWED_HOSTS.extend(
 )
 
 # Toolbar requirements.
-MIDDLEWARE.append(
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
+MIDDLEWARE.extend(
+    ["debug_toolbar.middleware.DebugToolbarMiddleware",
+    "hijack.middleware.HijackUserMiddleware",]
 )
 INSTALLED_APPS.extend(
     [
         "debug_toolbar",
         "django_extensions",
+        "hijack",
+        "hijack.contrib.admin"
     ]
 )
 DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": lambda request: DEBUG}
@@ -51,3 +54,6 @@ LOGGING = {
         "level": "DEBUG",
     },
 }
+
+# For django hijack to redirect home after hijacking
+LOGIN_REDIRECT_URL = "/"
