@@ -11,16 +11,13 @@ ALLOWED_HOSTS.extend(
 
 # Toolbar requirements.
 MIDDLEWARE.extend(
-    ["debug_toolbar.middleware.DebugToolbarMiddleware",
-    "hijack.middleware.HijackUserMiddleware",]
+    [
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+        "hijack.middleware.HijackUserMiddleware",
+    ]
 )
 INSTALLED_APPS.extend(
-    [
-        "debug_toolbar",
-        "django_extensions",
-        "hijack",
-        "hijack.contrib.admin"
-    ]
+    ["debug_toolbar", "django_extensions", "hijack", "hijack.contrib.admin"]
 )
 DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": lambda request: DEBUG}
 DEBUG_TOOLBAR_PANELS = [
