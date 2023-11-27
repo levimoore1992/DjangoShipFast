@@ -1,3 +1,5 @@
+import secrets
+
 import factory
 from users.models import User
 
@@ -15,4 +17,4 @@ class UserFactory(factory.django.DjangoModelFactory):
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
     username = factory.Faker("user_name")
-    password = factory.PostGenerationMethodCall("set_password", "defaultpassword")
+    password = factory.LazyFunction(lambda: secrets.token_urlsafe(16))
