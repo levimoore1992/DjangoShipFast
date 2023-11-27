@@ -50,7 +50,7 @@ class LogoutViewTest(BaseAuthenticationTest):
     def test_logout(self) -> None:
         """Test if user is redirected after logout."""
         self.login()
-        response = self.client.get(reverse("logout"))
+        response = self.client.post(reverse("logout"))
         self.assertEqual(response.status_code, 302)
 
 
