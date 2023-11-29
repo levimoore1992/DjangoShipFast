@@ -12,6 +12,7 @@ def add_class(value, arg):
     """
     return value.as_widget(attrs={"class": arg})
 
+
 @register.filter(name="underscorize")
 def underscorize(value: str) -> str:
     """
@@ -24,6 +25,7 @@ def underscorize(value: str) -> str:
         str: The string with spaces replaced by underscores.
     """
     return value.replace(" ", "_")
+
 
 @register.simple_tag
 def contact_status_choices():
