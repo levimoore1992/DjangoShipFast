@@ -1,6 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
 
+from main.consts import ContactType
+from main.forms import ContactForm
+from main.models import Contact
 from tests.main.factories import NotificationFactory
 
 
@@ -47,3 +50,76 @@ class MarkAsReadAndRedirectViewTestCase(TestCase):
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
+
+
+class ContactUsViewTests(TestCase):
+    """
+    Unit tests for the ContactUsView.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.url = reverse("contact_us")
+
+    def test_get_contact_form(self):
+        """
+        Test that the contact form is displayed.
+        :return: None
+        """
+        # Use the client to make a GET request
+        response = self.client.get(self.url)
+
+        # Assert that the response has a 200 OK status
+        self.assertEqual(response.status_code, 200)
+
+        # Assert that the response contains an empty form
+        self.assertIsInstance(response.context["form"], ContactForm)
+        self.assertFalse(response.context["form"].is_bound)
+
+    def test_post_valid_contact_form(self):
+        """
+        Test that a valid contact form is submitted successfully.
+        :return: None
+        """
+        # Prepare some valid form data
+        form_data = {
+            "name": "John Doe",
+            "email": "john@example.com",
+            "subject": "Test subject",
+            "message": "Hello, this is a test message.",
+            "type": ContactType.GENERAL.value,
+        }
+
+        # Use the client to make a POST request with the form data
+        response = self.client.post(self.url, form_data)
+
+        # Assert that the form was valid and the contact was created
+        self.assertEqual(Contact.objects.count(), 1)
+
+        # Assert that the user was redirected to the "home" URL
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("home"))
+
+    def test_post_invalid_contact_form(self):
+        """
+        Test that an invalid contact form is not submitted.
+        :return:
+        """
+        # Prepare some invalid form data (e.g., missing name and invalid email format)
+        form_data = {
+            "email": "invalid_email",
+            "subject": "Test subject",
+            "message": "Hello, this is a test message.",
+            "type": ContactType.GENERAL.value,
+        }
+
+        # Use the client to make a POST request with the form data
+        response = self.client.post(self.url, form_data)
+
+        # Assert that the form was not valid and no contact was created
+        self.assertEqual(Contact.objects.count(), 0)
+
+        # Assert that the user saw the form with errors
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context["form"].is_bound)
+        self.assertFalse(response.context["form"].is_valid())

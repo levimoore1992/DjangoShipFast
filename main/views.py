@@ -1,4 +1,7 @@
+from django.contrib import messages
 from django.contrib.admin.utils import unquote
+from django.shortcuts import render, redirect
+from django.views import View
 from django.views.generic import TemplateView, RedirectView
 from django.http import (
     HttpResponseBadRequest,
@@ -7,6 +10,7 @@ from django.http import (
     HttpResponse,
 )
 
+from main.forms import ContactForm
 from main.models import Notification, TermsAndConditions, PrivacyPolicy
 
 
@@ -98,3 +102,30 @@ class MarkAsReadAndRedirectView(RedirectView):
         notification.mark_as_read()
 
         return HttpResponseRedirect(decoded_url)  # Redirect to the decoded URL
+
+
+class ContactUsView(View):
+    """
+    View to handle the Contact Us form.
+    """
+
+    template_name = "main/contact_us.html"
+
+    def get(self, request, *args, **kwargs):
+        """
+        Handle GET requests. Display the contact form.
+        """
+        form = ContactForm()
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handle POST requests. Process the form submission.
+        """
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()
+
+            messages.success(request, "Your message has been sent.")
+            return redirect("home")
+        return render(request, self.template_name, {"form": form})

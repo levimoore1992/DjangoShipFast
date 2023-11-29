@@ -1,11 +1,16 @@
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.http import HttpResponseRedirect
+from django.utils import timezone
 
+from main.consts import ContactStatus
 from main.forms import (
     NotificationAdminForm,
     TermsAndConditionsAdminForm,
     PrivacyPolicyAdminForm,
+    ContactAdminForm,
 )
 from main.models import Notification, TermsAndConditions, PrivacyPolicy
+from main.models.business import Contact
 
 
 @admin.register(PrivacyPolicy)
@@ -50,3 +55,47 @@ class NotificationAdmin(admin.ModelAdmin):
     list_filter = ("is_read", "created_at")
     search_fields = ("user", "message")
     list_per_page = 25
+
+
+@admin.register(Contact)
+class ContactAdmin(admin.ModelAdmin):
+    """
+    The Admin View for the Contact Model.
+
+    This is where the admin can change the status of the contact request.
+    """
+
+    form = ContactAdminForm
+
+    list_display = ("name", "email", "subject", "contact_date", "status", "type")
+    list_filter = ("status", "type")
+    readonly_fields = (
+        "name",
+        "email",
+        "subject",
+        "message",
+        "contact_date",
+        "type",
+        "resolved_date",
+        "status",
+    )
+
+    def response_change(self, request, obj):
+        """
+        Handle custom actions when the change form is submitted.
+        """
+        for status in ContactStatus:
+            status_key = f"_{status.value.lower().replace(' ', '_')}"
+            if status_key in request.POST:
+                obj.status = status.value
+                if status == ContactStatus.RESOLVED:  # If the status is 'RESOLVED'
+                    obj.resolved_date = timezone.now()  # Set the resolved_date
+                elif (
+                    status != ContactStatus.RESOLVED and obj.resolved_date
+                ):  # If the status is not 'RESOLVED' and resolved_date is set
+                    obj.resolved_date = None  # Reset the resolved_date
+                obj.save()
+                messages.success(request, f"Contact request marked as {status.value}.")
+                return HttpResponseRedirect(request.path)
+
+        return super().response_change(request, obj)
