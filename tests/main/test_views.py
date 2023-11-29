@@ -62,6 +62,10 @@ class ContactUsViewTests(TestCase):
         self.url = reverse("contact_us")
 
     def test_get_contact_form(self):
+        """
+        Test that the contact form is displayed.
+        :return: None
+        """
         # Use the client to make a GET request
         response = self.client.get(self.url)
 
@@ -73,6 +77,10 @@ class ContactUsViewTests(TestCase):
         self.assertFalse(response.context["form"].is_bound)
 
     def test_post_valid_contact_form(self):
+        """
+        Test that a valid contact form is submitted successfully.
+        :return: None
+        """
         # Prepare some valid form data
         form_data = {
             "name": "John Doe",
@@ -93,6 +101,10 @@ class ContactUsViewTests(TestCase):
         self.assertRedirects(response, reverse("home"))
 
     def test_post_invalid_contact_form(self):
+        """
+        Test that an invalid contact form is not submitted.
+        :return:
+        """
         # Prepare some invalid form data (e.g., missing name and invalid email format)
         form_data = {
             "email": "invalid_email",

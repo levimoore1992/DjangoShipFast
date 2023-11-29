@@ -59,6 +59,12 @@ class NotificationAdmin(admin.ModelAdmin):
 
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
+    """
+    The Admin View for the Contact Model.
+
+    This is where the admin can change the status of the contact request.
+    """
+
     form = ContactAdminForm
 
     list_display = ("name", "email", "subject", "contact_date", "status", "type")
