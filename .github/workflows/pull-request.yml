@@ -86,5 +86,5 @@ jobs:
           docker-compose up -d
 
       - name: 'Run Pylint'
-        run: docker exec django_template pylint django_template main tests users
+        run: docker-compose run web pylint django_template main tests users
 

@@ -32,7 +32,7 @@ services:
             redis:
                 condition: service_started
         restart: on-failure:1
-        command: "python manage.py runserver 0.0.0.0:8000"
+        command: "python manage.py runserver_plus 0.0.0.0:8000 --cert-file .mock_certs/cert.pem --key-file .mock_certs/key.pem"
         env_file:
             -   .env
 
