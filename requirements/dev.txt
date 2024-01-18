@@ -15,3 +15,8 @@ factory-boy==3.3.0
 
 # For user switching
 django-hijack==3.4.2
+
+# Linting libraries
+flake8==5.0.4
+black==22.10.0
+pylint-django==2.5.5
