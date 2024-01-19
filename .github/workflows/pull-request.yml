@@ -41,7 +41,7 @@ jobs:
       - name: Setup Python Linter
         if: ${{ env.template_py_diff != '' }}
         run: |
-          python3 -m pip install -r requirements/linter.txt
+          python3 -m pip install flake8==5.0.4 black==22.10.0
 
       - name: Run Black - Confirm files have been formatted using Black
         if: ${{ env.template_py_diff != '' }}
