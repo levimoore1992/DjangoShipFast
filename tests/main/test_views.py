@@ -4,7 +4,7 @@ from django.urls import reverse
 from main.consts import ContactType
 from main.forms import ContactForm
 from main.models import Contact
-from tests.main.factories import NotificationFactory
+from tests.factories.main import NotificationFactory
 
 
 class MarkAsReadAndRedirectViewTestCase(TestCase):

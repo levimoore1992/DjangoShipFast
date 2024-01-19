@@ -88,3 +88,27 @@ jobs:
       - name: 'Run Pylint'
         run: docker-compose run web pylint django_template main tests users
 
+
+  run-codecov:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Checkout Github Action'
+        uses: actions/checkout@v2
+
+      - name: 'Build `docker-compose` Environment'
+        run: |
+          cp .env.example .env
+          docker-compose up -d
+
+      - name: 'Run Code Coverage'
+        run: docker-compose run web pytest -n auto --cov=main --cov=users --cov-report=xml --cov-report=term-missing -n auto
+
+      - name: 'Upload Code Coverage'
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+          flags: unittests
+          files: coverage.xml
