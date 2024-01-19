@@ -8,9 +8,15 @@ from main.forms import (
     TermsAndConditionsAdminForm,
     PrivacyPolicyAdminForm,
     ContactAdminForm,
+    AuditLogConfigAdminForm,
 )
-from main.models import Notification, TermsAndConditions, PrivacyPolicy
-from main.models.business import Contact
+from main.models import (
+    Notification,
+    TermsAndConditions,
+    PrivacyPolicy,
+    Contact,
+    AuditLogConfig,
+)
 
 
 @admin.register(PrivacyPolicy)
@@ -99,3 +105,21 @@ class ContactAdmin(admin.ModelAdmin):
                 return HttpResponseRedirect(request.path)
 
         return super().response_change(request, obj)
+
+
+@admin.register(AuditLogConfig)
+class AuditLogConfigAdmin(admin.ModelAdmin):
+    """
+    The Admin View for the AuditLogConfig Model.
+    """
+
+    form = AuditLogConfigAdminForm
+    list_display = ["model_name"]
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        obj.register_model()
+
+    def delete_model(self, request, obj):
+        obj.unregister_model()
+        super().delete_model(request, obj)

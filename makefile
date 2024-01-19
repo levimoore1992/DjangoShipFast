@@ -6,7 +6,7 @@ SERVICE_NAME := web
 # Lint command
 lint:
 	docker-compose exec $(SERVICE_NAME) python -m black .
-	docker-compose exec $(SERVICE_NAME) python -m flake8 --ignore=E501,F405,W503
+	docker-compose exec $(SERVICE_NAME) python -m flake8 --ignore=E501,F405,W503,E231
 	docker-compose exec $(SERVICE_NAME) pylint django_template main users tests
 
 # Test command
