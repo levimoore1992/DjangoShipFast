@@ -44,7 +44,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # third party apps
     "auditlog",
+    "django_recaptcha",  # Google Captcha
     # celery apps
     "django_celery_beat",
     "django_celery_results",
@@ -234,3 +236,9 @@ REDIS_PORT = int(os.getenv("REDIS_PORT"))
 CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
 CELERY_RESULT_BACKEND = "django-db"
 CELERY_RESULT_EXTENDED = True  # needed for django-celery results
+
+# Google Captcha Settings
+RECAPTCHA_PRIVATE_KEY = os.getenv("RECAPTCHA_PRIVATE_KEY")
+RECAPTCHA_PUBLIC_KEY = os.getenv("RECAPTCHA_PUBLIC_KEY")
+# Silencing the error below because we intentionally use the test keys in development
+SILENCED_SYSTEM_CHECKS = ["django_recaptcha.recaptcha_test_key_error"]
