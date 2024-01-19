@@ -88,6 +88,7 @@ class ContactUsViewTests(TestCase):
             "subject": "Test subject",
             "message": "Hello, this is a test message.",
             "type": ContactType.GENERAL.value,
+            "g-recaptcha-response": "PASSED",
         }
 
         # Use the client to make a POST request with the form data

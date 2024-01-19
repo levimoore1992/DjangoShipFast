@@ -2,6 +2,9 @@ from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.apps import apps
 from django.core.validators import MinLengthValidator, EmailValidator
+from django_recaptcha.fields import ReCaptchaField
+from django_recaptcha.widgets import ReCaptchaV2Invisible
+
 
 from .consts import ContactType, ContactStatus
 from .models import (
@@ -83,6 +86,7 @@ class ContactForm(forms.ModelForm):
     message = forms.CharField(
         widget=forms.Textarea(attrs={"class": "form-control", "rows": 5, "cols": 50})
     )
+    captcha = ReCaptchaField(widget=ReCaptchaV2Invisible)
 
     class Meta:
         model = Contact
@@ -92,6 +96,7 @@ class ContactForm(forms.ModelForm):
             "type",
             "subject",
             "message",
+            "captcha",
         ]
 
 

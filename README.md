@@ -128,6 +128,11 @@ By leveraging this command, you can maintain consistent and up-to-date data acro
 
 You may also need to edit some sql files depending on the setup of your database. Because you may need to change the role name from 'web' to a more appropriate name
 
+### Google Captcha
+To use google captcha you will need to create a google captcha account at google.com/recaptcha and get a secret key and site key.
+Once you have those keys you will need to add them to the .env file.
+
+
 
 ## Using Pylint in Our Django Project
 ### Local Execution:
