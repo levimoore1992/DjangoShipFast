@@ -3,8 +3,8 @@ from django.urls import reverse
 
 from main.consts import ContactType
 from main.forms import ContactForm
-from main.models import Contact
-from tests.main.factories import NotificationFactory
+from main.models import Contact, TermsAndConditions, PrivacyPolicy
+from tests.factories.main import NotificationFactory
 
 
 class MarkAsReadAndRedirectViewTestCase(TestCase):
@@ -124,3 +124,56 @@ class ContactUsViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context["form"].is_bound)
         self.assertFalse(response.context["form"].is_valid())
+
+
+class TermsAndConditionsViewTests(TestCase):
+    """
+    Unit tests for the TermsAndConditionsView.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.url = reverse("terms_and_conditions")
+
+    def test_get_terms_and_conditions(self):
+        """
+        Test that the terms and conditions are displayed.
+        :return: None
+        """
+        TermsAndConditions.objects.create(
+            terms="This is a test terms and conditions page."
+        )
+        # Use the client to make a GET request
+        response = self.client.get(self.url)
+
+        # Assert that the response has a 200 OK status
+        self.assertEqual(response.status_code, 200)
+
+        # Assert that the response contains the terms and conditions
+        self.assertContains(response, "This is a test terms and conditions page.")
+
+
+class PrivacyPolicyViewTests(TestCase):
+    """
+    Unit tests for the PrivacyPolicyView.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.url = reverse("privacy_policy")
+
+    def test_get_privacy_policy(self):
+        """
+        Test that the privacy policy is displayed.
+
+        :return:
+        """
+        PrivacyPolicy.objects.create(policy="This is a test privacy policy page.")
+        # Use the client to make a GET request
+        response = self.client.get(self.url)
+
+        # Assert that the response has a 200 OK status
+        self.assertEqual(response.status_code, 200)
+
+        # Assert that the response contains the privacy policy
+        self.assertContains(response, "This is a test privacy policy page.")

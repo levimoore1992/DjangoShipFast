@@ -14,7 +14,7 @@ ignore=.github,.pytest_cache,
 
 
 [MESSAGES CONTROL]
-disable=C0114,W0614,W0401, C0301
+disable=C0114,W0614,W0401,C0301,W0613,E5141,E5142
 
 
 

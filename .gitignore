@@ -6,3 +6,4 @@ django_template/settings/local.py
 /static/css/
 restore.dump
 /.pytest_cache/
+.coverage
