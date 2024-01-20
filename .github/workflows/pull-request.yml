@@ -103,7 +103,15 @@ jobs:
           docker-compose up -d
 
       - name: 'Run Code Coverage'
-        run: docker-compose run web pytest -n auto --cov=main --cov=users --cov-report=xml --cov-report=term-missing -n auto
+        run: docker-compose run web pytest -n auto --cov=main --cov=users --cov-report=json --cov-report=term-missing -n auto
+
+      - name: 'Check Coverage Percentage'
+        run: |
+          COVERAGE=$(jq '.totals.percent_covered' coverage.json)
+          if (( $(echo "$COVERAGE < 100" |bc -l) )); then
+            echo "Coverage is below 100%"
+            exit 1
+          fi
 
       - name: 'Upload Code Coverage'
         uses: codecov/codecov-action@v3
