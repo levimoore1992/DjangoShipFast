@@ -132,6 +132,12 @@ You may also need to edit some sql files depending on the setup of your database
 To use google captcha you will need to create a google captcha account at google.com/recaptcha and get a secret key and site key.
 Once you have those keys you will need to add them to the .env file.
 
+### Codecov
+To use codecov you will need to create a codecov account at codecov.io and get a secret key.
+Once you have that key you will need to add it to the github repo in secrets
+
+You will also need to create an account at codecov.io and add the repo to your account
+In the code coverage commands be sure to add any new apps you create to the command
 
 
 ## Using Pylint in Our Django Project
@@ -144,7 +150,8 @@ docker exec -it django_template pylint django_template main tests users
 This command explicitly specifies which directories should be linted.
 
 ### GitHub Actions:
-Our GitHub Action for linting also uses a similar command. If you add a new Django app or a directory containing Python files that should be linted, remember to update the GitHub Action configuration.
+Our GitHub Action for linting also uses a similar command. 
+If you add a new Django app or a directory containing Python files that should be linted, remember to update the GitHub Action configuration.
 
 
 
