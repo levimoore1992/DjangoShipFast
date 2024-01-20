@@ -1,6 +1,7 @@
 from django import template
 
 from main.consts import ContactStatus
+from main.models.business import SocialMediaLink
 
 register = template.Library()
 
@@ -31,3 +32,13 @@ def underscorize(value: str) -> str:
 def contact_status_choices():
     """Return the choices for the contact status field."""
     return ContactStatus.choices()
+
+
+@register.inclusion_tag("components/social_media_row.html")
+def social_media_row():
+    """
+    Grab social media links from the database and return them to the template.
+    :return: A dictionary containing the social media links.
+    """
+    links = SocialMediaLink.objects.all()
+    return {"links": links}

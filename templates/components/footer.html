@@ -1,16 +1,11 @@
-
 {% comment %}
     Footer template.
 {% endcomment %}
+{% load custom_filters %}
 
 <div class="footer-basic d-flex align-items-center justify-content-center">
   <footer>
-    <div class="social">
-      <a href="#"><i class="icon ion-social-instagram"></i></a>
-      <a href="#"><i class="icon ion-social-snapchat"></i></a>
-      <a href="#"><i class="icon ion-social-twitter"></i></a>
-      <a href="#"><i class="icon ion-social-facebook"></i></a>
-    </div>
+    {% social_media_row %}
     <div class="footer-links-row">
       <ul class="footer-links">
         <li><a href="{% url 'contact_us' %}">Contact Us</a></li>
