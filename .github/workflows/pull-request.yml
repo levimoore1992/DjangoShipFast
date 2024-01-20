@@ -119,4 +119,4 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
           flags: unittests
-          files: coverage.xml
+          files: coverage.json
