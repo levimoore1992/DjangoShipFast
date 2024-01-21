@@ -91,3 +91,18 @@ class AuditLogConfig(models.Model):
             auditlog.unregister(model)
         except LookupError:
             pass  # Model not found, handle appropriately
+
+
+class SocialMediaLink(models.Model):
+    """
+    Model to store social media links for the organization.
+    """
+
+    platform_name = models.CharField(max_length=100)
+    profile_url = models.URLField()
+    image = models.ImageField(upload_to="social_media_images/")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.platform_name} link"

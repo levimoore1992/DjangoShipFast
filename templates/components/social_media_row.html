@@ -1,0 +1,7 @@
+<div class="d-flex justify-content-center align-items-center social">
+    {% for link in links %}
+        <a class="m-2" href="{{ link.profile_url }}" target="_blank">
+            <img src="{{ link.image.url }}" alt="{{ link.platform_name }}" class="img-fluid">
+        </a>
+    {% endfor %}
+</div>

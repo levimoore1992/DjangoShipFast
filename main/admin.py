@@ -16,6 +16,7 @@ from main.models import (
     PrivacyPolicy,
     Contact,
     AuditLogConfig,
+    SocialMediaLink,
 )
 
 
@@ -123,3 +124,12 @@ class AuditLogConfigAdmin(admin.ModelAdmin):
     def delete_model(self, request, obj):
         obj.unregister_model()
         super().delete_model(request, obj)
+
+
+@admin.register(SocialMediaLink)
+class SocialMediaLinkAdmin(admin.ModelAdmin):
+    """
+    The Admin View for the SocialMediaLink Model.
+    """
+
+    list_display = ["platform_name", "profile_url", "image"]
