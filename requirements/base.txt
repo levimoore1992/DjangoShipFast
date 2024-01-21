@@ -21,3 +21,6 @@ django-auditlog==2.3.0
 
 # For google recaptcha
 django-recaptcha==4.0.0
+
+# For feature flags
+django-waffle==4.1.0

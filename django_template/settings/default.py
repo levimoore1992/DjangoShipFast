@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     # third party apps
     "auditlog",
     "django_recaptcha",  # Google Captcha
+    "waffle",  # Feature Flags
     # celery apps
     "django_celery_beat",
     "django_celery_results",
@@ -64,6 +65,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'waffle.middleware.WaffleMiddleware',
     "main.middleware.NotificationMiddleware",
 ]
 
