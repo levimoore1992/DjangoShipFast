@@ -1,8 +1,12 @@
+import io
+
 import factory
+from PIL import Image
+from django.core.files.base import ContentFile
 from django.utils import timezone
 
 from main.consts import ContactStatus
-from main.models import Notification, Contact
+from main.models import Notification, Contact, SocialMediaLink
 from tests.factories.users import UserFactory
 
 
@@ -38,3 +42,30 @@ class ContactFactory(factory.django.DjangoModelFactory):
     status = ContactStatus.PENDING.value
     type = factory.Faker("word")
     admin_notes = factory.Faker("text")
+
+
+class SocialMediaLinkFactory(factory.django.DjangoModelFactory):
+    """
+    Factory for creating instances of the SocialMedia model for testing.
+    """
+
+    class Meta:
+        model = SocialMediaLink
+
+    platform_name = factory.Faker("word")
+    profile_url = factory.Faker("url")
+
+    # For image, we're generating a simple dummy image
+    @factory.lazy_attribute
+    def image(self):
+        """
+        Create a dummy image (1x1 pixel, black) and return it as a ContentFile.
+        :return: ContentFile
+        """
+        file = io.BytesIO()
+        image = Image.new("RGB", size=(1, 1), color=(0, 0, 0))
+        image.save(file, "JPEG")
+        file.name = "test.jpg"
+        file.seek(0)
+
+        return ContentFile(file.read(), "test.jpg")

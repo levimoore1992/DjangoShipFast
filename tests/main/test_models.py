@@ -11,9 +11,10 @@ from main.models import (
     Contact,
     AuditLogConfig,
     Notification,
+    SocialMediaLink,
 )
 
-from tests.factories.main import NotificationFactory
+from tests.factories.main import NotificationFactory, SocialMediaLinkFactory
 from tests.factories.users import UserFactory
 
 
@@ -159,3 +160,43 @@ class NotificationTest(TestCase):
         self.assertFalse(self.notification.is_read)
         self.notification.mark_as_read()
         self.assertTrue(self.notification.is_read)
+
+
+class SocialMediaLinkTest(TestCase):
+    """
+    Test the SocialMediaLink model.
+    """
+
+    def test_create_social_media_link(self):
+        """
+        Test the creation of a SocialMediaLink instance.
+        """
+
+        social_media_link = SocialMediaLinkFactory()
+
+        # Fetch the created instance from the database
+        fetched_social_media_link = SocialMediaLink.objects.get(id=social_media_link.id)
+
+        # Test instance creation
+        self.assertEqual(
+            fetched_social_media_link.platform_name, social_media_link.platform_name
+        )
+        self.assertEqual(
+            fetched_social_media_link.profile_url, social_media_link.profile_url
+        )
+        self.assertTrue(fetched_social_media_link.image)
+
+    def test_string_representation(self):
+        """
+        Test the string representation of a SocialMediaLink instance.
+        """
+        social_media_link = SocialMediaLinkFactory(platform_name="TestPlatform")
+        self.assertEqual(str(social_media_link), "TestPlatform link")
+
+    def test_auto_timestamps(self):
+        """
+        Test the auto timestamps of a SocialMediaLink instance.
+        """
+        social_media_link = SocialMediaLinkFactory()
+        self.assertIsNotNone(social_media_link.created_at)
+        self.assertIsNotNone(social_media_link.updated_at)
