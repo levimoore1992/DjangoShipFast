@@ -81,6 +81,16 @@ services:
                 condition: service_started
         env_file:
             - .env
+    selenium:
+        container_name: selenium
+        image: selenium/standalone-chrome:latest
+        shm_size: '2gb'
+        ports:
+            - "4444:4444"
 
 volumes:
     postgres_data:
+
+networks:
+  default:
+    driver: bridge
