@@ -48,10 +48,10 @@ INSTALLED_APPS = [
     "auditlog",
     "django_recaptcha",  # Google Captcha
     "waffle",  # Feature Flags
+    "ckeditor",
     # celery apps
     "django_celery_beat",
     "django_celery_results",
-    "ckeditor",
     # project apps
     "main",
     "users",
