@@ -86,7 +86,8 @@ class ContactForm(forms.ModelForm):
     message = forms.CharField(
         widget=forms.Textarea(attrs={"class": "form-control", "rows": 5, "cols": 50})
     )
-    captcha = ReCaptchaField(widget=ReCaptchaV2Invisible)
+    # next line we set label as empty string so it doesn't show up in the form
+    captcha = ReCaptchaField(widget=ReCaptchaV2Invisible, label="")
 
     class Meta:
         model = Contact
