@@ -1,4 +1,8 @@
 from django import forms
+
+from django_recaptcha.fields import ReCaptchaField
+from django_recaptcha.widgets import ReCaptchaV2Invisible
+
 from users.models import User
 
 
@@ -12,6 +16,7 @@ class UserCreationForm(forms.ModelForm):
             "email",
             "password1",
             "password2",
+            "captcha",
         ]
 
     username = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
@@ -24,6 +29,7 @@ class UserCreationForm(forms.ModelForm):
         widget=forms.PasswordInput(attrs={"class": "form-control"}),
         label="Confirm Password",
     )
+    captcha = ReCaptchaField(widget=ReCaptchaV2Invisible)
 
     def clean_password2(self):
         """

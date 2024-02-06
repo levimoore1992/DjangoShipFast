@@ -14,6 +14,7 @@ class UserCreationFormTest(BaseTestCase):
             "email": "test@example.com",
             "password1": "testpassword",
             "password2": "testpassword",
+            "g-recaptcha-response": "test",
         }
         self.mismatch_password_data = self.valid_data.copy()
         self.mismatch_password_data["password2"] = "wrongpassword"
