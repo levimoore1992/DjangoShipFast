@@ -62,6 +62,7 @@ class RegisterViewTest(BaseAuthenticationTest):
             "email": "newuser@example.com",
             "password1": "testpassword123",
             "password2": "testpassword123",
+            "g-recaptcha-response": "test",
         }
         response = self.client.post(reverse("register"), data)
         self.assertEqual(response.status_code, 302)
