@@ -164,3 +164,13 @@ docker exec -it django_template pylint django_template main tests users your_app
 Also, make sure to update the GitHub Action configuration  and this documentation with the name of the new app.
 
 
+### Features
+- [x] Dockerized
+- [x] Django 5.0
+- [x] Python 3.12
+- [x] Business Pages such as Contact, Privacy Policy, Terms of Service, FAQs
+
+
+
+
+

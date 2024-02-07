@@ -106,3 +106,19 @@ class SocialMediaLink(models.Model):
 
     def __str__(self):
         return f"{self.platform_name} link"
+
+
+class FAQ(models.Model):
+    """
+    Model for the FAQ
+    """
+
+    question = models.TextField()
+    answer = models.TextField()
+
+    def __str__(self):
+        return self.question
+
+    class Meta:
+        verbose_name = "FAQ"
+        verbose_name_plural = "FAQs"

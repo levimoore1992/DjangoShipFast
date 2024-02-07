@@ -14,7 +14,7 @@ from main.models import (
     SocialMediaLink,
 )
 
-from tests.factories.main import NotificationFactory, SocialMediaLinkFactory
+from tests.factories.main import NotificationFactory, SocialMediaLinkFactory, FAQFactory
 from tests.factories.users import UserFactory
 
 
@@ -200,3 +200,21 @@ class SocialMediaLinkTest(TestCase):
         social_media_link = SocialMediaLinkFactory()
         self.assertIsNotNone(social_media_link.created_at)
         self.assertIsNotNone(social_media_link.updated_at)
+
+
+class TestFAQ(TestCase):
+    """
+    Test the FAQ model.
+    """
+
+    def setUp(self):
+        """
+        Set up the test case.
+        """
+        self.faq = FAQFactory()
+
+    def test_string_representation(self):
+        """
+        Test the string representation of the FAQ model.
+        """
+        self.assertEqual(str(self.faq), self.faq.question)
