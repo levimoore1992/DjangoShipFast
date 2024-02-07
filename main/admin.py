@@ -9,6 +9,7 @@ from main.forms import (
     PrivacyPolicyAdminForm,
     ContactAdminForm,
     AuditLogConfigAdminForm,
+    FAQForm,
 )
 from main.models import (
     Notification,
@@ -142,6 +143,7 @@ class FAQAdmin(admin.ModelAdmin):
     The Admin View for the FAQ Model.
     """
 
+    form = FAQForm
     list_display = ["question", "answer"]
     search_fields = ["question", "answer"]
     list_per_page = 25

@@ -13,6 +13,7 @@ from .models import (
     PrivacyPolicy,
     Contact,
     AuditLogConfig,
+    FAQ,
 )
 
 
@@ -169,3 +170,17 @@ class AuditLogConfigAdminForm(forms.ModelForm):
         """
         model_label = self.cleaned_data["model_name"]
         return model_label
+
+
+class FAQForm(forms.ModelForm):
+    """
+    Form for the FAQ model.
+    """
+
+    class Meta:
+        model = FAQ
+        fields = "__all__"
+        widgets = {
+            "question": CKEditorWidget(),
+            "answer": CKEditorWidget(),
+        }
