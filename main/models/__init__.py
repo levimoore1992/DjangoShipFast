@@ -5,6 +5,7 @@ from .business import (
     Contact,
     AuditLogConfig,
     SocialMediaLink,
+    FAQ,
 )
 
 __all__ = [
@@ -14,4 +15,5 @@ __all__ = [
     "Contact",
     "AuditLogConfig",
     "SocialMediaLink",
+    "FAQ",
 ]

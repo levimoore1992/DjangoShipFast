@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.admin.utils import unquote
 from django.shortcuts import render, redirect
 from django.views import View
-from django.views.generic import TemplateView, RedirectView
+from django.views.generic import TemplateView, RedirectView, ListView
 from django.http import (
     HttpResponseBadRequest,
     HttpResponseServerError,
@@ -11,7 +11,7 @@ from django.http import (
 )
 
 from main.forms import ContactForm
-from main.models import Notification, TermsAndConditions, PrivacyPolicy
+from main.models import Notification, TermsAndConditions, PrivacyPolicy, FAQ
 
 
 class HomeView(TemplateView):
@@ -129,3 +129,13 @@ class ContactUsView(View):
             messages.success(request, "Your message has been sent.")
             return redirect("home")
         return render(request, self.template_name, {"form": form})
+
+
+class FAQListView(ListView):
+    """
+    View to display the list of FAQs.
+    """
+
+    model = FAQ
+    template_name = "main/faqs.html"
+    context_object_name = "faqs"

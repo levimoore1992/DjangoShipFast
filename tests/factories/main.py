@@ -69,3 +69,15 @@ class SocialMediaLinkFactory(factory.django.DjangoModelFactory):
         file.seek(0)
 
         return ContentFile(file.read(), "test.jpg")
+
+
+class FAQFactory(factory.django.DjangoModelFactory):
+    """
+    Factory for creating instances of the FAQ model for testing.
+    """
+
+    class Meta:
+        model = "main.FAQ"
+
+    question = factory.Faker("sentence")
+    answer = factory.Faker("paragraph")
