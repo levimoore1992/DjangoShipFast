@@ -169,6 +169,7 @@ Also, make sure to update the GitHub Action configuration  and this documentatio
 - [x] Django 5.0
 - [x] Python 3.12
 - [x] Business Pages such as Contact, Privacy Policy, Terms of Service, FAQs
+- [x] User Blocking and Tracking with IP address and device agent
 
 
 

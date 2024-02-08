@@ -1,7 +1,10 @@
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from django.contrib import admin
-from users.models import User
+from django.db.models import Count
+
+from users.models import User, UserIP, UserDevice
+from users.utils import block_user_and_devices
 
 
 @admin.register(User)
@@ -33,6 +36,8 @@ class UserAdmin(BaseUserAdmin):
     3. Add custom actions, filters, or inlines.
     """
 
+    actions = ["block_users_and_devices"]
+
     fieldsets = (
         (None, {"fields": ("username", "password")}),
         ("Personal info", {"fields": ("first_name", "last_name", "email")}),
@@ -50,3 +55,58 @@ class UserAdmin(BaseUserAdmin):
         ),
         ("Important dates", {"fields": ("last_login", "date_joined")}),
     )
+
+    def block_users_and_devices(self, request, queryset):
+        """
+        Custom admin action to block users and their devices.
+        :param request:
+        :param queryset:
+        :return:
+        """
+        for user in queryset:
+            block_user_and_devices(user.id)
+
+    block_users_and_devices.short_description = "Block selected users and their devices"
+
+
+@admin.register(UserIP)
+class UserIPAdmin(admin.ModelAdmin):
+    """
+    Custom admin interface for the UserIP model.
+    """
+
+    list_display = ("user", "ip_address", "location", "shared_user_count", "last_seen")
+    search_fields = ("user__username", "ip_address")
+    list_filter = ("last_seen",)
+
+    def shared_user_count(self, obj):
+        """
+        Display the number of users that have used the same IP address.
+        :param obj:
+        :return:
+        """
+        return UserIP.objects.filter(ip_address=obj.ip_address).aggregate(
+            Count("user", distinct=True)
+        )["user__count"]
+
+    shared_user_count.short_description = "Number of Users"
+
+    def location(self, obj) -> str:
+        """
+        Display the user's from the region and city fields
+
+        :param obj: Instance of the UserIP model.
+        :return: The user's location.
+        """
+        return f"{obj.region}, {obj.city}"
+
+
+@admin.register(UserDevice)
+class UserDeviceAdmin(admin.ModelAdmin):
+    """
+    Custom admin interface for the UserDevice model.
+    """
+
+    list_display = ("user", "device_identifier", "last_seen")
+    search_fields = ("user__username", "device_identifier")
+    list_filter = ("last_seen",)

@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import login
 from django.shortcuts import redirect, resolve_url
 from django.views.generic import TemplateView
@@ -7,8 +8,11 @@ from django.contrib.auth.views import (
     LogoutView as BaseLogoutView,
     PasswordResetConfirmView as BasePasswordResetConfirmView,
 )
+from ipware import get_client_ip
 
 from users.forms import UserCreationForm
+from users.models import UserIP, UserDevice
+from users.utils import get_device_identifier
 
 
 class LoginView(LoginViewBase):
@@ -39,6 +43,26 @@ class RegisterView(TemplateView):
 
     template_name = "users/register.html"
 
+    def is_ip_or_device_blocked(self, request):
+        """
+        Checks if the IP or device is blocked or suspicious.
+
+        Args:
+        request (HttpRequest): The incoming request object.
+
+        Returns:
+        bool: True if the IP or device is blocked/suspicious, False otherwise.
+        """
+        ip_address, _ = get_client_ip(request)
+        device_identifier = get_device_identifier(request)
+
+        ip_blocked_or_suspicious = UserIP.objects.is_ip_blocked_or_suspicious(
+            ip_address
+        )
+        device_blocked = UserDevice.objects.is_device_blocked(device_identifier)
+
+        return ip_blocked_or_suspicious or device_blocked
+
     def get_context_data(self, **kwargs):
         """
         Overriding the default get_context_data method to add the form to the context
@@ -59,6 +83,17 @@ class RegisterView(TemplateView):
         """
         form = UserCreationForm(request.POST)
         if form.is_valid():
+            if self.is_ip_or_device_blocked(request):
+                # Handle blocked/suspicious IP or device
+                user = form.save(commit=False)
+                user.is_active = False
+                user.save()
+
+                messages.warning(
+                    request,
+                    "There was a problem with your account. Please email support if you believe its a mistake.",
+                )
+                return self.render_to_response({"form": form})
             user = form.save()
             login(request, user)
 
