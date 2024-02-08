@@ -10,9 +10,9 @@ from django.contrib.auth.views import (
 )
 from ipware import get_client_ip
 
-from users.forms import UserCreationForm
-from users.models import UserIP, UserDevice
-from users.utils import get_device_identifier
+from .forms import UserCreationForm
+from .models import UserIP, UserDevice
+from .utils import get_device_identifier
 
 
 class LoginView(LoginViewBase):

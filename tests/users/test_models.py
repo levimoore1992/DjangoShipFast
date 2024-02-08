@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from tests.factories.users import UserFactory, UserDeviceFactory, UserIPFactory
-from users.models import User, UserIP, UserDevice
+from apps.users.models import User, UserIP, UserDevice
 
 
 class UserTest(TestCase):

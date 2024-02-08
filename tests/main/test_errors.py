@@ -1,7 +1,7 @@
 from django.test import TestCase, RequestFactory
 from django.http import HttpResponseBadRequest, HttpResponseServerError
 
-from main.views import BadRequestView, ServerErrorView
+from apps.main.views import BadRequestView, ServerErrorView
 
 
 class ErrorViewsTestCase(TestCase):

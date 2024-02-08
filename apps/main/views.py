@@ -10,8 +10,8 @@ from django.http import (
     HttpResponse,
 )
 
-from main.forms import ContactForm
-from main.models import Notification, TermsAndConditions, PrivacyPolicy, FAQ
+from .forms import ContactForm
+from .models import Notification, TermsAndConditions, PrivacyPolicy, FAQ
 
 
 class HomeView(TemplateView):

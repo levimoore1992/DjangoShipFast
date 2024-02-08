@@ -5,8 +5,8 @@ from django.test import TestCase
 from django.contrib.admin.sites import AdminSite
 
 from tests.factories.users import UserFactory, UserIPFactory, UserDeviceFactory
-from users.admin import UserIPAdmin, UserAdmin
-from users.models import UserDevice, UserIP
+from apps.users.admin import UserIPAdmin, UserAdmin
+from apps.users.models import UserDevice, UserIP
 
 User = get_user_model()
 

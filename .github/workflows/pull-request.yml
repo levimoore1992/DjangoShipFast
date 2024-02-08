@@ -86,7 +86,7 @@ jobs:
           docker-compose up -d
 
       - name: 'Run Pylint'
-        run: docker-compose run web pylint django_template main tests users
+        run: docker-compose run web pylint django_template apps tests
 
 
   run-codecov:
@@ -103,7 +103,7 @@ jobs:
           docker-compose up -d
 
       - name: 'Run Code Coverage'
-        run: docker-compose run web pytest -n auto --cov=main --cov=users --cov-report=json --cov-report=term-missing -n auto
+        run: docker-compose run web pytest -n auto --cov=apps --cov-report=json --cov-report=term-missing
 
       - name: 'Check Coverage Percentage'
         run: |

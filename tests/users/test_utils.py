@@ -3,13 +3,13 @@ from unittest.mock import patch
 
 from django.test import TestCase, RequestFactory
 
-from users.utils import (
+from apps.users.utils import (
     block_user_and_devices,
     mark_ip_as_suspicious,
     block_ip,
     get_device_identifier,
 )
-from users.models import UserDevice, UserIP, User
+from apps.users.models import UserDevice, UserIP, User
 
 
 class UtilsTest(TestCase):
@@ -32,7 +32,7 @@ class UtilsTest(TestCase):
             user=self.user, ip_address="192.168.1.1", is_blocked=False
         )
 
-    @patch("users.utils.send_email_task.delay")
+    @patch("apps.users.utils.send_email_task.delay")
     def test_block_user_and_devices(self, mock_send_email):
         """
         Test that block_user_and_devices sets the user to inactive,

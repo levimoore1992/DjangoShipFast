@@ -1,4 +1,4 @@
-from users.forms import UserCreationForm
+from apps.users.forms import UserCreationForm
 
 from tests.base import BaseTestCase
 

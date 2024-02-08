@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.urls import reverse
 from auditlog.registry import auditlog
 
-from main.models import (
+from apps.main.models import (
     TermsAndConditions,
     PrivacyPolicy,
     Contact,

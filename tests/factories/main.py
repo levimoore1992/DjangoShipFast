@@ -5,8 +5,8 @@ from PIL import Image
 from django.core.files.base import ContentFile
 from django.utils import timezone
 
-from main.consts import ContactStatus
-from main.models import Notification, Contact, SocialMediaLink
+from apps.main.consts import ContactStatus
+from apps.main.models import Notification, Contact, SocialMediaLink
 from tests.factories.users import UserFactory
 
 

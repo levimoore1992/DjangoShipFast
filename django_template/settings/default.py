@@ -53,8 +53,8 @@ INSTALLED_APPS = [
     "django_celery_beat",
     "django_celery_results",
     # project apps
-    "main",
-    "users",
+    "apps.main",
+    "apps.users",
 ]
 
 MIDDLEWARE = [
@@ -66,8 +66,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "waffle.middleware.WaffleMiddleware",
-    "main.middleware.NotificationMiddleware",
-    "users.middleware.TrackUserIPAndDeviceMiddleware",
+    "apps.main.middleware.NotificationMiddleware",
+    "apps.users.middleware.TrackUserIPAndDeviceMiddleware",
 ]
 
 ROOT_URLCONF = "django_template.urls"

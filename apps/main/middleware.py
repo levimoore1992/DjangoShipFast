@@ -1,4 +1,4 @@
-from main.models import Notification
+from apps.main.models import Notification
 
 
 # pylint: disable=too-few-public-methods

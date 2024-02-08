@@ -7,9 +7,9 @@ from django.contrib.admin.sites import AdminSite
 from django.urls import reverse
 from django.utils import timezone
 
-from main.consts import ContactStatus
-from main.models import TermsAndConditions, AuditLogConfig, Contact
-from main.admin import AuditLogConfigAdmin, ContactAdmin, TermsAndConditionsAdmin
+from apps.main.consts import ContactStatus
+from apps.main.models import TermsAndConditions, AuditLogConfig, Contact
+from apps.main.admin import AuditLogConfigAdmin, ContactAdmin, TermsAndConditionsAdmin
 from tests.factories.main import ContactFactory
 from tests.factories.users import UserFactory
 
@@ -71,7 +71,7 @@ class AuditLogConfigAdminTest(TestCase):
         self.user = UserFactory(is_superuser=True)
         self.admin = AuditLogConfigAdmin(AuditLogConfig, self.site)
 
-    @patch("main.models.AuditLogConfig.register_model")
+    @patch("apps.main.models.AuditLogConfig.register_model")
     def test_save_model(self, mock_register_model):
         """
         Test the save_model method of AuditLogConfigAdmin.
@@ -86,7 +86,7 @@ class AuditLogConfigAdminTest(TestCase):
 
         mock_register_model.assert_called_once()
 
-    @patch("main.models.AuditLogConfig.unregister_model")
+    @patch("apps.main.models.AuditLogConfig.unregister_model")
     def test_delete_model(self, mock_unregister_model):
         """
         Test the delete_model method of AuditLogConfigAdmin.

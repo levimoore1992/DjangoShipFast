@@ -1,9 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from main.consts import ContactType
-from main.forms import ContactForm
-from main.models import Contact, TermsAndConditions, PrivacyPolicy
+from apps.main.consts import ContactType
+from apps.main.forms import ContactForm
+from apps.main.models import Contact, TermsAndConditions, PrivacyPolicy
 from tests.factories.main import NotificationFactory
 
 
