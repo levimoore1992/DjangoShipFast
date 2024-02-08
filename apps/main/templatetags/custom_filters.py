@@ -1,7 +1,7 @@
 from django import template
 
-from main.consts import ContactStatus
-from main.models.business import SocialMediaLink
+from apps.main.consts import ContactStatus
+from apps.main.models import SocialMediaLink
 
 register = template.Library()
 

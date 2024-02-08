@@ -2,7 +2,7 @@ from django.apps import apps
 from django.db import models
 from auditlog.registry import auditlog
 
-from main.consts import ContactStatus
+from apps.main.consts import ContactStatus
 
 
 class TermsAndConditions(models.Model):

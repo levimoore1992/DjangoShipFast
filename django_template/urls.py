@@ -19,12 +19,12 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-from main.views import BadRequestView, ServerErrorView
+from apps.main.views import BadRequestView, ServerErrorView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("users/", include("users.urls")),
-    path("", include("main.urls")),
+    path("users/", include("apps.users.urls")),
+    path("", include("apps.main.urls")),
 ]
 
 

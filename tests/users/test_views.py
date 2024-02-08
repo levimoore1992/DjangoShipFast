@@ -4,8 +4,8 @@ from django.contrib.messages import get_messages
 from django.urls import reverse
 from tests.base import BaseTestCase
 from tests.factories.users import UserFactory, UserIPFactory
-from users.forms import UserCreationForm
-from users.models import User
+from apps.users.forms import UserCreationForm
+from apps.users.models import User
 
 
 class BaseAuthenticationTest(BaseTestCase):
@@ -92,8 +92,10 @@ class RegisterViewTest(BaseAuthenticationTest):
         self.assertFalse(response.context["form"].is_valid())  # Form should be invalid
 
     @patch("django_recaptcha.fields.ReCaptchaField.validate")
-    @patch("users.views.get_device_identifier", return_value="test-device-identifier")
-    @patch("users.views.get_client_ip", return_value=("192.168.1.100", True))
+    @patch(
+        "apps.users.views.get_device_identifier", return_value="test-device-identifier"
+    )
+    @patch("apps.users.views.get_client_ip", return_value=("192.168.1.100", True))
     def test_user_registration_with_blocked_ip(
         self, mock_get_client_ip, mock_get_device_identifier, mock_validate
     ):

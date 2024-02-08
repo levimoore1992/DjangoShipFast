@@ -3,7 +3,7 @@ import hashlib
 from django.conf import settings
 from django.contrib.auth import get_user_model
 
-from main.tasks import send_email_task
+from apps.main.tasks import send_email_task
 
 
 from .models import UserDevice, UserIP

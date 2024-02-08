@@ -1,7 +1,7 @@
 from django.apps import apps
 from django.test import TestCase
 from django.contrib.auth.models import User
-from main.forms import ModelChoiceField, AuditLogConfigAdminForm
+from apps.main.forms import ModelChoiceField, AuditLogConfigAdminForm
 
 
 class ModelChoiceFieldTest(TestCase):

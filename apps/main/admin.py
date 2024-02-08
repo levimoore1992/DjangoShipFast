@@ -2,8 +2,8 @@ from django.contrib import admin, messages
 from django.http import HttpResponseRedirect
 from django.utils import timezone
 
-from main.consts import ContactStatus
-from main.forms import (
+from .consts import ContactStatus
+from .forms import (
     NotificationAdminForm,
     TermsAndConditionsAdminForm,
     PrivacyPolicyAdminForm,
@@ -11,7 +11,7 @@ from main.forms import (
     AuditLogConfigAdminForm,
     FAQForm,
 )
-from main.models import (
+from .models import (
     Notification,
     TermsAndConditions,
     PrivacyPolicy,

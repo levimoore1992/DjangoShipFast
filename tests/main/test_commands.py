@@ -4,7 +4,7 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 from django.core.management import call_command
-from main.management.commands.restore_db import Command, NO_COMMANDS_MESSAGE
+from apps.main.management.commands.restore_db import Command, NO_COMMANDS_MESSAGE
 
 
 @override_settings(DEBUG=True)
@@ -20,7 +20,7 @@ class RestoreDbCommandTest(TestCase):
         """
         self.command = Command()
 
-    @mock.patch("main.management.commands.restore_db.sys.exit")
+    @mock.patch("apps.main.management.commands.restore_db.sys.exit")
     def test_validate_arguments_target_production(self, mock_exit):
         """
         Test that validate_arguments exits when target is production.
@@ -32,7 +32,7 @@ class RestoreDbCommandTest(TestCase):
         )
         mock_exit.assert_called_once_with(1)
 
-    @mock.patch("main.management.commands.restore_db.sys.exit")
+    @mock.patch("apps.main.management.commands.restore_db.sys.exit")
     def test_validate_arguments_target_not_in_db(self, mock_exit):
         """
         Test that validate_arguments exits when target is not in the database.
@@ -44,7 +44,7 @@ class RestoreDbCommandTest(TestCase):
         )
         mock_exit.assert_called_once_with(1)
 
-    @mock.patch("main.management.commands.restore_db.sys.exit")
+    @mock.patch("apps.main.management.commands.restore_db.sys.exit")
     def test_validate_arguments_source_not_in_db(self, mock_exit):
         """
         Test that validate_arguments exits when source is not in the database.
@@ -56,7 +56,7 @@ class RestoreDbCommandTest(TestCase):
         )
         mock_exit.assert_called_once_with(1)
 
-    @mock.patch("main.management.commands.restore_db.sys.exit")
+    @mock.patch("apps.main.management.commands.restore_db.sys.exit")
     def test_validate_arguments_same_source_target(self, mock_exit):
         """
         Test that validate_arguments exits when source and target are the same.
@@ -69,9 +69,9 @@ class RestoreDbCommandTest(TestCase):
         mock_exit.assert_called_once_with(0)
 
     @mock.patch(
-        "main.management.commands.restore_db.os.path.exists", return_value=False
+        "apps.main.management.commands.restore_db.os.path.exists", return_value=False
     )
-    @mock.patch("main.management.commands.restore_db.sys.exit")
+    @mock.patch("apps.main.management.commands.restore_db.sys.exit")
     def test_validate_arguments_file_missing(self, mock_exit, mock_exists):
         """
         Test that validate_arguments exits when file is missing.
@@ -84,8 +84,10 @@ class RestoreDbCommandTest(TestCase):
         )
         mock_exit.assert_called_once_with(1)
 
-    @mock.patch("main.management.commands.restore_db.subprocess.check_call")
-    @mock.patch("main.management.commands.restore_db.os.path.exists", return_value=True)
+    @mock.patch("apps.main.management.commands.restore_db.subprocess.check_call")
+    @mock.patch(
+        "apps.main.management.commands.restore_db.os.path.exists", return_value=True
+    )
     def test_command_execution_success(self, mock_exists, mock_subprocess):
         """
         Test that the command executes successfully.
@@ -93,14 +95,18 @@ class RestoreDbCommandTest(TestCase):
         :param mock_subprocess:
         :return:
         """
-        with mock.patch("main.management.commands.restore_db.input", return_value="y"):
+        with mock.patch(
+            "apps.main.management.commands.restore_db.input", return_value="y"
+        ):
             call_command(
                 "restore_db", source="local", target="test", file_name="test.dump"
             )
             mock_subprocess.assert_called()
 
-    @mock.patch("main.management.commands.restore_db.subprocess.check_call")
-    @mock.patch("main.management.commands.restore_db.os.path.exists", return_value=True)
+    @mock.patch("apps.main.management.commands.restore_db.subprocess.check_call")
+    @mock.patch(
+        "apps.main.management.commands.restore_db.os.path.exists", return_value=True
+    )
     def test_same_source_target_error(self, mock_exists, mock_subprocess):
         """
         Test that the command exits when source and target are the same.
@@ -113,8 +119,10 @@ class RestoreDbCommandTest(TestCase):
                 "restore_db", source="local", target="local", file_name="test.dump"
             )
 
-    @mock.patch("main.management.commands.restore_db.subprocess.check_call")
-    @mock.patch("main.management.commands.restore_db.os.path.exists", return_value=True)
+    @mock.patch("apps.main.management.commands.restore_db.subprocess.check_call")
+    @mock.patch(
+        "apps.main.management.commands.restore_db.os.path.exists", return_value=True
+    )
     def test_production_target_error(self, mock_exists, mock_subprocess):
         """
         Test that the command exits when target is production.
@@ -128,10 +136,12 @@ class RestoreDbCommandTest(TestCase):
             )
 
     @mock.patch(
-        "main.management.commands.restore_db.subprocess.check_call",
+        "apps.main.management.commands.restore_db.subprocess.check_call",
         side_effect=subprocess.CalledProcessError(1, "cmd"),
     )
-    @mock.patch("main.management.commands.restore_db.os.path.exists", return_value=True)
+    @mock.patch(
+        "apps.main.management.commands.restore_db.os.path.exists", return_value=True
+    )
     def test_command_execution_failure(self, mock_exists, mock_subprocess):
         """
         Test that the command exits when the command fails.
@@ -139,13 +149,15 @@ class RestoreDbCommandTest(TestCase):
         :param mock_subprocess:
         :return:
         """
-        with mock.patch("main.management.commands.restore_db.input", return_value="n"):
+        with mock.patch(
+            "apps.main.management.commands.restore_db.input", return_value="n"
+        ):
             with self.assertRaises(SystemExit):
                 call_command(
                     "restore_db", source="local", target="test", file_name="test.dump"
                 )
 
-    @mock.patch("main.management.commands.restore_db.subprocess.check_call")
+    @mock.patch("apps.main.management.commands.restore_db.subprocess.check_call")
     def test_run_commands_success(self, mock_check_call):
         """Test that run_commands executes without errors."""
         commands = ['echo "Test Command"']
@@ -169,9 +181,11 @@ class RestoreDbCommandTest(TestCase):
         self.assertIn("Command failed with error:", mock_stdout.getvalue())
 
     @override_settings(DEBUG=False)
-    @mock.patch("main.management.commands.restore_db.os.path.exists", return_value=True)
+    @mock.patch(
+        "apps.main.management.commands.restore_db.os.path.exists", return_value=True
+    )
     @mock.patch("sys.exit")
-    @mock.patch("main.management.commands.restore_db.input", return_value="y")
+    @mock.patch("apps.main.management.commands.restore_db.input", return_value="y")
     def test_handle_with_debug_false(self, mock_input, mock_exit, mock_exists):
         """
         Test that the handle method exits when DEBUG is set to False.
@@ -181,15 +195,15 @@ class RestoreDbCommandTest(TestCase):
 
     @mock.patch("sys.exit")
     @mock.patch(
-        "main.management.commands.restore_db.Command.generate_source_commands",
+        "apps.main.management.commands.restore_db.Command.generate_source_commands",
         return_value=[],
     )
     @mock.patch(
-        "main.management.commands.restore_db.Command.generate_target_commands",
+        "apps.main.management.commands.restore_db.Command.generate_target_commands",
         return_value=[],
     )
     @mock.patch("sys.stdout", new_callable=StringIO)
-    @mock.patch("main.management.commands.restore_db.input", return_value="y")
+    @mock.patch("apps.main.management.commands.restore_db.input", return_value="y")
     def test_handle_no_commands(
         self,
         mock_input,
@@ -210,8 +224,10 @@ class RestoreDbCommandTest(TestCase):
         commands = self.command.generate_source_commands("local", "file.dump")
         self.assertEqual(commands, [])
 
-    @mock.patch("main.management.commands.restore_db.os.path.exists", return_value=True)
-    @mock.patch("main.management.commands.restore_db.input", return_value="n")
+    @mock.patch(
+        "apps.main.management.commands.restore_db.os.path.exists", return_value=True
+    )
+    @mock.patch("apps.main.management.commands.restore_db.input", return_value="n")
     @mock.patch("sys.stdout", new_callable=StringIO)
     def test_generate_source_commands_file_exists_user_declines(
         self, mock_stdout, mock_input, mock_exists
@@ -224,7 +240,7 @@ class RestoreDbCommandTest(TestCase):
             self.assertIn("Not overriding file.dump. Exiting.", mock_stdout.getvalue())
 
     @mock.patch(
-        "main.management.commands.restore_db.os.path.exists", return_value=False
+        "apps.main.management.commands.restore_db.os.path.exists", return_value=False
     )
     def test_generate_source_commands_file_does_not_exist(self, mock_exists):
         """Test file does not exist, should generate command."""

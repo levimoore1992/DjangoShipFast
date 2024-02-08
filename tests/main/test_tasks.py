@@ -2,7 +2,7 @@ import smtplib
 from unittest.mock import patch
 
 from django.test import TestCase
-from main.tasks import send_email_task
+from apps.main.tasks import send_email_task
 
 
 class TestSendEmailTask(TestCase):
@@ -10,7 +10,7 @@ class TestSendEmailTask(TestCase):
     Test the send_email_task.
     """
 
-    @patch("main.tasks.send_mail")
+    @patch("apps.main.tasks.send_mail")
     def test_send_email_success(self, mock_send_mail):
         """
         Test the send_email_task successfully sends an email.
@@ -28,7 +28,7 @@ class TestSendEmailTask(TestCase):
             subject, message, from_email, recipient_list
         )
 
-    @patch("main.tasks.send_mail")
+    @patch("apps.main.tasks.send_mail")
     def test_send_email_failure(self, mock_send_mail):
         """
         Test the send_email_task handling a failure in sending an email.

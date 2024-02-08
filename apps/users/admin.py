@@ -3,8 +3,8 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib import admin
 from django.db.models import Count
 
-from users.models import User, UserIP, UserDevice
-from users.utils import block_user_and_devices
+from .models import User, UserIP, UserDevice
+from .utils import block_user_and_devices
 
 
 @admin.register(User)

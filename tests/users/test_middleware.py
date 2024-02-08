@@ -2,8 +2,8 @@ from unittest.mock import patch
 from django.test import TestCase, RequestFactory
 
 from tests.factories.users import UserFactory
-from users.middleware import TrackUserIPAndDeviceMiddleware
-from users.models import UserIP, UserDevice
+from apps.users.middleware import TrackUserIPAndDeviceMiddleware
+from apps.users.models import UserIP, UserDevice
 
 
 class TrackUserIPAndDeviceMiddlewareTest(TestCase):
@@ -22,9 +22,13 @@ class TrackUserIPAndDeviceMiddlewareTest(TestCase):
             get_response=lambda request: None
         )
 
-    @patch("users.middleware.get_client_ip", return_value=("123.123.123.123", True))
-    @patch("users.middleware.get_device_identifier", return_value="unique-device-id")
-    @patch("users.middleware.requests.get")
+    @patch(
+        "apps.users.middleware.get_client_ip", return_value=("123.123.123.123", True)
+    )
+    @patch(
+        "apps.users.middleware.get_device_identifier", return_value="unique-device-id"
+    )
+    @patch("apps.users.middleware.requests.get")
     def test_middleware_updates_userip_and_userdevice(
         self, mock_get, mock_get_device_identifier, mock_get_client_ip
     ):
@@ -64,7 +68,7 @@ class TrackUserIPAndDeviceMiddlewareTest(TestCase):
         self.assertEqual(user_ip.region, "RegionName")
         self.assertEqual(user_ip.city, "CityName")
 
-    @patch("users.middleware.requests.get")
+    @patch("apps.users.middleware.requests.get")
     def test_get_geolocation_data_failure(self, mock_get):
         """
         Test that get_geolocation_data returns an empty dict when the API call fails.

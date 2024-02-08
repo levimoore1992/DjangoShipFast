@@ -36,47 +36,6 @@ docker compose up --build
 <li>In django_template.dev_utils line 99 replace the url in the code with your actual production url for media</li>
 </ul>
 
-### Linters
-
-Before committing your code it is the best practice to run the linters locally, so they
-pass code inspection in Github Actions. To do that follow these steps
-* In your local machine terminal type 
-```
-pip3 install black==21.7
-pip3 install flake8==4.0.1
-```
-
-
-#### Black
-
-* To run black make sure it is installed locally and from the root directory type
-```
-black .
-```
-* To edit on save follow these instructions if your using pycharm
-```
-https://black.readthedocs.io/en/stable/integrations/editors.html
-```
-* and here for if your using VScode
-```
-https://marcobelo.medium.com/setting-up-python-black-on-visual-studio-code-5318eba4cd00
-```
-
-#### Flake8
-
-* To run flake8 make sure it is installed locally and from the root directory type
-
-```
-flake8 --ignore=E501,F405,W503
-```
-If the above fails you may also try 
-```
-python3 -m flake8 --ignore=E501,F405,W503
-```
-
-After black lints your code, and you make any changes needed from flake 8 it is then ok
-to push your code and create a PR
-
 ## How to Use `restore_local_db` Management Command
 
 The `restore_local_db` management command allows developers to handle database dumps conveniently for local development. With this command, you can manage and control various database options such as source and target environments, filename, drop and restore flags, copy media, and more.
@@ -145,7 +104,7 @@ In the code coverage commands be sure to add any new apps you create to the comm
 To lint your Django apps and other relevant Python directories, run the following command:
 
 ```
-docker exec -it django_template pylint django_template main tests users
+make lint
 ```
 This command explicitly specifies which directories should be linted.
 
@@ -156,12 +115,7 @@ If you add a new Django app or a directory containing Python files that should b
 
 
 ### Important Note:
-After creating your app, update the pylint command to include your new app:
-
-```
-docker exec -it django_template pylint django_template main tests users your_app_name
-```
-Also, make sure to update the GitHub Action configuration  and this documentation with the name of the new app.
+After creating your app, you dont need to update the app as long as you place your app in the apps directory
 
 
 ### Features
@@ -170,6 +124,8 @@ Also, make sure to update the GitHub Action configuration  and this documentatio
 - [x] Python 3.12
 - [x] Business Pages such as Contact, Privacy Policy, Terms of Service, FAQs
 - [x] User Blocking and Tracking with IP address and device agent
+- [x] All apps moved to an apps folder
+- [x] Makefile for easy commands
 
 
 

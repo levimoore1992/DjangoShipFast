@@ -1,7 +1,7 @@
 from django.db import models
 from django.urls import reverse
 
-from users.models import User
+from apps.users.models import User
 
 
 class Notification(models.Model):
