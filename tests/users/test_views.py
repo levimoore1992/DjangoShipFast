@@ -1,6 +1,9 @@
+from unittest.mock import patch
+
+from django.contrib.messages import get_messages
 from django.urls import reverse
 from tests.base import BaseTestCase
-from tests.factories.users import UserFactory
+from tests.factories.users import UserFactory, UserIPFactory
 from users.forms import UserCreationForm
 from users.models import User
 
@@ -87,6 +90,44 @@ class RegisterViewTest(BaseAuthenticationTest):
         self.assertFalse(User.objects.filter(username="newuser").exists())
         self.assertIn("form", response.context)  # Check that form is in the context
         self.assertFalse(response.context["form"].is_valid())  # Form should be invalid
+
+    @patch("django_recaptcha.fields.ReCaptchaField.validate")
+    @patch("users.views.get_device_identifier", return_value="test-device-identifier")
+    @patch("users.views.get_client_ip", return_value=("192.168.1.100", True))
+    def test_user_registration_with_blocked_ip(
+        self, mock_get_client_ip, mock_get_device_identifier, mock_validate
+    ):
+        """
+        Test that a user cannot register if their IP is blocked.
+        :param mock_get_client_ip:
+        :param mock_get_device_identifier:
+        :param mock_validate:
+        :return:
+        """
+        mock_validate.return_value = None
+        UserIPFactory.create(ip_address="192.168.1.100", is_blocked=True)
+
+        user_data = {
+            "first_name": "Test",
+            "last_name": "User",
+            "username": "newuser",
+            "email": "newuser@example.com",
+            "password1": "testpassword123",
+            "password2": "testpassword123",
+            "activation_code": "",
+            "g-recaptcha-response": "PASSED",
+        }
+
+        response = self.client.post(reverse("register"), user_data)
+        new_user = User.objects.filter(username="newuser").first()
+
+        self.assertIsNotNone(new_user, "The new user should have been created.")
+        self.assertFalse(new_user.is_active, "The new user should not be active.")
+
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue(
+            any("problem with your account" in str(message) for message in messages)
+        )
 
 
 class LogoutViewTest(BaseAuthenticationTest):

@@ -24,3 +24,6 @@ django-recaptcha==4.0.0
 
 # For feature flags
 django-waffle==4.1.0
+
+# Tracking user ip
+django-ipware==6.0.4

@@ -67,6 +67,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "waffle.middleware.WaffleMiddleware",
     "main.middleware.NotificationMiddleware",
+    "users.middleware.TrackUserIPAndDeviceMiddleware",
 ]
 
 ROOT_URLCONF = "django_template.urls"
