@@ -237,7 +237,7 @@ class Command(BaseCommand):
                 "psql --host={} --port=5432 --username={} --dbname={} -f {}"
             )
             drop_table_path = os.path.join(
-                settings.BASE_DIR, "main/management/commands/sql/drop_tables.sql"
+                settings.BASE_DIR, "apps/main/management/commands/sql/drop_tables.sql"
             )
             target_commands.append(
                 create_command(
@@ -250,7 +250,7 @@ class Command(BaseCommand):
                 "psql --host={} --port=5432 --username={} --dbname={} -f {}"
             )
             setup_path = os.path.join(
-                settings.BASE_DIR, "main/management/commands/sql/setup.sql"
+                settings.BASE_DIR, "apps/main/management/commands/sql/setup.sql"
             )
             target_commands.append(
                 create_command(
