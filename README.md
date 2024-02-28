@@ -34,6 +34,7 @@ docker compose up --build
 <li>Change the colors in source_css/css/base/_colors.scss to be colors reflecting your brand</li>
 <li>Change the redis project name in docker-compose.yml</li>
 <li>In django_template.dev_utils line 99 replace the url in the code with your actual production url for media</li>
+<li>Change the value in 'meta_tags.html' to reflect what you want for you application</li>
 </ul>
 
 ## How to Use `restore_local_db` Management Command
@@ -126,6 +127,7 @@ After creating your app, you dont need to update the app as long as you place yo
 - [x] User Blocking and Tracking with IP address and device agent
 - [x] All apps moved to an apps folder
 - [x] Makefile for easy commands
+- [x] Meta Tags in meta_tags.html
 
 
 
