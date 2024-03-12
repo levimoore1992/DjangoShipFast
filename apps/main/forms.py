@@ -22,6 +22,8 @@ class NotificationAdminForm(forms.ModelForm):
     The form for the Notification Model specifically in the admin.
     """
 
+    link = forms.URLField(assume_scheme="https")
+
     class Meta:
         model = Notification
         fields = "__all__"
