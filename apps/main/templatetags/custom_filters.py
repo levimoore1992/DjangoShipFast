@@ -42,3 +42,28 @@ def social_media_row():
     """
     links = SocialMediaLink.objects.all()
     return {"links": links}
+
+
+@register.inclusion_tag("components/report_modal.html", takes_context=True)
+def report_button(context, model_type, object_id):
+    """
+    Renders a report button with a modal for reporting.
+
+    This is an inclusion tag that renders 'components/report_modal.html'.
+
+    Args:
+        context (dict): The template context.
+        model_type (str): The type of the model to report.
+        object_id (int): The ID of the object to report.
+
+    Returns:
+        dict: Context data for 'components/report_modal.html'.
+    """
+    request = context["request"]
+    form = context.get("report_form")
+    return {
+        "model_type": model_type,
+        "object_id": object_id,
+        "report_form": form,
+        "request": request,
+    }

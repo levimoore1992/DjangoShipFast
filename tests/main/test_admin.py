@@ -1,5 +1,6 @@
 from unittest.mock import patch
 
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.messages import get_messages
 from django.http import HttpRequest
 from django.test import TestCase, RequestFactory
@@ -8,9 +9,14 @@ from django.urls import reverse
 from django.utils import timezone
 
 from apps.main.consts import ContactStatus
-from apps.main.models import TermsAndConditions, AuditLogConfig, Contact
-from apps.main.admin import AuditLogConfigAdmin, ContactAdmin, TermsAndConditionsAdmin
-from tests.factories.main import ContactFactory
+from apps.main.models import TermsAndConditions, AuditLogConfig, Contact, Report
+from apps.main.admin import (
+    AuditLogConfigAdmin,
+    ContactAdmin,
+    TermsAndConditionsAdmin,
+    ReportAdmin,
+)
+from tests.factories.main import ContactFactory, ReportFactory
 from tests.factories.users import UserFactory
 
 
@@ -272,3 +278,68 @@ class ContactAdminTest(TestCase):
                 for message in messages
             )
         )
+
+
+class ReportAdminTest(TestCase):
+    """
+    Test suite for the ReportAdmin class.
+    """
+
+    def setUp(self):
+        """
+        Set up the test suite.
+        :return:
+        """
+        self.site = AdminSite()
+        self.report_admin = ReportAdmin(Report, self.site)
+        self.user = UserFactory.create()
+
+        self.content_type = ContentType.objects.get_for_model(self.user)
+        self.report = ReportFactory.create(
+            content_type=self.content_type, object_id=self.user.id, reporter=self.user
+        )
+
+    def test_content_object_link(self):
+        """
+        Test the content_object_link method of ReportAdmin.
+        :return:
+        """
+        expected_url = reverse("admin:users_user_change", args=[self.user.id])
+        expected_link = f'<a href="{expected_url}">{self.user}</a>'
+        link = self.report_admin.content_object_link(self.report)
+        self.assertHTMLEqual(link, expected_link)
+
+    def test_list_display_contains_expected_fields(self):
+        """
+        Test that the list_display attribute contains the expected fields.
+        :return:
+        """
+        self.assertIn("reporter", self.report_admin.list_display)
+        self.assertIn("content_object_link", self.report_admin.list_display)
+        self.assertIn("created_at", self.report_admin.list_display)
+
+    def test_readonly_fields_contains_expected_fields(self):
+        """
+        Test that the readonly_fields attribute contains the expected fields.
+        :return:
+        """
+        self.assertIn("content_object_link", self.report_admin.readonly_fields)
+
+    def test_content_object_link_with_missing_object(self):
+        """
+        Test the content_object_link method with a missing object.
+        :return:
+        """
+        # Create a report with an object_id that doesn't correspond to any existing user.
+        non_existent_object_id = 999999  # Assumed to be non-existent
+        report = ReportFactory.create(
+            content_type=self.content_type,
+            object_id=non_existent_object_id,
+            reporter=self.user,
+        )
+
+        # Create an instance of ReportAdmin to use its content_object_link method
+        report_admin = ReportAdmin(Report, AdminSite())
+        result = report_admin.content_object_link(report)
+
+        self.assertEqual(result, "Object does not exist")

@@ -186,3 +186,16 @@ class FAQForm(forms.ModelForm):
             "question": CKEditorWidget(),
             "answer": CKEditorWidget(),
         }
+
+
+class ReportForm(forms.Form):
+    """
+    Form for submitting a report about inappropriate content.
+
+    Attributes:
+        reason (CharField): A textarea input for the report reason.
+    """
+
+    reason = forms.CharField(
+        widget=forms.Textarea(attrs={"class": "form-control"}), required=True
+    )
