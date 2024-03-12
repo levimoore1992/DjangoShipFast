@@ -37,7 +37,11 @@
                     {% include 'components/notifications.html' %}
                 </div>
                 <li class="nav-item custom-item">
-                    <a class="nav-link custom-link" href="{% url 'logout' %}">Logout</a>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <button type="submit" class="nav-link logout-link">Logout</button>
+                    </form>
                 </li>
             {% else %}
                 <li class="nav-item custom-item">
