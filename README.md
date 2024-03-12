@@ -129,6 +129,7 @@ After creating your app, you dont need to update the app as long as you place yo
 - [x] Makefile for easy commands
 - [x] Meta Tags in meta_tags.html
 - [x] django-celery-beat for periodic tasks
+- [x] User Login Create and Logout Features
 
 
 
