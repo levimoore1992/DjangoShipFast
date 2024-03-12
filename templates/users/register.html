@@ -8,6 +8,16 @@
         <form action="{% url 'register' %}" method="post">
             {% csrf_token %}
             {{ form.non_field_errors }}
+            
+            <div class="row mb-3">
+                <div class="col-md-6 form-group">
+                    {{ form.first_name.as_field_group }}
+                </div>
+                <div class="col-md-6 form-group">
+                    {{ form.last_name.as_field_group }}
+                </div>
+            </div>
+            
             <div class="form-group">
                 {{ form.username.label_tag }}
                 {{ form.username }}

@@ -10,6 +10,8 @@ class UserCreationFormTest(BaseTestCase):
         """Setup the initial data for the tests."""
         super().setUp()  # Ensure BaseTestCase's setup is also executed
         self.valid_data = {
+            "first_name": "Test",
+            "last_name": "User",
             "username": "testuser",
             "email": "test@example.com",
             "password1": "testpassword",
