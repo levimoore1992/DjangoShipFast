@@ -190,5 +190,5 @@ class ReportAdmin(admin.ModelAdmin):
         Ensure to include the generic related object in the queryset to avoid N+1 queries.
         """
         qs = super().get_queryset(request)
-        # Optionally prefetch related content objects to optimize database queries
+        # Prefetch related content objects to optimize database queries
         return qs.select_related("content_type")
