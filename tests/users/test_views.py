@@ -61,6 +61,8 @@ class RegisterViewTest(BaseAuthenticationTest):
     def test_register_post_valid(self) -> None:
         """Test registration with valid data."""
         data = {
+            "first_name": "Test",
+            "last_name": "User",
             "username": "newuser",
             "email": "newuser@example.com",
             "password1": "testpassword123",

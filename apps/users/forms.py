@@ -12,6 +12,8 @@ class UserCreationForm(forms.ModelForm):
     class Meta:
         model = User
         fields = [
+            "first_name",
+            "last_name",
             "username",
             "email",
             "password1",
@@ -19,6 +21,10 @@ class UserCreationForm(forms.ModelForm):
             "captcha",
         ]
 
+    first_name = forms.CharField(
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    last_name = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
     username = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={"class": "form-control"}))
     password1 = forms.CharField(
