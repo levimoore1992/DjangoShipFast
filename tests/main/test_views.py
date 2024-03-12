@@ -1,10 +1,18 @@
+from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 from django.urls import reverse
 
 from apps.main.consts import ContactType
 from apps.main.forms import ContactForm
-from apps.main.models import Contact, TermsAndConditions, PrivacyPolicy
+from apps.main.models import (
+    Contact,
+    TermsAndConditions,
+    PrivacyPolicy,
+    Report,
+    Notification,
+)
 from tests.factories.main import NotificationFactory
+from tests.factories.users import UserFactory
 
 
 class MarkAsReadAndRedirectViewTestCase(TestCase):
@@ -177,3 +185,85 @@ class PrivacyPolicyViewTests(TestCase):
 
         # Assert that the response contains the privacy policy
         self.assertContains(response, "This is a test privacy policy page.")
+
+
+class ReportViewTest(TestCase):
+    """
+    Test cases for the ReportView.
+    """
+
+    def setUp(self):
+        """
+        Set up the test case with a reporter and a notification to report.
+        :return:
+        """
+        super().setUp()
+        self.reporter = UserFactory()
+        self.client.force_login(self.reporter)
+
+        self.reported_notification = NotificationFactory()
+        # Correctly reference ContentType model name as expected by the view
+        self.model_name = ContentType.objects.get_for_model(Notification).model
+        self.object_id = self.reported_notification.pk
+        self.report_url = reverse("report", args=[self.model_name, self.object_id])
+
+        content_type = ContentType.objects.get_for_model(Notification)
+        self.model_type = f"{content_type.app_label}_{content_type.model}"
+
+    def test_report_creation(self):
+        """
+        Test report is created successfully for a Notification object.
+        """
+        post_data = {"reason": "Inappropriate content"}
+        response = self.client.post(self.report_url, post_data)
+
+        self.assertEqual(response.status_code, 302)  # Expecting redirect
+        exists = Report.objects.filter(
+            content_type=ContentType.objects.get(model=self.model_name),
+            object_id=self.object_id,
+            reporter=self.reporter,
+            reason=post_data["reason"],
+        ).exists()
+        self.assertTrue(exists)
+
+    def test_redirect_after_report(self):
+        """
+        Test user is redirected correctly after reporting.
+        """
+        post_data = {"reason": "Inappropriate content"}
+
+        # Case 1: With HTTP_REFERER
+        referer_url = "/some-page/"
+        response = self.client.post(
+            self.report_url, post_data, HTTP_REFERER=referer_url
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, referer_url)
+
+        # Case 2: Without HTTP_REFERER (should redirect to "home")
+        response = self.client.post(self.report_url, post_data)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "home")
+
+    def test_report_creation_with_invalid_object_id(self):
+        """
+        Test report creation with an invalid object ID.
+        """
+        # Use an object ID that doesn't exist
+        invalid_object_id = self.reported_notification.pk + 1
+
+        post_data = {"reason": "Inappropriate content"}
+        report_url = reverse("report", args=[self.model_name, invalid_object_id])
+        response = self.client.post(report_url, post_data)
+
+        # Expecting a 404 response since the object doesn't exist
+        self.assertEqual(response.status_code, 404)
+
+        # Check that no report was created
+        exists = Report.objects.filter(
+            content_type=ContentType.objects.get(model=self.model_name),
+            object_id=invalid_object_id,
+            reporter=self.reporter,
+            reason=post_data["reason"],
+        ).exists()
+        self.assertFalse(exists)

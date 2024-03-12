@@ -2,12 +2,25 @@ import io
 
 import factory
 from PIL import Image
+from django.contrib.contenttypes.models import ContentType
 from django.core.files.base import ContentFile
 from django.utils import timezone
 
 from apps.main.consts import ContactStatus
 from apps.main.models import Notification, Contact, SocialMediaLink
 from tests.factories.users import UserFactory
+
+
+class ContentTypeFactory(factory.django.DjangoModelFactory):
+    """
+    Factory for creating instances of the ContentType model for testing.
+    """
+
+    class Meta:
+        model = ContentType
+
+    app_label = factory.Faker("word")
+    model = factory.Faker("word")
 
 
 class NotificationFactory(factory.django.DjangoModelFactory):
@@ -81,3 +94,18 @@ class FAQFactory(factory.django.DjangoModelFactory):
 
     question = factory.Faker("sentence")
     answer = factory.Faker("paragraph")
+
+
+class ReportFactory(factory.django.DjangoModelFactory):
+    """
+    Factory for creating instances of the Report model for testing.
+    """
+
+    class Meta:
+        model = "main.Report"
+
+    content_type = factory.SubFactory(ContentTypeFactory)
+    object_id = factory.Sequence(lambda n: n)
+    reporter = factory.SubFactory(UserFactory)
+    reason = factory.Faker("paragraph")
+    created_at = factory.Faker("date_time_this_year")

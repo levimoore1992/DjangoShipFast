@@ -10,6 +10,8 @@ from django.http import (
     HttpResponseRedirect,
     HttpResponse,
     HttpRequest,
+    Http404,
+    HttpResponseNotFound,
 )
 
 from .forms import ContactForm
@@ -151,17 +153,19 @@ class ReportView(View):
         post(request, model_type, object_id): Handles the report creation.
     """
 
-    def post(self, request: HttpRequest, model_type: str, object_id: int):
+    def post(self, request: HttpRequest, model_name: str, object_id: int):
         """
         Get the model class based on the model_type string
         :param request:
-        :param model_type:
+        :param model_name:
         :param object_id:
         :return:
         """
-
-        model = ContentType.objects.get(model=model_type).model_class()
-        obj = get_object_or_404(model, pk=object_id)
+        try:
+            model = ContentType.objects.get(model=model_name).model_class()
+            obj = get_object_or_404(model, pk=object_id)
+        except Http404:
+            return HttpResponseNotFound("Object not found")
 
         # Create the report
         Report.objects.create(

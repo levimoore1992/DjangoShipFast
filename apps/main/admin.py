@@ -184,11 +184,3 @@ class ReportAdmin(admin.ModelAdmin):
         return format_html('<a href="{}">{}</a>', link_url, str(content_object))
 
     content_object_link.short_description = "Object Link"
-
-    def get_queryset(self, request):
-        """
-        Ensure to include the generic related object in the queryset to avoid N+1 queries.
-        """
-        qs = super().get_queryset(request)
-        # Prefetch related content objects to optimize database queries
-        return qs.select_related("content_type")

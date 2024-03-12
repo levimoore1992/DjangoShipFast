@@ -22,7 +22,7 @@ urlpatterns = [
     path("contact-us/", ContactUsView.as_view(), name="contact_us"),
     path("faqs/", FAQListView.as_view(), name="faqs"),
     path(
-        "report/<str:model_type>/<int:object_id>/", ReportView.as_view(), name="report"
+        "report/<str:model_name>/<int:object_id>/", ReportView.as_view(), name="report"
     ),
     # Notification views
     path(
