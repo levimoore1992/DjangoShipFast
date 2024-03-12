@@ -128,6 +128,7 @@ After creating your app, you dont need to update the app as long as you place yo
 - [x] All apps moved to an apps folder
 - [x] Makefile for easy commands
 - [x] Meta Tags in meta_tags.html
+- [x] django-celery-beat for periodic tasks
 
 
 
