@@ -1,0 +1,29 @@
+<!-- Button trigger for modal -->
+<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#reportModal{{ object_id }}">
+    <i class="fas fa-flag"></i> Report
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="reportModal{{ object_id }}" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form method="POST" action="{% url 'report' model_type object_id %}">
+        {% csrf_token %}
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="reportModalLabel"><i class="fas fa-flag me-2"></i>Report {{ model_type }}</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            {{ report_form.reason.label_tag }}
+            {{ report_form.reason }}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger">Submit Report</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

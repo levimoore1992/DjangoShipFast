@@ -1,6 +1,8 @@
 from django.contrib import admin, messages
 from django.http import HttpResponseRedirect
+from django.urls import reverse
 from django.utils import timezone
+from django.utils.html import format_html
 
 from .consts import ContactStatus
 from .forms import (
@@ -19,6 +21,7 @@ from .models import (
     AuditLogConfig,
     SocialMediaLink,
     FAQ,
+    Report,
 )
 
 
@@ -147,3 +150,45 @@ class FAQAdmin(admin.ModelAdmin):
     list_display = ["question", "answer"]
     search_fields = ["question", "answer"]
     list_per_page = 25
+
+
+@admin.register(Report)
+class ReportAdmin(admin.ModelAdmin):
+    """
+    The Admin View for the Report Model, including a link to the referenced object in the admin.
+    """
+
+    readonly_fields = ["content_object_link"]
+    list_display = ["reporter", "content_object_link", "created_at"]
+
+    def content_object_link(self, obj):
+        """
+        Returns an HTML link to the admin page for the content_object, if it exists.
+
+        Args:
+            obj: The Report instance.
+
+        Returns:
+            SafeString: An HTML string that represents a link to the content_object's admin page.
+        """
+        content_object = obj.content_object
+        if not content_object:
+            return "Object does not exist"
+
+        # Get the admin URL for the content_object
+        app_label = content_object._meta.app_label
+        model_name = content_object._meta.model_name
+        view_name = f"admin:{app_label}_{model_name}_change"
+        link_url = reverse(view_name, args=[content_object.pk])
+
+        return format_html('<a href="{}">{}</a>', link_url, str(content_object))
+
+    content_object_link.short_description = "Object Link"
+
+    def get_queryset(self, request):
+        """
+        Ensure to include the generic related object in the queryset to avoid N+1 queries.
+        """
+        qs = super().get_queryset(request)
+        # Optionally prefetch related content objects to optimize database queries
+        return qs.select_related("content_type")

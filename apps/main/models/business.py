@@ -1,8 +1,11 @@
 from django.apps import apps
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from auditlog.registry import auditlog
 
 from apps.main.consts import ContactStatus
+from apps.users.models import User
 
 
 class TermsAndConditions(models.Model):
@@ -122,3 +125,24 @@ class FAQ(models.Model):
     class Meta:
         verbose_name = "FAQ"
         verbose_name_plural = "FAQs"
+
+
+class Report(models.Model):
+    """
+    A flexible report model for reporting inappropriate content across various models.
+
+    Attributes:
+        content_type (ContentType): The type of object being reported.
+        object_id (int): The primary key of the related object being reported.
+        content_object (GenericForeignKey): The generic foreign key to the related object.
+        reporter (ForeignKey): The user who created the report.
+        reason (TextField): The reason for the report.
+        created_at (DateTimeField): The datetime when the report was created.
+    """
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+    reporter = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reports")
+    reason = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)

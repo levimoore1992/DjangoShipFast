@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.admin.utils import unquote
-from django.shortcuts import render, redirect
+from django.contrib.contenttypes.models import ContentType
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic import TemplateView, RedirectView, ListView
 from django.http import (
@@ -8,10 +9,11 @@ from django.http import (
     HttpResponseServerError,
     HttpResponseRedirect,
     HttpResponse,
+    HttpRequest,
 )
 
 from .forms import ContactForm
-from .models import Notification, TermsAndConditions, PrivacyPolicy, FAQ
+from .models import Notification, TermsAndConditions, PrivacyPolicy, FAQ, Report
 
 
 class HomeView(TemplateView):
@@ -139,3 +141,34 @@ class FAQListView(ListView):
     model = FAQ
     template_name = "main/faqs.html"
     context_object_name = "faqs"
+
+
+class ReportView(View):
+    """
+    A view for handling reports of inappropriate content.
+
+    Methods:
+        post(request, model_type, object_id): Handles the report creation.
+    """
+
+    def post(self, request: HttpRequest, model_type: str, object_id: int):
+        """
+        Get the model class based on the model_type string
+        :param request:
+        :param model_type:
+        :param object_id:
+        :return:
+        """
+
+        model = ContentType.objects.get(model=model_type).model_class()
+        obj = get_object_or_404(model, pk=object_id)
+
+        # Create the report
+        Report.objects.create(
+            content_type=ContentType.objects.get_for_model(obj),
+            object_id=obj.id,
+            reporter=request.user,
+            reason=request.POST.get("reason", "No reason provided."),
+        )
+        # Refresh the page the user was on. If for some reason it doesnt work then take the user home.
+        return HttpResponseRedirect(request.META.get("HTTP_REFERER", "home"))
