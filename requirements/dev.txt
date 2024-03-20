@@ -18,5 +18,5 @@ django-hijack==3.4.5
 
 # Linting libraries
 flake8==5.0.4
-black==22.10.0
+black==24.3.0
 pylint-django==2.5.5
