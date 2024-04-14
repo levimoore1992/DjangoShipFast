@@ -6,7 +6,7 @@ from django_recaptcha.fields import ReCaptchaField
 from django_recaptcha.widgets import ReCaptchaV2Invisible
 
 
-from .consts import ContactType, ContactStatus
+from .consts import ContactType, ContactStatus, FORM_CLASSES
 from .models import (
     Notification,
     TermsAndConditions,
@@ -64,30 +64,30 @@ class ContactForm(forms.ModelForm):
         validators=[MinLengthValidator(2)],
         help_text="Your full name.",
         label="Full Name",
-        widget=forms.TextInput(attrs={"class": "form-control"}),
+        widget=forms.TextInput(attrs={"class": FORM_CLASSES}),
     )
     email = forms.EmailField(
         validators=[EmailValidator()],
         help_text="The email address where we can contact you.",
         label="Email Address",
-        widget=forms.TextInput(attrs={"class": "form-control"}),
+        widget=forms.TextInput(attrs={"class": FORM_CLASSES}),
     )
 
     type = forms.ChoiceField(
         choices=ContactType.choices(),
         help_text="Type of your request.",
         label="Contact Type",
-        widget=forms.Select(attrs={"class": "form-control"}),
+        widget=forms.Select(attrs={"class": FORM_CLASSES}),
     )
 
     subject = forms.CharField(
         max_length=255,
         help_text="The main topic or reason for contacting us.",
         label="Subject",
-        widget=forms.TextInput(attrs={"class": "form-control"}),
+        widget=forms.TextInput(attrs={"class": FORM_CLASSES}),
     )
     message = forms.CharField(
-        widget=forms.Textarea(attrs={"class": "form-control", "rows": 5, "cols": 50})
+        widget=forms.Textarea(attrs={"class": FORM_CLASSES, "rows": 5, "cols": 50})
     )
     # next line we set label as empty string so it doesn't show up in the form
     captcha = ReCaptchaField(widget=ReCaptchaV2Invisible, label="")
