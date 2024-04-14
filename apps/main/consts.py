@@ -42,3 +42,6 @@ class ContactType(Enum):
             A list of tuple containing the enum's items.
         """
         return [(key.value, key.value) for key in cls]
+
+# Classes for attaching to fields in any form that uses our normal styles
+FORM_CLASSES = "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
