@@ -2,6 +2,7 @@
     This component is for the navbar menu in mobile view
 {% endcomment %}
 {% load static %}
+{% load waffle_tags %}  {# Ensure you have this tag loaded if you use it below #}
 
 <!-- Mobile menu, controlled by Alpine.js -->
 <div class="lg:hidden" x-data="{ openMenu: false }" role="dialog" aria-modal="true">
@@ -14,7 +15,7 @@
   </button>
     
   <!-- Menu content area -->
-  <div x-show="openMenu"  class="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+  <div x-show="openMenu" class="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
     <div class="flex items-center justify-between">
       <a href="#" class="-m-1.5 p-1.5">
         <span class="sr-only">Your Company</span>
@@ -27,10 +28,21 @@
         </svg>
       </button>
     </div>
+
     <div class="mt-6 flow-root">
-      <!-- Example menu items -->
-      <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Home</a>
-      <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Profile</a>
+      <!-- Dynamic user profile link and logout if authenticated -->
+      {% if user.is_authenticated %}
+        <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">My Profile</a>
+        <form action="{% url 'logout' %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+            Logout
+          </button>
+        </form>
+      {% else %}
+        <a href="{% url 'login' %}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Log In</a>
+      {% endif %}
+      <!-- Other links -->
       <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Settings</a>
     </div>
   </div>
