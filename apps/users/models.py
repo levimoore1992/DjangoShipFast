@@ -8,6 +8,7 @@ class User(AbstractUser):
 
     # override the default email field so that we can make it unique
     email = CIEmailField(max_length=255, unique=True, verbose_name="Email Address")
+    image = models.ImageField(upload_to="profile_image/", null=True, blank=True)
 
     # Add any custom fields for your application here
 
@@ -19,6 +20,12 @@ class User(AbstractUser):
         """Return the user's full name."""
         return f"{self.first_name} {self.last_name}"
 
+    @property
+    def avatar(self):
+        """Return the user's avatar."""
+        if self.image:
+            return self.image.url
+        return 'https://www.gravatar.com/avatar/'
 
 class UserIPManager(models.Manager):
     """
