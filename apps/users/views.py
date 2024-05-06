@@ -81,7 +81,7 @@ class RegisterView(TemplateView):
         :param kwargs:
         :return:
         """
-        form = UserCreationForm(request.POST)
+        form = UserCreationForm(request.POST, request.FILES)
         if form.is_valid():
             if self.is_ip_or_device_blocked(request):
                 # Handle blocked/suspicious IP or device
