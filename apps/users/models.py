@@ -25,7 +25,8 @@ class User(AbstractUser):
         """Return the user's avatar."""
         if self.image:
             return self.image.url
-        return 'https://www.gravatar.com/avatar/'
+        return "https://www.gravatar.com/avatar/"
+
 
 class UserIPManager(models.Manager):
     """
