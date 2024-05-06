@@ -16,3 +16,11 @@ test:
 # Shell command
 shell:
 	docker-compose exec $(SERVICE_NAME) python manage.py shell_plus
+
+# makemigrations command
+makemigrations:
+	docker-compose exec $(SERVICE_NAME) python manage.py makemigrations
+
+# migrate command
+migrate:
+	docker-compose exec $(SERVICE_NAME) python manage.py migrate
