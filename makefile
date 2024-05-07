@@ -24,3 +24,15 @@ makemigrations:
 # migrate command
 migrate:
 	docker-compose exec $(SERVICE_NAME) python manage.py migrate
+
+# Restore the database from a backup
+restore:
+	docker-compose exec $(SERVICE_NAME) python manage.py restore_db --no-input
+
+# Restore the database from production
+restore-prod:
+	docker-compose exec $(SERVICE_NAME) python manage.py restore_db -s production --no-input
+
+# Restore from development
+restore-dev:
+	docker-compose exec $(SERVICE_NAME) python manage.py restore_db -s develop --no-input
