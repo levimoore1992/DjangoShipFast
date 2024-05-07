@@ -1,6 +1,8 @@
 from django.test import TestCase
 
 from tests.factories.users import UserFactory, UserDeviceFactory, UserIPFactory
+from tests.utils import create_mock_image
+
 from apps.users.models import User, UserIP, UserDevice
 
 
@@ -38,6 +40,29 @@ class UserTest(TestCase):
             email="test@example.com",
         )
         self.assertEqual(user.full_name, "Test User")
+
+    def test_avatar_url_with_avatar(self):
+        """
+        Test avatar_url property returns the correct URL when the avatar is set.
+        """
+
+        avatar = create_mock_image()
+
+        # Use the factory to create a user with an avatar
+        user = UserFactory(avatar=avatar)
+
+        # Check if the avatar_url returns the correct URL
+        self.assertTrue(user.avatar_url, user.avatar.url)
+
+    def test_avatar_url_without_avatar(self):
+        """
+        Test avatar_url property returns the default Gravatar URL when no avatar is set.
+        """
+        # Create a user without an avatar
+        user = UserFactory(avatar=None)
+
+        # Check if the avatar_url returns the default Gravatar URL
+        self.assertEqual(user.avatar_url, "https://www.gravatar.com/avatar/")
 
 
 class UserIPManagerTests(TestCase):

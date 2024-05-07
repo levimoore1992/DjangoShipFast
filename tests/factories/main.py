@@ -1,14 +1,11 @@
-import io
-
 import factory
-from PIL import Image
 from django.contrib.contenttypes.models import ContentType
-from django.core.files.base import ContentFile
 from django.utils import timezone
 
 from apps.main.consts import ContactStatus
 from apps.main.models import Notification, Contact, SocialMediaLink
 from tests.factories.users import UserFactory
+from tests.utils import create_mock_image
 
 
 class ContentTypeFactory(factory.django.DjangoModelFactory):
@@ -75,13 +72,8 @@ class SocialMediaLinkFactory(factory.django.DjangoModelFactory):
         Create a dummy image (1x1 pixel, black) and return it as a ContentFile.
         :return: ContentFile
         """
-        file = io.BytesIO()
-        image = Image.new("RGB", size=(1, 1), color=(0, 0, 0))
-        image.save(file, "JPEG")
-        file.name = "test.jpg"
-        file.seek(0)
 
-        return ContentFile(file.read(), "test.jpg")
+        return create_mock_image()
 
 
 class FAQFactory(factory.django.DjangoModelFactory):
