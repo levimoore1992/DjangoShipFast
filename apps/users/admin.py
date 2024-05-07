@@ -29,7 +29,7 @@ class UserAdmin(BaseUserAdmin):
     - user_permissions: Specific permissions for this user.
     - last_login: The last date and time the user logged in.
     - date_joined: The date and time the user registered.
-    -image: The user's profile image.
+    - avatar: The user's profile image.
 
     To further customize this admin class, you can:
     1. Add/Remove fields in the fieldsets attribute.
