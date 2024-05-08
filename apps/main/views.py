@@ -25,7 +25,6 @@ class HomeView(TemplateView):
 
 
 class TermsAndConditionsView(TemplateView):
-
     """View to the terms and conditions page."""
 
     template_name = "main/terms_and_conditions.html"
@@ -37,7 +36,6 @@ class TermsAndConditionsView(TemplateView):
 
 
 class PrivacyPolicyView(TemplateView):
-
     """View to the privacy policy page."""
 
     template_name = "main/privacy_policy.html"
