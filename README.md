@@ -132,6 +132,7 @@ After creating your app, you dont need to update the app as long as you place yo
 - [x] django-celery-beat for periodic tasks
 - [x] User Login Create and Logout Features
 - [x] Custom User Model with Avatar field for profile pictures
+- [x] Built in linters with black and flake8 as well as commands in makefile
 
 
 
