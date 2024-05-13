@@ -140,9 +140,9 @@ USE_I18N = True
 
 USE_TZ = True
 
-DATE_FORMAT = 'j/n/y'      # Day/Month/Year without leading zeros.
-TIME_FORMAT = 'P'          # Hour in 12-hour format with AM/PM.
-DATETIME_FORMAT = 'P j/n/y'  # Combination of both time and date.
+DATE_FORMAT = "j/n/y"  # Day/Month/Year without leading zeros.
+TIME_FORMAT = "P"  # Hour in 12-hour format with AM/PM.
+DATETIME_FORMAT = "P j/n/y"  # Combination of both time and date.
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
