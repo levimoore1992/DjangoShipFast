@@ -1,9 +1,10 @@
+import auto_prefetch
+
 from django.apps import apps
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
-
 from auditlog.registry import auditlog
 
 from apps.main.consts import ContactStatus
@@ -128,7 +129,7 @@ class FAQ(models.Model):
         verbose_name_plural = "FAQs"
 
 
-class Report(models.Model):
+class Report(auto_prefetch.Model):
     """
     A flexible report model for reporting inappropriate content across various models.
 
@@ -141,17 +142,17 @@ class Report(models.Model):
         created_at (DateTimeField): The datetime when the report was created.
     """
 
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    content_type = auto_prefetch.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
-    reporter = models.ForeignKey(
+    reporter = auto_prefetch.ForeignKey(
         "users.User", on_delete=models.CASCADE, related_name="reports"
     )
     reason = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-class Notification(models.Model):
+class Notification(auto_prefetch.Model):
     """
     Notification model to handle user notifications.
 
@@ -165,7 +166,7 @@ class Notification(models.Model):
         updated_at (DateTimeField): The time the notification was last updated.
     """
 
-    user = models.ForeignKey(
+    user = auto_prefetch.ForeignKey(
         "users.User", on_delete=models.CASCADE, related_name="notifications"
     )
     title = models.CharField(max_length=255)
