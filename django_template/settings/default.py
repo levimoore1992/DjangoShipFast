@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "django_recaptcha",  # Google Captcha
     "waffle",  # Feature Flags
     "ckeditor",
+    "django_htmx",
     # celery apps
     "django_celery_beat",
     "django_celery_results",
@@ -67,6 +68,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "waffle.middleware.WaffleMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
     "apps.users.middleware.TrackUserIPAndDeviceMiddleware",
 ]
 

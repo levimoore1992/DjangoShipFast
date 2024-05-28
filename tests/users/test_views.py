@@ -158,3 +158,36 @@ class PasswordResetConfirmViewTest(BaseAuthenticationTest):
         self.assertIn("token", response.context_data)
         self.assertEqual(response.context_data["uidb64"], "testuid")
         self.assertEqual(response.context_data["token"], "testtoken")
+
+
+class CheckUsernameViewTest(BaseTestCase):
+    """
+    Test cases for the check_username view.
+    """
+
+    def setUp(self):
+        """
+        Setup common attributes for check_username tests.
+        """
+        self.user = UserFactory(username="testuser")
+
+    def test_check_username_passes(self):
+        """
+        Test that the check_username view returns a 200 response when the username is available.
+        """
+        response = self.client.post(reverse("check_username"), {"username": "newuser"})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            b'<div class="text-green-500">That username is available.</div>',
+            response.content,
+        )
+
+    def test_check_username_fails(self):
+        """
+        Test that the check_username view returns a 200 response when the username is taken.
+        """
+        response = self.client.post(reverse("check_username"), {"username": "testuser"})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            b'<div class="text-red-500">That username is taken.</div>', response.content
+        )
