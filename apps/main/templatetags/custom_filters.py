@@ -1,4 +1,5 @@
 from django import template
+from django.core.cache import cache
 
 from apps.main.consts import ContactStatus
 from apps.main.models import SocialMediaLink
@@ -40,7 +41,10 @@ def social_media_row():
     Grab social media links from the database and return them to the template.
     :return: A dictionary containing the social media links.
     """
-    links = SocialMediaLink.objects.all()
+    links = cache.get("social_media_links")
+    if links is None:
+        links = list(SocialMediaLink.objects.all())
+        cache.set("social_media_links", links, 3600)
     return {"links": links}
 
 
