@@ -67,7 +67,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "waffle.middleware.WaffleMiddleware",
-    "apps.main.middleware.NotificationMiddleware",
     "apps.users.middleware.TrackUserIPAndDeviceMiddleware",
 ]
 
@@ -85,6 +84,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "apps.main.context_processors.report_form",
+                "apps.main.context_processors.notifications",
             ],
         },
     },

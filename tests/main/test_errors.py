@@ -1,10 +1,11 @@
-from django.test import TestCase, RequestFactory
+from django.test import RequestFactory
 from django.http import HttpResponseBadRequest, HttpResponseServerError
 
 from apps.main.views import BadRequestView, ServerErrorView
+from tests.base import BaseTestCase
 
 
-class ErrorViewsTestCase(TestCase):
+class ErrorViewsTestCase(BaseTestCase):
     """
     Test the error views: BadRequestView and ServerErrorView.
     """
@@ -19,6 +20,7 @@ class ErrorViewsTestCase(TestCase):
         """
         view = view_class.as_view()
         request = self.factory.get("/")
+        request.user = self.regular_user
         response = view(request)
         self.assertIsInstance(response, expected_response_class)
         self.assertEqual(response.status_code, expected_status_code)

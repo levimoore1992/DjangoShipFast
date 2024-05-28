@@ -2,12 +2,12 @@
 <div x-data="{ open: false }" class="relative px-5">
   <a @click="open = !open" class="cursor-pointer relative block bg-blue-600 text-white p-2 rounded-md focus:outline-none" href="#" role="button">
     <i class="fas fa-bell"></i>
-    {% if request.unread_notifications %}
+    {% if notifications %}
       <span class="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-600 text-white text-xs font-bold rounded-full px-2 py-1">
-        {% if request.unread_notifications|length >= 100 %}
+        {% if notifications|length >= 100 %}
           99+
         {% else %}
-          {{ request.unread_notifications|length }}
+          {{ notifications|length }}
         {% endif %}
         <span class="sr-only">unread messages</span>
       </span>
@@ -16,8 +16,8 @@
 
   <!-- Dropdown Menu -->
   <ul x-show="open" @click.away="open = false" class="dropdown-menu absolute right-0 w-72 bg-white shadow-xl mt-2 overflow-hidden rounded-lg" style="z-index: 1000;">
-    {% if request.unread_notifications %}
-      {% for notification in request.unread_notifications %}
+    {% if notifications %}
+      {% for notification in notifications %}
         <li>
           <a class="block px-4 py-3 border-b border-gray-200 last:border-b-0" href="{{ notification.get_absolute_url }}" target="_blank">
             <div class="flex items-start">
