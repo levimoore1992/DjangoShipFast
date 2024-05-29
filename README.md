@@ -134,6 +134,7 @@ After creating your app, you dont need to update the app as long as you place yo
 - [x] Custom User Model with Avatar field for profile pictures
 - [x] Built in linters with black and flake8 as well as commands in makefile
 - [x] django-auto-prefetching for better performance
+- [x] django-htmx for better user experience
 
 
 

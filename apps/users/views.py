@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import login
+from django.http import HttpResponse
 from django.shortcuts import redirect, resolve_url
 from django.views.generic import TemplateView
 
@@ -11,7 +12,7 @@ from django.contrib.auth.views import (
 from ipware import get_client_ip
 
 from .forms import UserCreationForm
-from .models import UserIP, UserDevice
+from .models import UserIP, UserDevice, User
 from .utils import get_device_identifier
 
 
@@ -135,3 +136,15 @@ class PasswordResetConfirmView(BasePasswordResetConfirmView):
         context["uidb64"] = self.kwargs["uidb64"]
         context["token"] = self.kwargs["token"]
         return context
+
+
+def check_username(request):
+    """
+    Handles POST requests to check username availability, returning an HTML snippet.
+    """
+    username = request.POST.get("username", "")
+    if User.objects.filter(username=username).exists():
+        message = '<div class="text-red-500">That username is taken.</div>'
+    else:
+        message = '<div class="text-green-500">That username is available.</div>'
+    return HttpResponse(message)
