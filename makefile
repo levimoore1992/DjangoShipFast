@@ -36,3 +36,7 @@ restore-prod:
 # Restore from development
 restore-dev:
 	docker-compose exec $(SERVICE_NAME) python manage.py restore_db -s develop --no-input
+
+# Create superuser
+superuser:
+	docker-compose exec $(SERVICE_NAME) python manage.py createsuperuser
