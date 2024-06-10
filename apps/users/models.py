@@ -2,8 +2,10 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import CIEmailField
 from django.db import models
 
+from apps.main.mixins import CreateMediaLibraryMixin
 
-class User(AbstractUser):
+
+class User(CreateMediaLibraryMixin, AbstractUser):
     """An override of the user model to extend any new fields or remove others."""
 
     # override the default email field so that we can make it unique

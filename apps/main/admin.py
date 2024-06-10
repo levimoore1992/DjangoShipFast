@@ -22,6 +22,7 @@ from .models import (
     SocialMediaLink,
     FAQ,
     Report,
+    MediaLibrary,
 )
 
 
@@ -184,3 +185,12 @@ class ReportAdmin(admin.ModelAdmin):
         return format_html('<a href="{}">{}</a>', link_url, str(content_object))
 
     content_object_link.short_description = "Object Link"
+
+
+@admin.register(MediaLibrary)
+class MediaLibraryAdmin(admin.ModelAdmin):
+    """The admin view for the media library"""
+
+    list_display = ["id", "file", "content_type", "created"]
+    list_filter = ["content_type", "created"]
+    search_fields = ["file"]

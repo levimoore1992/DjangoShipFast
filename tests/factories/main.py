@@ -4,7 +4,9 @@ from django.utils import timezone
 
 from apps.main.consts import ContactStatus
 from apps.main.models import Notification, Contact, SocialMediaLink
+from tests.factories.dummy import DummyFactory
 from tests.factories.users import UserFactory
+from tests.test_app.models import Dummy
 from tests.utils import create_mock_image
 
 
@@ -101,3 +103,19 @@ class ReportFactory(factory.django.DjangoModelFactory):
     reporter = factory.SubFactory(UserFactory)
     reason = factory.Faker("paragraph")
     created_at = factory.Faker("date_time_this_year")
+
+
+class MediaLibraryFactory(factory.django.DjangoModelFactory):
+    """
+    Factory for the MediaLibrary model.
+    """
+
+    class Meta:
+        model = "main.MediaLibrary"
+
+    file = factory.django.ImageField(filename="test_image.jpg")
+    content_type = factory.LazyAttribute(
+        lambda o: ContentType.objects.get_for_model(Dummy)
+    )
+    object_id = factory.SelfAttribute("content_object.pk")
+    content_object = factory.SubFactory(DummyFactory)

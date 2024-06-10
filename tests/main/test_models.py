@@ -1,3 +1,4 @@
+import os
 from unittest.mock import patch
 
 from django.contrib.auth.models import User
@@ -13,9 +14,16 @@ from apps.main.models import (
     Notification,
     SocialMediaLink,
 )
+from tests.factories.dummy import DummyFactory
 
-from tests.factories.main import NotificationFactory, SocialMediaLinkFactory, FAQFactory
+from tests.factories.main import (
+    NotificationFactory,
+    SocialMediaLinkFactory,
+    FAQFactory,
+    MediaLibraryFactory,
+)
 from tests.factories.users import UserFactory
+from tests.utils import create_mock_image
 
 
 class TermsAndConditionsTest(TestCase):
@@ -218,3 +226,26 @@ class TestFAQ(TestCase):
         Test the string representation of the FAQ model.
         """
         self.assertEqual(str(self.faq), self.faq.question)
+
+
+class MediaLibraryTest(TestCase):
+    """
+    Test case for the MediaLibrary model.
+    """
+
+    def setUp(self):
+        """
+        Set up the test case with a MediaLibrary instance.
+        """
+        super().setUp()
+        self.dummy_instance = DummyFactory()
+        self.media_library = MediaLibraryFactory(
+            content_object=self.dummy_instance, file=create_mock_image()
+        )
+
+    def test_str_representation(self):
+        """
+        Test the string representation of the MediaLibrary model.
+        """
+        expected_str = os.path.basename(self.media_library.file.name)
+        self.assertEqual(str(self.media_library), expected_str)

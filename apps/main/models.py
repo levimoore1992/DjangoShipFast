@@ -1,3 +1,5 @@
+import os
+
 import auto_prefetch
 
 from django.apps import apps
@@ -6,6 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
 from auditlog.registry import auditlog
+from model_utils.models import TimeStampedModel
 
 from apps.main.consts import ContactStatus
 
@@ -207,3 +210,30 @@ class Notification(auto_prefetch.Model):
 
     def __str__(self) -> str:
         return self.title
+
+
+class MediaLibrary(TimeStampedModel, models.Model):
+    """
+    MediaLibrary model to store images associated with any other model.
+
+    Attributes:
+        file (ImageField): The image file to be stored.
+        content_type (ForeignKey): Reference to the ContentType of the related model.
+        object_id (PositiveIntegerField): ID of the related model instance.
+        content_object (GenericForeignKey): Generic relation to the related model.
+    """
+
+    file = models.ImageField(upload_to="media_library/")
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+
+    def __str__(self) -> str:
+        """
+        Returns the base name of the file.
+        """
+        return os.path.basename(self.file.name)
+
+    class Meta:
+        verbose_name = "Media Library"
+        verbose_name_plural = "Media Libraries"
