@@ -119,3 +119,18 @@ class MediaLibraryFactory(factory.django.DjangoModelFactory):
     )
     object_id = factory.SelfAttribute("content_object.pk")
     content_object = factory.SubFactory(DummyFactory)
+
+
+class CommentFactory(factory.django.DjangoModelFactory):
+    """
+    Factory for creating instances of the Comment Model for testing
+    """
+
+    class Meta:
+        model = "main.Comment"
+
+    content_type = factory.SubFactory(ContentTypeFactory)
+    object_id = factory.Sequence(lambda n: n)
+    user = factory.SubFactory(UserFactory)
+    content = factory.Faker("paragraph")
+    created = factory.LazyFunction(timezone.now)

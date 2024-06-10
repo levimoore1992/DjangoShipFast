@@ -9,14 +9,21 @@ from django.urls import reverse
 from django.utils import timezone
 
 from apps.main.consts import ContactStatus
-from apps.main.models import TermsAndConditions, AuditLogConfig, Contact, Report
+from apps.main.models import (
+    TermsAndConditions,
+    AuditLogConfig,
+    Contact,
+    Report,
+    Comment,
+)
 from apps.main.admin import (
     AuditLogConfigAdmin,
     ContactAdmin,
     TermsAndConditionsAdmin,
     ReportAdmin,
+    CommentAdmin,
 )
-from tests.factories.main import ContactFactory, ReportFactory
+from tests.factories.main import ContactFactory, ReportFactory, CommentFactory
 from tests.factories.users import UserFactory
 
 
@@ -341,5 +348,71 @@ class ReportAdminTest(TestCase):
         # Create an instance of ReportAdmin to use its content_object_link method
         report_admin = ReportAdmin(Report, AdminSite())
         result = report_admin.content_object_link(report)
+
+        self.assertEqual(result, "Object does not exist")
+
+
+class CommentAdminTest(TestCase):
+    """
+    Test suite for the ContactAdmin class.
+    """
+
+    def setUp(self):
+        """
+        Set up the test suite.
+        :return:
+        """
+        super().setUp()
+        self.site = AdminSite()
+        self.comment_admin = CommentAdmin(Comment, self.site)
+        self.user = UserFactory.create()
+
+        self.content_type = ContentType.objects.get_for_model(self.user)
+        self.comment = CommentFactory.create(
+            content_type=self.content_type, object_id=self.user.id, user=self.user
+        )
+
+    def test_content_object_link(self):
+        """
+        Test the content_object_link method of CommentAdmin.
+        :return:
+        """
+        expected_url = reverse("admin:users_user_change", args=[self.user.id])
+        expected_link = f'<a href="{expected_url}">{self.user}</a>'
+        link = self.comment_admin.content_object_link(self.comment)
+        self.assertHTMLEqual(link, expected_link)
+
+    def test_list_display_contains_expected_fields(self):
+        """
+        Test that the list_display attribute contains the expected fields.
+        :return:
+        """
+        self.assertIn("user", self.comment_admin.list_display)
+        self.assertIn("content_object_link", self.comment_admin.list_display)
+        self.assertIn("created", self.comment_admin.list_display)
+
+    def test_readonly_fields_contains_expected_fields(self):
+        """
+        Test that the readonly_fields attribute contains the expected fields.
+        :return:
+        """
+        self.assertIn("content_object_link", self.comment_admin.readonly_fields)
+
+    def test_content_object_link_with_missing_object(self):
+        """
+        Test the content_object_link method with a missing object.
+        :return:
+        """
+        # Create a report with an object_id that doesn't correspond to any existing user.
+        non_existent_object_id = 999999  # Assumed to be non-existent
+        comment = CommentFactory.create(
+            content_type=self.content_type,
+            object_id=non_existent_object_id,
+            user=self.user,
+        )
+
+        # Create an instance of CommentAdmin to use its content_object_link method
+        comment_admin = CommentAdmin(Comment, AdminSite())
+        result = comment_admin.content_object_link(comment)
 
         self.assertEqual(result, "Object does not exist")
