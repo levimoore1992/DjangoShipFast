@@ -21,6 +21,7 @@ from tests.factories.main import (
     SocialMediaLinkFactory,
     FAQFactory,
     MediaLibraryFactory,
+    CommentFactory,
 )
 from tests.factories.users import UserFactory
 from tests.utils import create_mock_image
@@ -249,3 +250,22 @@ class MediaLibraryTest(TestCase):
         """
         expected_str = os.path.basename(self.media_library.file.name)
         self.assertEqual(str(self.media_library), expected_str)
+
+
+class TestCommentModel(TestCase):
+    """
+    Test the Comment Model
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.comment = CommentFactory()
+
+    def test_string_representation(self):
+        """
+        Test the string representation of the FAQ model.
+        """
+        self.assertEqual(
+            str(self.comment),
+            f"Comment {self.comment.id} by {self.comment.user.username}",
+        )

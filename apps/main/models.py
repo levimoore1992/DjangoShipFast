@@ -237,3 +237,29 @@ class MediaLibrary(TimeStampedModel, models.Model):
     class Meta:
         verbose_name = "Media Library"
         verbose_name_plural = "Media Libraries"
+
+
+class Comment(TimeStampedModel, auto_prefetch.Model):
+    """
+    Represents a comment in the system.
+    """
+
+    content = models.CharField(max_length=1000, default="", verbose_name="Content")
+    user = auto_prefetch.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="comments",
+        verbose_name="User",
+    )
+
+    content_type = auto_prefetch.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+
+    def __str__(self):
+        return f"Comment {self.id} by {self.user.username}"
+
+    class Meta(auto_prefetch.Model.Meta):
+        verbose_name = "Comment"
+        verbose_name_plural = "Comments"
+        ordering = ["-created"]

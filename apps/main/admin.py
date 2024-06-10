@@ -23,6 +23,7 @@ from .models import (
     FAQ,
     Report,
     MediaLibrary,
+    Comment,
 )
 
 
@@ -168,6 +169,40 @@ class ReportAdmin(admin.ModelAdmin):
 
         Args:
             obj: The Report instance.
+
+        Returns:
+            SafeString: An HTML string that represents a link to the content_object's admin page.
+        """
+        content_object = obj.content_object
+        if not content_object:
+            return "Object does not exist"
+
+        # Get the admin URL for the content_object
+        app_label = content_object._meta.app_label
+        model_name = content_object._meta.model_name
+        view_name = f"admin:{app_label}_{model_name}_change"
+        link_url = reverse(view_name, args=[content_object.pk])
+
+        return format_html('<a href="{}">{}</a>', link_url, str(content_object))
+
+    content_object_link.short_description = "Object Link"
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    """
+    The Admin view for the comment model
+    """
+
+    readonly_fields = ["content_object_link"]
+    list_display = ["user", "content_object_link", "created"]
+
+    def content_object_link(self, obj):
+        """
+        Returns an HTML link to the admin page for the content_object, if it exists.
+
+        Args:
+            obj: The Comment instance.
 
         Returns:
             SafeString: An HTML string that represents a link to the content_object's admin page.
