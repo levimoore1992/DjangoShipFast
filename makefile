@@ -11,7 +11,7 @@ lint:
 
 # Test command with coverage
 test:
-	docker-compose exec $(SERVICE_NAME) pytest -n auto --cov=apps --cov-report=html:.app_coverage --cov-report=term
+	docker-compose exec $(SERVICE_NAME) pytest -n auto --cov=apps --cov-report=html:.app_coverage --cov-report=term $(ARGS)
 
 # Shell command
 shell:
