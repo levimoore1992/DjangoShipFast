@@ -139,6 +139,7 @@ After creating your app, you dont need to update the app as long as you place yo
 - [x] Media Library Mixin to save images automatically
 - [x] Comment Model easy to attach to other models
 - [x] Pagination component easily attachable to a list view
+- [x] Path to have icon show on apple devices and tab icon set up
 
 
 
