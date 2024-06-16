@@ -71,3 +71,50 @@ def report_button(context, model_type, object_id):
         "report_form": form,
         "request": request,
     }
+
+
+@register.simple_tag(takes_context=True)
+def get_page_link(context, page_number):
+    """
+    Get the page link for a list view to paginate queryset
+    """
+    request = context["request"]
+    query_dict = request.GET.copy()
+    query_dict["page"] = page_number
+    return f"{request.path_info}?{query_dict.urlencode()}"
+
+
+@register.inclusion_tag("components/pagination_numbers.html", takes_context=True)
+def pagination_numbers(context):
+    """
+    Return the pagination numbers to see whqt page a user is on
+    """
+    page_numbers = []
+    page = context["page_obj"]
+    for num in range(1, page.paginator.num_pages + 1):
+        is_active_page = num == page.number
+        is_first_page = num == 1
+        is_last_page = num == page.paginator.num_pages
+        window_size = 2
+        if (
+            is_active_page
+            or is_first_page
+            or is_last_page
+            or abs(num - page.number) <= window_size
+        ):
+            page_numbers.append({"page_number": num, "active": is_active_page})
+        else:
+            if not page_numbers[-1] == {"empty": True}:
+                page_numbers.append({"empty": True})
+
+    context["page_numbers"] = page_numbers
+    return context
+
+
+@register.filter
+def get_query_param(request, param_name):
+    """
+    Custom template filter to get query parameter from request.
+    Usage: {{ request|get_query_param:"param_name" }}
+    """
+    return request.GET.get(param_name, "")

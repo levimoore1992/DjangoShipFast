@@ -1,0 +1,43 @@
+@import '../base/base';
+
+.pagination-controls-container {
+    display: flex;
+    flex-flow: row nowrap;
+    margin-top: 2rem;
+    justify-content: space-between;
+}
+
+.pagination-controls {
+    display: flex;
+    flex-flow: row nowrap;
+    line-height: 32px;
+}
+
+.pagination-disabled,
+.pagination-next {
+    margin: 0 1rem;
+}
+
+.pagination-disabled {
+    opacity: 0.5;
+}
+
+.pagination-controls a {
+    color: #000000;
+    text-decoration: none;
+}
+
+.pagination-number {
+    height: 32px;
+    width: 31px;
+    border-radius: 0.4rem;
+    text-align: center;
+    line-height: 32px;
+    font-weight: 400;
+}
+
+.pagination-current-page {
+    color: #ffffff;
+    background-color: $primary-color;
+}
+

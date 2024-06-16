@@ -1,8 +1,10 @@
 from django import forms
+from django.core.paginator import Paginator
 from django.template import Context, Template
 from django.test import RequestFactory
 
 from apps.main.forms import ReportForm
+from apps.main.templatetags.custom_filters import get_page_link
 from tests.base import BaseTestCase
 from tests.factories.main import ContentTypeFactory, ReportFactory
 from tests.factories.users import UserFactory
@@ -85,3 +87,60 @@ class ReportButtonTagTest(BaseTestCase):
         # Assert that the rendered template contains the expected data
         self.assertIn(str(self.report.object_id), rendered_template)
         self.assertIn(self.content_type.model, rendered_template)
+
+
+class PaginationTagsTest(BaseTestCase):
+    """
+    Test pagination template tags
+    """
+
+    def setUp(self):
+        """
+        Setup tests
+        """
+        super().setUp()
+        self.factory = RequestFactory()
+        self.user = UserFactory()
+
+    def test_get_page_link(self):
+        """Test the page link template tag"""
+        request = self.factory.get("/some-url")
+        context = Context({"request": request})
+
+        page_link = get_page_link(context, 2)
+
+        self.assertEqual(page_link, "/some-url?page=2")
+
+    def test_pagination_numbers(self):
+        """Test the pagination numbers template tag"""
+        items = list(range(1, 101))
+        paginator = Paginator(items, 10)
+        page = paginator.get_page(5)
+        request = self.factory.get("/some-url")
+        context = Context(
+            {
+                "request": request,
+                "page_obj": page,
+            }
+        )
+
+        template = Template("{% load custom_filters %}{% pagination_numbers %}")
+        output = template.render(context)
+
+        self.assertIn("5", output)
+        self.assertIn("4", output)
+        self.assertIn("6", output)
+        self.assertIn("1", output)
+        self.assertIn("10", output)
+
+    def test_get_query_param(self):
+        """Test query params template tag"""
+        request = self.factory.get("/some-url?param=value")
+        context = Context({"request": request})
+
+        template = Template(
+            "{% load custom_filters %}{{ request|get_query_param:'param' }}"
+        )
+        output = template.render(context)
+
+        self.assertEqual(output.strip(), "value")
