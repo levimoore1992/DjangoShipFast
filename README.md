@@ -137,6 +137,7 @@ After creating your app, you dont need to update the app as long as you place yo
 - [x] django-htmx for better user experience
 - [x] Media Library Mixin to save images automatically
 - [x] Comment Model easy to attach to other models
+- [x] Pagination component easily attachable to a list view
 
 
 
