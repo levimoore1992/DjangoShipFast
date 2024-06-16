@@ -7,6 +7,36 @@ from .models import User, UserIP, UserDevice
 from .utils import block_user_and_devices
 
 
+class UserIPInline(admin.TabularInline):
+    """
+    Inline admin class for displaying UserIP entries related to a User.
+    """
+
+    model = UserIP
+    readonly_fields = (
+        "ip_address",
+        "last_seen",
+        "country",
+        "region",
+        "city",
+        "is_blocked",
+        "is_suspicious",
+    )
+    can_delete = False
+    extra = 0
+
+
+class UserDeviceInline(admin.TabularInline):
+    """
+    Inline admin class for displaying UserDevice entries related to a User.
+    """
+
+    model = UserDevice
+    readonly_fields = ("device_identifier", "last_seen")
+    can_delete = False
+    extra = 0
+
+
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
     """
@@ -38,6 +68,7 @@ class UserAdmin(BaseUserAdmin):
     """
 
     actions = ["block_users_and_devices"]
+    inlines = [UserIPInline, UserDeviceInline]
 
     fieldsets = (
         (None, {"fields": ("username", "password")}),
@@ -76,7 +107,7 @@ class UserIPAdmin(admin.ModelAdmin):
     Custom admin interface for the UserIP model.
     """
 
-    list_display = ("user", "ip_address", "location", "shared_user_count", "last_seen")
+    list_display = ("ip_address", "location", "shared_user_count", "last_seen")
     search_fields = ("user__username", "ip_address")
     list_filter = ("last_seen",)
 
@@ -101,6 +132,50 @@ class UserIPAdmin(admin.ModelAdmin):
         """
         return f"{obj.region}, {obj.city}"
 
+    def get_users_on_same_ip(self, obj: UserIP) -> str:
+        """
+        Display other users that have used the same IP address.
+        :param obj: Instance of the UserIP model.
+        :return: Comma-separated string of usernames.
+        """
+        users = (
+            UserIP.objects.filter(ip_address=obj.ip_address)
+            .exclude(user=obj.user)
+            .select_related("user")
+        )
+        return ", ".join([user_ip.user.username for user_ip in users])
+
+    get_users_on_same_ip.short_description = "Users on Same IP"
+
+    readonly_fields = (
+        "user",
+        "ip_address",
+        "last_seen",
+        "country",
+        "region",
+        "city",
+        "get_users_on_same_ip",
+    )
+
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "user",
+                    "ip_address",
+                    "last_seen",
+                    "country",
+                    "region",
+                    "city",
+                    "is_blocked",
+                    "is_suspicious",
+                )
+            },
+        ),
+        ("Users on Same IP", {"fields": ("get_users_on_same_ip",)}),
+    )
+
 
 @admin.register(UserDevice)
 class UserDeviceAdmin(admin.ModelAdmin):
@@ -111,3 +186,11 @@ class UserDeviceAdmin(admin.ModelAdmin):
     list_display = ("user", "device_identifier", "last_seen")
     search_fields = ("user__username", "device_identifier")
     list_filter = ("last_seen",)
+
+    readonly_fields = (
+        "last_seen",
+        "user",
+        "device_identifier",
+    )
+
+    fieldsets = ((None, {"fields": ("user", "device_identifier", "last_seen")}),)

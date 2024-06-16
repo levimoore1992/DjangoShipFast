@@ -72,9 +72,7 @@ class UserIP(models.Model):
 
     objects = UserIPManager()
 
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="ips", null=True, blank=True
-    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ips")
     ip_address = models.GenericIPAddressField()
     last_seen = models.DateTimeField(auto_now=True)
     country = models.CharField(max_length=100, blank=True, null=True)

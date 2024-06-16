@@ -123,3 +123,22 @@ class UserIPAdminTest(TestCase):
         # Check if the location method returns the correct string
         self.assertEqual(self.user_ip_admin.location(self.user_ip1), "Region1, City1")
         self.assertEqual(self.user_ip_admin.location(self.user_ip3), "Region3, City3")
+
+    def test_get_users_on_same_ip(self):
+        """
+        Test the get_users_on_same_ip method of the UserIPAdmin
+        :return:
+        """
+        expected_users = "user2"
+        self.assertEqual(
+            self.user_ip_admin.get_users_on_same_ip(self.user_ip1),
+            expected_users,
+            "Should return user2 as another user on the same IP address",
+        )
+
+        expected_users = ""
+        self.assertEqual(
+            self.user_ip_admin.get_users_on_same_ip(self.user_ip3),
+            expected_users,
+            "Should return an empty string as there are no other users on the same IP address",
+        )
