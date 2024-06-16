@@ -72,9 +72,7 @@ class UserIP(models.Model):
 
     objects = UserIPManager()
 
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="ips", null=True, blank=True
-    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ips")
     ip_address = models.GenericIPAddressField()
     last_seen = models.DateTimeField(auto_now=True)
     country = models.CharField(max_length=100, blank=True, null=True)
@@ -113,9 +111,7 @@ class UserDevice(models.Model):
     This Django model stores device identifiers associated with users.
     """
 
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="devices", null=True, blank=True
-    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="devices")
     device_identifier = models.CharField(max_length=255)
     last_seen = models.DateTimeField(auto_now=True)
     is_blocked = models.BooleanField(default=False)

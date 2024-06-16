@@ -38,14 +38,15 @@ class TrackUserIPAndDeviceMiddleware:
         """
         Extract and record the user's IP and device information.
         """
-        user = request.user if request.user.is_authenticated else None
+        if not request.user.is_authenticated:
+            return
         client_ip, _ = get_client_ip(request)
         device_identifier = get_device_identifier(request)
 
         if client_ip:
             geo_data = self.get_geolocation_data(client_ip)
             UserIP.objects.update_or_create(
-                user=user,
+                user=request.user,
                 ip_address=client_ip,
                 defaults={
                     "last_seen": timezone.now(),
@@ -57,7 +58,7 @@ class TrackUserIPAndDeviceMiddleware:
 
         if device_identifier:
             UserDevice.objects.update_or_create(
-                user=user,
+                user=request.user,
                 device_identifier=device_identifier,
                 defaults={"last_seen": timezone.now()},
             )
