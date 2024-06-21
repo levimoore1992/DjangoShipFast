@@ -1,3 +1,5 @@
+from unittest import mock
+
 from django.test import TestCase
 
 from tests.factories.users import UserFactory, UserDeviceFactory, UserIPFactory
@@ -64,6 +66,50 @@ class UserTest(TestCase):
         # Check if the avatar_url returns the default Gravatar URL
         self.assertEqual(user.avatar_url, "https://www.gravatar.com/avatar/")
 
+
+class UserIPLocationTestCase(TestCase):
+    def setUp(self):
+        # Create a user for testing
+        self.user = UserFactory()
+
+        # Create a UserIP instance for testing
+        self.user_ip = UserIP.objects.create(
+            user=self.user,
+            ip_address='8.8.8.8',  # Example IP address
+            is_blocked=False,
+            is_suspicious=False
+        )
+
+    @mock.patch('requests.get')
+    def test_location(self, mock_get):
+        # Mocking the response of requests.get
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            'country': 'US',
+            'region': 'California',
+            'city': 'Mountain View'
+        }
+        mock_get.return_value = mock_response
+
+        # Call the location property
+        location = self.user_ip.location
+
+        # Check the result
+        self.assertEqual(location, 'US, California, Mountain View')
+
+    @mock.patch('requests.get')
+    def test_location_failure(self, mock_get):
+        # Mocking a failed response of requests.get
+        mock_response = mock.Mock()
+        mock_response.status_code = 404
+        mock_get.return_value = mock_response
+
+        # Call the location property
+        location = self.user_ip.location
+
+        # Check the result
+        self.assertIsNone(location)
 
 class UserIPManagerTests(TestCase):
     """

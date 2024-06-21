@@ -1,3 +1,4 @@
+from unittest import mock
 from unittest.mock import Mock
 
 from django.contrib.auth import get_user_model
@@ -136,3 +137,30 @@ class UserIPAdminTest(TestCase):
             expected_users,
             "Should return an empty string as there are no other users on the same IP address",
         )
+
+    @mock.patch('requests.get')
+    def test_location_display(self, mock_get):
+        """
+        Test the location_display method of the UserIPAdmin
+        :param mock_get: Mock for the requests.get method
+        :return:
+        """
+        # Mocking the response of requests.get
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            'country': 'US',
+            'region': 'California',
+            'city': 'Mountain View'
+        }
+        mock_get.return_value = mock_response
+
+        # Test location_display method
+        location = self.user_ip_admin.location_display(self.user_ip1)
+        self.assertEqual(location, 'US, California, Mountain View', "Should return the correct location")
+
+        # Mocking a failed response
+        mock_response.status_code = 404
+        mock_get.return_value = mock_response
+        location = self.user_ip_admin.location_display(self.user_ip1)
+        self.assertIsNone(location, "Should return None for a failed response")
