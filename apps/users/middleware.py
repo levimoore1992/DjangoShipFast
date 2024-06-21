@@ -1,4 +1,3 @@
-import requests
 from ipware import get_client_ip
 from django.utils import timezone
 
@@ -44,15 +43,11 @@ class TrackUserIPAndDeviceMiddleware:
         device_identifier = get_device_identifier(request)
 
         if client_ip:
-            geo_data = self.get_geolocation_data(client_ip)
             UserIP.objects.update_or_create(
                 user=request.user,
                 ip_address=client_ip,
                 defaults={
                     "last_seen": timezone.now(),
-                    "country": geo_data.get("country", ""),
-                    "region": geo_data.get("region", ""),
-                    "city": geo_data.get("city", ""),
                 },
             )
 
@@ -62,15 +57,3 @@ class TrackUserIPAndDeviceMiddleware:
                 device_identifier=device_identifier,
                 defaults={"last_seen": timezone.now()},
             )
-
-    def get_geolocation_data(self, ip):
-        """
-        Get the geolocation data for the given IP address.
-        :param ip:
-        :return:
-        """
-        # Replace with the actual API call
-        response = requests.get(f"https://ipinfo.io/{ip}/json", timeout=120)  # noqa
-        if response.status_code == 200:
-            return response.json()
-        return {}

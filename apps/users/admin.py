@@ -16,9 +16,6 @@ class UserIPInline(admin.TabularInline):
     readonly_fields = (
         "ip_address",
         "last_seen",
-        "country",
-        "region",
-        "city",
         "is_blocked",
         "is_suspicious",
     )
@@ -107,15 +104,45 @@ class UserIPAdmin(admin.ModelAdmin):
     Custom admin interface for the UserIP model.
     """
 
-    list_display = ("ip_address", "location", "shared_user_count", "last_seen")
+    list_display = (
+        "user",
+        "ip_address",
+        "shared_user_count",
+        "last_seen",
+    )
     search_fields = ("user__username", "ip_address")
     list_filter = ("last_seen",)
+    readonly_fields = (
+        "user",
+        "ip_address",
+        "last_seen",
+        "get_users_on_same_ip",
+        "location_display",
+    )
 
-    def shared_user_count(self, obj):
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "user",
+                    "ip_address",
+                    "last_seen",
+                    "location_display",
+                    "is_blocked",
+                    "is_suspicious",
+                )
+            },
+        ),
+        ("Users on Same IP", {"fields": ("get_users_on_same_ip",)}),
+    )
+
+    def shared_user_count(self, obj) -> int:
         """
-        Display the number of users that have used the same IP address.
-        :param obj:
-        :return:
+        Calculate the number of distinct users sharing the same IP address.
+
+        :param obj: Instance of the UserIP model.
+        :return: The count of distinct users.
         """
         return UserIP.objects.filter(ip_address=obj.ip_address).aggregate(
             Count("user", distinct=True)
@@ -123,14 +150,16 @@ class UserIPAdmin(admin.ModelAdmin):
 
     shared_user_count.short_description = "Number of Users"
 
-    def location(self, obj) -> str:
+    def location_display(self, obj) -> str:
         """
-        Display the user's from the region and city fields
+        Display the user's location from the location property.
 
         :param obj: Instance of the UserIP model.
         :return: The user's location.
         """
-        return f"{obj.region}, {obj.city}"
+        return obj.location
+
+    location_display.short_description = "Location"
 
     def get_users_on_same_ip(self, obj: UserIP) -> str:
         """
@@ -146,35 +175,6 @@ class UserIPAdmin(admin.ModelAdmin):
         return ", ".join([user_ip.user.username for user_ip in users])
 
     get_users_on_same_ip.short_description = "Users on Same IP"
-
-    readonly_fields = (
-        "user",
-        "ip_address",
-        "last_seen",
-        "country",
-        "region",
-        "city",
-        "get_users_on_same_ip",
-    )
-
-    fieldsets = (
-        (
-            None,
-            {
-                "fields": (
-                    "user",
-                    "ip_address",
-                    "last_seen",
-                    "country",
-                    "region",
-                    "city",
-                    "is_blocked",
-                    "is_suspicious",
-                )
-            },
-        ),
-        ("Users on Same IP", {"fields": ("get_users_on_same_ip",)}),
-    )
 
 
 @admin.register(UserDevice)

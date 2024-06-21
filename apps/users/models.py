@@ -1,3 +1,5 @@
+import auto_prefetch
+import requests
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import CIEmailField
 from django.db import models
@@ -55,7 +57,7 @@ class UserIPManager(models.Manager):
         return self.filter(user_id=user_id).order_by("-last_seen")
 
 
-class UserIP(models.Model):
+class UserIP(auto_prefetch.Model):
     """
     This Django model stores IP addresses associated with users.
 
@@ -72,14 +74,24 @@ class UserIP(models.Model):
 
     objects = UserIPManager()
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ips")
+    user = auto_prefetch.ForeignKey(User, on_delete=models.CASCADE, related_name="ips")
     ip_address = models.GenericIPAddressField()
     last_seen = models.DateTimeField(auto_now=True)
-    country = models.CharField(max_length=100, blank=True, null=True)
-    region = models.CharField(max_length=100, blank=True, null=True)
-    city = models.CharField(max_length=100, blank=True, null=True)
     is_blocked = models.BooleanField(default=False)
     is_suspicious = models.BooleanField(default=False)
+
+    @property
+    def location(self):
+        """
+        Return the location of the user based off ipinfo
+        """
+        response = requests.get(
+            f"https://ipinfo.io/{self.ip_address}/json", timeout=10
+        )  # noqa
+        if response.status_code == 200:
+            json = response.json()
+            return f"{json['country']}, {json['region']}, {json['city']}"
+        return None
 
 
 class UserDeviceManager(models.Manager):

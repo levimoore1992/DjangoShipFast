@@ -29,8 +29,6 @@ class UserIPFactory(factory.django.DjangoModelFactory):
 
     user = factory.SubFactory(UserFactory)
     ip_address = factory.Sequence(lambda n: f"192.168.1.{n}")
-    region = factory.Sequence(lambda n: f"Region{n}")
-    city = factory.Sequence(lambda n: f"City{n}")
     is_suspicious = False
     is_blocked = False
 
