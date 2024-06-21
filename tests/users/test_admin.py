@@ -138,29 +138,25 @@ class UserIPAdminTest(TestCase):
             "Should return an empty string as there are no other users on the same IP address",
         )
 
-    @mock.patch('requests.get')
-    def test_location_display(self, mock_get):
+    @mock.patch.object(UserIP, "location", new_callable=mock.PropertyMock)
+    def test_location_display(self, mock_location):
         """
         Test the location_display method of the UserIPAdmin
-        :param mock_get: Mock for the requests.get method
+        :param mock_location: Mock for the location property
         :return:
         """
-        # Mocking the response of requests.get
-        mock_response = mock.Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {
-            'country': 'US',
-            'region': 'California',
-            'city': 'Mountain View'
-        }
-        mock_get.return_value = mock_response
+        # Mocking the location property
+        mock_location.return_value = "US, California, Mountain View"
 
         # Test location_display method
         location = self.user_ip_admin.location_display(self.user_ip1)
-        self.assertEqual(location, 'US, California, Mountain View', "Should return the correct location")
+        self.assertEqual(
+            location,
+            "US, California, Mountain View",
+            "Should return the correct location",
+        )
 
-        # Mocking a failed response
-        mock_response.status_code = 404
-        mock_get.return_value = mock_response
+        # Mocking a None response
+        mock_location.return_value = None
         location = self.user_ip_admin.location_display(self.user_ip1)
-        self.assertIsNone(location, "Should return None for a failed response")
+        self.assertIsNone(location, "Should return None for a None response")
