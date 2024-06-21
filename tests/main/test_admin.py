@@ -1,8 +1,5 @@
-from unittest.mock import patch
-
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.messages import get_messages
-from django.http import HttpRequest
 from django.test import TestCase, RequestFactory
 from django.contrib.admin.sites import AdminSite
 from django.urls import reverse
@@ -11,13 +8,11 @@ from django.utils import timezone
 from apps.main.consts import ContactStatus
 from apps.main.models import (
     TermsAndConditions,
-    AuditLogConfig,
     Contact,
     Report,
     Comment,
 )
 from apps.main.admin import (
-    AuditLogConfigAdmin,
     ContactAdmin,
     TermsAndConditionsAdmin,
     ReportAdmin,
@@ -72,47 +67,6 @@ class TermsAndConditionsAdminTest(TestCase):
         admin = TermsAndConditionsAdmin(TermsAndConditions, None)
         readonly_fields = admin.get_readonly_fields(request, self.terms_and_conditions)
         self.assertIn("terms", readonly_fields)
-
-
-class AuditLogConfigAdminTest(TestCase):
-    """
-    Test suite for the AuditLogConfigAdmin class.
-    """
-
-    def setUp(self):
-        self.site = AdminSite()
-        self.user = UserFactory(is_superuser=True)
-        self.admin = AuditLogConfigAdmin(AuditLogConfig, self.site)
-
-    @patch("apps.main.models.AuditLogConfig.register_model")
-    def test_save_model(self, mock_register_model):
-        """
-        Test the save_model method of AuditLogConfigAdmin.
-        :param mock_register_model:
-        :return:
-        """
-        request = HttpRequest()
-        request.user = self.user
-        obj = AuditLogConfig(model_name="YourModelName")
-
-        self.admin.save_model(request, obj, None, None)
-
-        mock_register_model.assert_called_once()
-
-    @patch("apps.main.models.AuditLogConfig.unregister_model")
-    def test_delete_model(self, mock_unregister_model):
-        """
-        Test the delete_model method of AuditLogConfigAdmin.
-        :param mock_unregister_model:
-        :return:
-        """
-        request = HttpRequest()
-        request.user = self.user
-        obj = AuditLogConfig.objects.create(model_name="YourModelName")
-
-        self.admin.delete_model(request, obj)
-
-        mock_unregister_model.assert_called_once()
 
 
 class ContactAdminTest(TestCase):

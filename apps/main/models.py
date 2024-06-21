@@ -2,12 +2,10 @@ import os
 
 import auto_prefetch
 
-from django.apps import apps
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
-from auditlog.registry import auditlog
 from model_utils.models import TimeStampedModel
 
 from apps.main.consts import ContactStatus
@@ -66,39 +64,6 @@ class Contact(models.Model):
         ordering = ["-contact_date"]
         verbose_name = "Contact Request"
         verbose_name_plural = "Contact Requests"
-
-
-class AuditLogConfig(models.Model):
-    """
-    Model to store the configurations for models to be tracked by django-auditlog.
-    """
-
-    model_name = models.CharField(max_length=255, unique=True)
-
-    def __str__(self):
-        return self.model_name
-
-    def register_model(self):
-        """
-        Register the model with django-auditlog.
-        :return:
-        """
-        try:
-            model = apps.get_model(self.model_name)
-            auditlog.register(model)
-        except LookupError:
-            pass  # Model not found, handle appropriately
-
-    def unregister_model(self):
-        """
-        Unregister the model with django-auditlog.
-        :return:
-        """
-        try:
-            model = apps.get_model(self.model_name)
-            auditlog.unregister(model)
-        except LookupError:
-            pass  # Model not found, handle appropriately
 
 
 class SocialMediaLink(models.Model):
