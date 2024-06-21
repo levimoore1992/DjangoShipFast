@@ -1,16 +1,12 @@
 import os
-from unittest.mock import patch
 
-from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
-from auditlog.registry import auditlog
 
 from apps.main.models import (
     TermsAndConditions,
     PrivacyPolicy,
     Contact,
-    AuditLogConfig,
     Notification,
     SocialMediaLink,
 )
@@ -78,56 +74,6 @@ class ContactTest(TestCase):
         )
         self.assertTrue(isinstance(contact, Contact))
         self.assertEqual(str(contact), "John Doe - Test Subject")
-
-
-class AuditLogConfigTest(TestCase):
-    """
-    Test the AuditLogConfig model.
-    """
-
-    def setUp(self):
-        self.model_name = "auth.User"
-        self.audit_config = AuditLogConfig.objects.create(model_name=self.model_name)
-
-        self.invalid_model_name = "invalid.Model"
-        self.audit_config_invalid = AuditLogConfig.objects.create(
-            model_name=self.invalid_model_name
-        )
-
-    def test_creation_and_str(self):
-        """
-        Test the creation and string representation of the AuditLogConfig model.
-        """
-        self.assertTrue(isinstance(self.audit_config, AuditLogConfig))
-        self.assertEqual(str(self.audit_config), self.model_name)
-
-    def test_register_and_unregister_model(self):
-        """
-        Test the registration and unregistration of a model with django-auditlog.
-        """
-        # Test register_model
-        self.audit_config.register_model()
-        self.assertIn(User, auditlog.get_models())
-
-        # Test unregister_model
-        self.audit_config.unregister_model()
-        self.assertNotIn(User, auditlog.get_models())
-
-    def test_register_model_with_invalid_model(self):
-        """
-        Test the register_model method with an invalid model name.
-        """
-        with patch("django.apps.apps.get_model", side_effect=LookupError):
-            # No exception should be raised
-            self.audit_config_invalid.register_model()
-
-    def test_unregister_model_with_invalid_model(self):
-        """
-        Test the unregister_model method with an invalid model name.
-        """
-        with patch("django.apps.apps.get_model", side_effect=LookupError):
-            # No exception should be raised
-            self.audit_config_invalid.unregister_model()
 
 
 class NotificationTest(TestCase):

@@ -1,6 +1,5 @@
 from ckeditor.widgets import CKEditorWidget
 from django import forms
-from django.apps import apps
 from django.core.validators import MinLengthValidator, EmailValidator
 from django_recaptcha.fields import ReCaptchaField
 from django_recaptcha.widgets import ReCaptchaV2Invisible
@@ -12,7 +11,6 @@ from .models import (
     TermsAndConditions,
     PrivacyPolicy,
     Contact,
-    AuditLogConfig,
     FAQ,
 )
 
@@ -112,66 +110,6 @@ class ContactAdminForm(forms.ModelForm):
     class Meta:
         model = Contact
         fields = "__all__"
-
-
-class ModelChoiceField(forms.ChoiceField):
-    """
-    The model choice field for the AuditLogConfigAdminForm.
-    """
-
-    def label_from_instance(self, obj):
-        """
-        Return the label for the option.
-        :param obj:
-        :return:
-        """
-        return f"{obj._meta.app_label}.{obj._meta.model_name}"
-
-
-class AuditLogConfigAdminForm(forms.ModelForm):
-    """
-    The form for the AuditLogConfig Model specifically in the admin.
-    """
-
-    model_name = ModelChoiceField()
-
-    def __init__(self, *args, **kwargs):
-        """
-        Initialize the form.
-        We get the choices from the get_model_choices method.
-        :param args:
-        :param kwargs:
-        """
-        super().__init__(*args, **kwargs)
-        self.fields["model_name"].choices = self.get_model_choices()
-
-    @staticmethod
-    def get_model_choices():
-        """
-        This function returns the choices for the model_name field.
-        It is intended for the AuditLogConfigAdminForm to generate all the model choices
-        """
-        models = apps.get_models()
-        choices = [
-            (
-                f"{model._meta.app_label}.{model._meta.model_name}",
-                f"{model._meta.app_label}.{model._meta.model_name}",
-            )
-            for model in models
-        ]
-        return choices
-
-    class Meta:
-        model = AuditLogConfig
-        fields = ["model_name"]
-
-    def clean_model_name(self):
-        """
-        Clean the model name field.
-        :return:
-        """
-        model_label = self.cleaned_data["model_name"]
-        return model_label
 
 
 class FAQForm(forms.ModelForm):
