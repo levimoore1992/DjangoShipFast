@@ -117,7 +117,7 @@ class UserIPAdmin(admin.ModelAdmin):
         "ip_address",
         "last_seen",
         "get_users_on_same_ip",
-        "location_display"
+        "location_display",
     )
 
     fieldsets = (
@@ -175,8 +175,6 @@ class UserIPAdmin(admin.ModelAdmin):
         return ", ".join([user_ip.user.username for user_ip in users])
 
     get_users_on_same_ip.short_description = "Users on Same IP"
-
-
 
 
 @admin.register(UserDevice)

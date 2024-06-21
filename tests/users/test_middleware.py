@@ -20,7 +20,9 @@ class TrackUserIPAndDeviceMiddlewareTest(TestCase):
             get_response=lambda request: None
         )
 
-    @patch("apps.users.middleware.get_client_ip", return_value=("123.123.123.123", True))
+    @patch(
+        "apps.users.middleware.get_client_ip", return_value=("123.123.123.123", True)
+    )
     @patch(
         "apps.users.middleware.get_device_identifier", return_value="unique-device-id"
     )
