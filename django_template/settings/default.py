@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # third party apps
-    "auditlog",
     "django_recaptcha",  # Google Captcha
     "waffle",  # Feature Flags
     "ckeditor",
