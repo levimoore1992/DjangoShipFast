@@ -69,6 +69,7 @@ MIDDLEWARE = [
     "waffle.middleware.WaffleMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
     "apps.users.middleware.TrackUserIPAndDeviceMiddleware",
+    "apps.main.middleware.HTMXExceptionMiddleware",
 ]
 
 ROOT_URLCONF = "django_template.urls"
