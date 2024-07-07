@@ -124,11 +124,6 @@ For admin login we use admin sso library to make sure an attacker cant just get 
 2. Click on "Select a project" and then "New Project".
 3. Enter the project name and create it.
 
-### Enable the Google+ API
-
-1. Once the project is created, go to the "Library" tab.
-2. Search for "Google+ API" and enable it.
-
 ### Create OAuth 2.0 Credentials
 
 1. Go to the "Credentials" tab.
