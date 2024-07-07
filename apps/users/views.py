@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 from django.http import HttpResponse
 from django.shortcuts import redirect, resolve_url
 from django.views.generic import TemplateView
@@ -96,6 +96,11 @@ class RegisterView(TemplateView):
                 )
                 return self.render_to_response({"form": form})
             user = form.save()
+            user = authenticate(
+                username=user.username,
+                password=form.cleaned_data.get("password1"),
+                backend="django.contrib.auth.backends.ModelBackend",
+            )
             login(request, user)
 
             # Redirect to where you want the user to go after registering

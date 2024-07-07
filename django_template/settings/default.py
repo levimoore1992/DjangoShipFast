@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "waffle",  # Feature Flags
     "ckeditor",
     "django_htmx",
+    "admin_sso",  # google login for admin
     # celery apps
     "django_celery_beat",
     "django_celery_results",
@@ -235,6 +236,17 @@ CKEDITOR_CONFIGS = {
 # Authentication settings
 
 AUTH_USER_MODEL = "users.User"
+
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",  # Default backend
+    "apps.users.auth.DjangoAdminAuthBackend",
+)
+
+DJANGO_ADMIN_SSO_OAUTH_CLIENT_ID = os.getenv("DJANGO_ADMIN_SSO_OAUTH_CLIENT_ID")
+DJANGO_ADMIN_SSO_OAUTH_CLIENT_SECRET = os.getenv("DJANGO_ADMIN_SSO_OAUTH_CLIENT_SECRET")
+
+# We use our own template, don't add the admin_sso login button
+DJANGO_ADMIN_SSO_ADD_LOGIN_BUTTON = False
 
 LOGIN_URL = "login"
 
