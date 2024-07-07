@@ -35,6 +35,8 @@ docker compose up --build
 <li>Change the redis project name in docker-compose.yml</li>
 <li>In django_template.dev_utils line 99 replace the url in the code with your actual production url for media</li>
 <li>Change the value in 'meta_tags.html' to reflect what you want for you application</li>
+<li>Change the value of you app name in admin/base_site.html</li>
+<li>Change the value of YOURAPPNAME in apps/user/auth</li>
 </ul>
 
 ## How to Use `restore_local_db` Management Command
@@ -157,6 +159,7 @@ After creating your app, you dont need to update the app as long as you place yo
 - [x] Comment Model easy to attach to other models
 - [x] Pagination component easily attachable to a list view
 - [x] Path to have icon show on apple devices and tab icon set up
+- [x] Django admin sso for admin login with google
 
 
 
