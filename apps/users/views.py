@@ -96,12 +96,12 @@ class RegisterView(TemplateView):
                 )
                 return self.render_to_response({"form": form})
             user = form.save()
-            saved_user = authenticate(
+            user = authenticate(
                 username=user.username,
-                password=user.password,
+                password=form.cleaned_data.get("password1"),
                 backend="django.contrib.auth.backends.ModelBackend",
             )
-            login(request, saved_user)
+            login(request, user)
 
             # Redirect to where you want the user to go after registering
             return redirect("home")
