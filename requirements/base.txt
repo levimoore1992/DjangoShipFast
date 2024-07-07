@@ -27,3 +27,6 @@ django-waffle==4.1.0
 
 # Tracking user ip
 django-ipware==6.0.4
+
+# For admin login with google
+django-admin-sso==5.2.0

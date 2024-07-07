@@ -113,7 +113,29 @@ This command explicitly specifies which directories should be linted.
 Our GitHub Action for linting also uses a similar command. 
 If you add a new Django app or a directory containing Python files that should be linted, remember to update the GitHub Action configuration.
 
+### Google Admin SSO
+For admin login we use admin sso library to make sure an attacker cant just get in with a password list. To enable it locally follow these instructions
 
+## Getting Credentials for Django Admin SSO from the Google Developer Console
+
+### Create a Project in Google Developer Console
+
+1. Go to the [Google Developer Console](https://console.developers.google.com/).
+2. Click on "Select a project" and then "New Project".
+3. Enter the project name and create it.
+
+### Enable the Google+ API
+
+1. Once the project is created, go to the "Library" tab.
+2. Search for "Google+ API" and enable it.
+
+### Create OAuth 2.0 Credentials
+
+1. Go to the "Credentials" tab.
+2. Click on "Create Credentials" and select "OAuth 2.0 Client ID".
+3. You might be prompted to configure the consent screen. Fill out the required fields such as application name, support email, etc.
+4. For the application type, select "Web application".
+5. Set the authorized redirect URIs. This should be your Django application's URL where you handle the OAuth callback, e.g., `http://localhost:8000/accounts/google/login/callback/`.
 
 ### Important Note:
 After creating your app, you dont need to update the app as long as you place your app in the apps directory
