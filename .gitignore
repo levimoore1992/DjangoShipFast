@@ -3,7 +3,6 @@
 django_template/settings/local.py
 .env
 /django_template/staticfiles/
-/static/css/
 restore.dump
 /.pytest_cache/
 .coverage

@@ -137,6 +137,9 @@ For admin login we use admin sso library to make sure an attacker cant just get 
 ### Important Note:
 After creating your app, you dont need to update the app as long as you place your app in the apps directory
 
+## Static Note:
+Because we use npm to minify our styles its possible that 2 developers working on styles may make something that will conflict with each other.
+The solution is simply for a developer to accept the changes of anything, then the file will recompile it anyways.
 
 ### Features
 - [x] Dockerized
