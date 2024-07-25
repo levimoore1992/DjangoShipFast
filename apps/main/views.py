@@ -1,3 +1,6 @@
+import os
+
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.utils import unquote
 from django.contrib.contenttypes.models import ContentType
@@ -174,3 +177,19 @@ class ReportView(View):
         )
         # Refresh the page the user was on. If for some reason it doesnt work then take the user home.
         return HttpResponseRedirect(request.META.get("HTTP_REFERER", "home"))
+
+
+def robots_view(request):
+    """
+    Serve the 'robots.txt' file.
+
+    This view reads the content of the 'robots.txt' file from the project root
+    and returns it in the HTTP response.
+    """
+    ads_txt_path = os.path.join(settings.ROOT_DIR, "robots.txt")
+
+    try:
+        with open(ads_txt_path, "r", encoding="utf-8") as file:
+            return HttpResponse(file.read(), content_type="text/plain")
+    except FileNotFoundError:
+        return HttpResponse("Error: 'robots.txt' file not found.", status=404)
