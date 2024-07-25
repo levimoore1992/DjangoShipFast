@@ -1,7 +1,19 @@
 FROM python:3.12
 
-# Next line is needed for restore_db command
-RUN apt-get update && apt-get install -y postgresql-client
+#################################
+# For the restore db command
+#################################
+ #Add PostgreSQL 16 repository for Debian
+RUN sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" > /etc/apt/sources.list.d/pgdg.list' && \
+    wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+
+# Install PostgreSQL 16 client
+RUN apt-get update && \
+    apt-get install -y postgresql-client-16 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+#################################
+#################################
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
