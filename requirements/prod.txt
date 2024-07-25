@@ -1,4 +1,1 @@
 -r base.txt
-
-# Debugging Libraries
-sentry-sdk==2.11.0
