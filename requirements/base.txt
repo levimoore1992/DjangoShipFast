@@ -1,23 +1,20 @@
 # Core libraries
 Django>=5.0.0,<=5.1.0
 psycopg2==2.9.9
-Pillow==10.2.0
-requests==2.31.0
-django-auto-prefetch==1.8.0
-django-htmx==1.17.3
+Pillow==10.4.0
+requests==2.32.3
+django-auto-prefetch==1.9.0
+django-htmx==1.18.0
 # General Libraries
-django-ckeditor==6.7.0
+django-ckeditor==6.7.1
 django-model-utils==4.5.1
 
 
 # Celery and Redis
 celery>=5.3.0,<=5.4.0
-redis==5.0.1
+redis==5.0.7
 django-celery-beat==2.6.0
 django-celery-results==2.5.1
-
-# Debugging Libraries
-sentry-sdk==1.39.2
 
 # For google recaptcha
 django-recaptcha==4.0.0
@@ -26,7 +23,10 @@ django-recaptcha==4.0.0
 django-waffle==4.1.0
 
 # Tracking user ip
-django-ipware==6.0.4
+django-ipware==7.0.1
 
 # For admin login with google
 django-admin-sso==5.2.0
+
+# Debugging Libraries
+sentry-sdk==2.11.0
