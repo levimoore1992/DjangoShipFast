@@ -1,3 +1,7 @@
+import os
+from tempfile import mkdtemp
+from unittest.mock import patch, mock_open
+
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 from django.urls import reverse
@@ -11,6 +15,7 @@ from apps.main.models import (
     Report,
     Notification,
 )
+from tests.base import BaseTestCase
 from tests.factories.main import NotificationFactory
 from tests.factories.users import UserFactory
 
@@ -267,3 +272,44 @@ class ReportViewTest(TestCase):
             reason=post_data["reason"],
         ).exists()
         self.assertFalse(exists)
+
+
+class RobotsViewTests(BaseTestCase):
+    """
+    robots.txt view
+    """
+
+    def setUp(self):
+        """
+        Setup tests
+        :return:
+        """
+        super().setUp()
+        # Create a temporary directory to simulate the project root or closer structure
+        self.temp_dir = mkdtemp()
+        # Path where the robots.txt is expected to be found by the view
+        self.robots_txt_path = os.path.join(self.temp_dir, "robots.txt")
+        # Write content to the temporary robots.txt file
+        with open(self.robots_txt_path, "w", encoding="utf-8") as file:
+            file.write("User-agent: *\nDisallow: /")
+
+    def test_robots_view_success(self):
+        """Test success of getting robots.txt view"""
+        # Directly call the view or use the client to get a response
+        response = self.client.get(reverse("robots_view"))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("User-agent: *", response.content.decode())
+        self.assertEqual(response["Content-Type"], "text/plain")
+
+    @patch("apps.main.views.open", new_callable=mock_open)
+    def test_robots_view_file_not_found(self, mock_open_arg):
+        """Test file isn't found"""
+        # Configure the mock to raise FileNotFoundError when the file is opened
+        mock_open_arg.side_effect = FileNotFoundError
+
+        # Attempt to retrieve the robots.txt via the view
+        response = self.client.get(reverse("robots_view"))
+
+        # Verify the response indicates the file was not found
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("Error: 'robots.txt' file not found.", response.content.decode())

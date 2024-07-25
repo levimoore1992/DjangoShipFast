@@ -9,6 +9,7 @@ from .views import (
     ContactUsView,
     FAQListView,
     ReportView,
+    robots_view,
 )
 
 urlpatterns = [
@@ -24,6 +25,8 @@ urlpatterns = [
     path(
         "report/<str:model_name>/<int:object_id>/", ReportView.as_view(), name="report"
     ),
+    # File path views
+    path("robots.txt", robots_view, name="robots_view"),
     # Notification views
     path(
         "mark_as_read_and_redirect/<int:notification_id>/<path:destination_url>/",
