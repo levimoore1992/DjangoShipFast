@@ -65,7 +65,6 @@ services:
 
 
     celery-beat:
-        container_name: django_celery_beat
         build:
             context: .
             dockerfile: Dockerfile
