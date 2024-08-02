@@ -11,16 +11,16 @@ jobs:
       - name: 'Checkout Github Action'
         uses: actions/checkout@v2
 
-      - name: 'Build `docker-compose` Environment'
+      - name: 'Build `docker compose` Environment'
         run: |
           cp .env.example .env
-          docker-compose up -d
+          docker compose up -d
 
       - name: 'Check Running Containers'
         run: docker ps -a
 
       - name: 'Run Python Unit Tests'
-        run: docker-compose run web pytest -n auto
+        run: docker compose run web pytest -n auto
 
 
   run-linter:
@@ -60,16 +60,16 @@ jobs:
       - name: 'Checkout Github Action'
         uses: actions/checkout@v2
 
-      - name: 'Build `docker-compose` Environment'
+      - name: 'Build `docker compose` Environment'
         run: |
           cp .env.example .env
-          docker-compose up -d
+          docker compose up -d
 
       - name: 'Check Running Containers'
         run: docker ps -a
 
       - name: 'Check for Missing Migrations'
-        run: docker-compose run web bash -c "python manage.py makemigrations --dry-run --check | grep -v 'admin_sso'"
+        run: docker compose run web bash -c "python manage.py makemigrations --dry-run --check | grep -v 'admin_sso'"
 
 
   run-pylint:
@@ -80,13 +80,13 @@ jobs:
       - name: 'Checkout Github Action'
         uses: actions/checkout@v2
 
-      - name: 'Build `docker-compose` Environment'
+      - name: 'Build `docker compose` Environment'
         run: |
           cp .env.example .env
-          docker-compose up -d
+          docker compose up -d
 
       - name: 'Run Pylint'
-        run: docker-compose run web pylint django_template apps tests
+        run: docker compose run web pylint django_template apps tests
 
 
   run-codecov:
@@ -97,13 +97,13 @@ jobs:
       - name: 'Checkout Github Action'
         uses: actions/checkout@v2
 
-      - name: 'Build `docker-compose` Environment'
+      - name: 'Build `docker compose` Environment'
         run: |
           cp .env.example .env
-          docker-compose up -d
+          docker compose up -d
 
       - name: 'Run Code Coverage'
-        run: docker-compose run web pytest -n auto --cov=apps --cov-report=json --cov-report=term-missing
+        run: docker compose run web pytest -n auto --cov=apps --cov-report=json --cov-report=term-missing
 
       - name: 'Check Coverage Percentage'
         run: |
