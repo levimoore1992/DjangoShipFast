@@ -1,50 +1,50 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Django Template{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Django Template{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
     {#    icons    #}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
     {# htmx #}
-    <script src="https://unpkg.com/htmx.org@1.9.11" integrity="sha384-0gxUXCCR8yv9FM2b+U3FDbsKthCI66oH5IA9fHppQq9DDMHuMauqq1ZHBpJxQ0J0" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/htmx.org@1.9.11" integrity="sha384-0gxUXCCR8yv9FM2b+U3FDbsKthCI66oH5IA9fHppQq9DDMHuMauqq1ZHBpJxQ0J0" crossorigin="anonymous"></script>
     {# tailwind #}
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.2/dist/full.min.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+        <script src="https://cdn.tailwindcss.com"></script>
     {#    alpine js    #}
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
     {#    Iphone Icon    #}
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/logo.png' %}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/logo.png' %}">
     {#Brand Logo#}
-    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}" />
+        <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}" />
 
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-    {% include 'meta_tags.html' %}
+        {% include 'meta_tags.html' %}
 
-    {% block extraheader %}
-    {% endblock %}
-</head>
-<body>
-    <div class="main-wrapper">
+        {% block extraheader %}
+        {% endblock %}
+    </head>
+    <body>
+        <div class="main-wrapper">
 
-        {% include 'components/navbar.html' %}
+            {% include 'components/navbar.html' %}
         <!-- Messages area -->
-        {% include 'components/django_messages.html' %}
+            {% include 'components/django_messages.html' %}
 
 
         <!-- Content area -->
-        <div class="content-area">
-            {% block content %}{% endblock %}
+            <div class="content-area">
+                {% block content %}{% endblock %}
+            </div>
+            {% include 'components/footer.html' %}
         </div>
-        {% include 'components/footer.html' %}
-    </div>
-</body>
+    </body>
 
-{% block javascript %}
-{% endblock %}
+    {% block javascript %}
+    {% endblock %}
 </html>

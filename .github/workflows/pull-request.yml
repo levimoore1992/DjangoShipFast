@@ -102,7 +102,7 @@ jobs:
           docker compose up -d
 
       - name: 'Run Djhtml'
-        run: docker compose run web djhtml . --check
+        run: docker compose run web djhtml templates --check
 
   run-codecov:
     name: Code Coverage

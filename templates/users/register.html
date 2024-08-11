@@ -26,21 +26,21 @@
           {% endif %}
           <small class="text-gray-500">Choose a file to set as your profile picture.</small>
         </div>
-        
+
         <div class="space-y-1">
           <div>
             <label for="username" class="sr-only">Username</label>
             <input
-                    id="username"
-                    name="username" 
-                    type="text"
-                    autocomplete="username"
-                    required
-                    hx-post="{% url 'check_username' %}"
-                    hx-trigger="keyup changed delay:500ms"
-                    hx-target="#username-status"
-                    class="relative block w-full appearance-none rounded-none border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Username">
+              id="username"
+              name="username"
+              type="text"
+              autocomplete="username"
+              required
+              hx-post="{% url 'check_username' %}"
+              hx-trigger="keyup changed delay:500ms"
+              hx-target="#username-status"
+              class="relative block w-full appearance-none rounded-none border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+              placeholder="Username">
             {% if form.username.errors %}
               <div class="text-red-600 mt-2">{{ form.username.errors }}</div>
             {% endif %}
@@ -88,7 +88,7 @@
             {% endif %}
           </div>
         </div>
-        
+
         <div>
           {{ form.captcha }}
         </div>
