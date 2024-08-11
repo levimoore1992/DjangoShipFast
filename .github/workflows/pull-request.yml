@@ -88,6 +88,21 @@ jobs:
       - name: 'Run Pylint'
         run: docker compose run web pylint django_template apps tests
 
+  run-djhtml:
+    name: HTML Formatting Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Checkout Github Action'
+        uses: actions/checkout@v2
+
+      - name: 'Build `docker compose` Environment'
+        run: |
+          cp .env.example .env
+          docker compose up -d
+
+      - name: 'Run Djhtml'
+        run: docker compose run web djhtml templates --check
 
   run-codecov:
     name: Code Coverage
