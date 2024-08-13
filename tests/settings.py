@@ -1,3 +1,5 @@
+import tempfile
+
 from django_template.settings.default import *  # noqa: F401,F403
 
 ALLOWED_HOSTS = ["localhost", "testserver", "127.0.0.1", ".ngrok.io"]
@@ -17,6 +19,18 @@ DATABASES = {
 }
 
 SENTRY_ENV = "test_runner"
+
+STATIC_ROOT = tempfile.mkdtemp()
+STATICFILES_DIRS = [BASE_DIR / "static"]
+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
 
 # This is added here because the tests need to be able to access the media files
 MEDIA_ROOT = BASE_DIR / "media"
