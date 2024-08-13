@@ -1,5 +1,5 @@
-# Django-Template
-A Python Django Application to get started quickly
+# DjangoShipFast
+Django boilerplate to get started quickly
 
 ## Setup
 The application assumes you will have a main or core piece of the application
