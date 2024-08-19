@@ -8,42 +8,42 @@
         </div>
         <ul class="basis-1/2">
             {% for faq in faqs %}
-            <li x-data="{ index: {{ forloop.counter0 }} }">
-                <button 
-                    @click="activeIndex === index ? activeIndex = null : activeIndex = index"
-                    class="relative flex gap-2 items-center w-full py-5 text-base font-semibold text-left border-t md:text-lg border-base-content/10" 
-                    :aria-expanded="activeIndex === index"
-                    type="button"
-                >
-                    <span class="flex-1 text-base-content">{{ faq.question|safe }}</span>
-                    <svg 
-                        class="flex-shrink-0 w-4 h-4 ml-auto fill-current transform transition-transform duration-300 ease-in-out" 
-                        :class="{'rotate-180': activeIndex === index}"
-                        viewBox="0 0 16 16" 
-                        xmlns="http://www.w3.org/2000/svg"
+                <li x-data="{ index: {{ forloop.counter0 }} }">
+                    <button
+                        @click="activeIndex === index ? activeIndex = null : activeIndex = index"
+                        class="relative flex gap-2 items-center w-full py-5 text-base font-semibold text-left border-t md:text-lg border-base-content/10"
+                        :aria-expanded="activeIndex === index"
+                        type="button"
                     >
-                        <rect y="7" width="16" height="2" rx="1" class="transform origin-center transition duration-200 ease-out"></rect>
-                        <rect y="7" width="16" height="2" rx="1" class="transform origin-center rotate-90 transition duration-200 ease-out" :class="{'opacity-0': activeIndex === index}"></rect>
-                    </svg>
-                </button>
-                <div 
-                    x-show="activeIndex === index"
-                    x-transition:enter="transition-all duration-300 ease-out"
-                    x-transition:enter-start="opacity-0 max-h-0"
-                    x-transition:enter-end="opacity-100 max-h-96"
-                    x-transition:leave="transition-all duration-300 ease-in"
-                    x-transition:leave-start="opacity-100 max-h-96"
-                    x-transition:leave-end="opacity-0 max-h-0"
-                    class="overflow-hidden"
-                    style="display: none;"
-                >
-                    <div class="pb-5 leading-relaxed">
-                        <div class="space-y-2 leading-relaxed">
-                            {{ faq.answer|safe }}
+                        <span class="flex-1 text-base-content">{{ faq.question|safe }}</span>
+                        <svg
+                            class="flex-shrink-0 w-4 h-4 ml-auto fill-current transform transition-transform duration-300 ease-in-out"
+                            :class="{'rotate-180': activeIndex === index}"
+                            viewBox="0 0 16 16"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <rect y="7" width="16" height="2" rx="1" class="transform origin-center transition duration-200 ease-out"></rect>
+                            <rect y="7" width="16" height="2" rx="1" class="transform origin-center rotate-90 transition duration-200 ease-out" :class="{'opacity-0': activeIndex === index}"></rect>
+                        </svg>
+                    </button>
+                    <div
+                        x-show="activeIndex === index"
+                        x-transition:enter="transition-all duration-300 ease-out"
+                        x-transition:enter-start="opacity-0 max-h-0"
+                        x-transition:enter-end="opacity-100 max-h-96"
+                        x-transition:leave="transition-all duration-300 ease-in"
+                        x-transition:leave-start="opacity-100 max-h-96"
+                        x-transition:leave-end="opacity-0 max-h-0"
+                        class="overflow-hidden"
+                        style="display: none;"
+                    >
+                        <div class="pb-5 leading-relaxed">
+                            <div class="space-y-2 leading-relaxed">
+                                {{ faq.answer|safe }}
+                            </div>
                         </div>
                     </div>
-                </div>
-            </li>
+                </li>
             {% endfor %}
         </ul>
     </div>
