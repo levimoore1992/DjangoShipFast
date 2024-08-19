@@ -88,6 +88,8 @@ class FAQ(models.Model):
 
     question = models.TextField()
     answer = models.TextField()
+    # variable for faqs that should just show up in the module
+    module = models.BooleanField(default=False)
 
     def __str__(self):
         return self.question
