@@ -1,7 +1,15 @@
 {% extends 'base.html' %}
 
+{% load custom_filters %}
+
+
 {% block content %}
 
-    <h1>Home</h1>
+    {% include 'components/modules/landing.html' %}
+
+    {% include 'components/modules/faqs.html' with faqs=faqs %}
+
+    {% include 'components/modules/featured_on.html' %}
+    
 
 {% endblock %}
