@@ -1,4 +1,4 @@
-from ckeditor.widgets import CKEditorWidget
+from django_ckeditor_5.widgets import CKEditor5Widget as CKEditorWidget
 from django import forms
 from django.core.validators import MinLengthValidator, EmailValidator
 from django_recaptcha.fields import ReCaptchaField

@@ -165,8 +165,4 @@ The solution is simply for a developer to accept the changes of anything, then t
 - [x] Django admin sso for admin login with google
 - [x] Robots.txt view setup
 - [x] Djhtml setup in makefile and actions to make sure templates are formatted
-
-
-
-
-
+- [x] Latest version of ckeditor with file upload

@@ -6,6 +6,7 @@ from django.contrib.admin.utils import unquote
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView, RedirectView, ListView
 from django.http import (
     HttpResponseBadRequest,
@@ -15,10 +16,18 @@ from django.http import (
     HttpRequest,
     Http404,
     HttpResponseNotFound,
+    JsonResponse,
 )
 
 from .forms import ContactForm
-from .models import Notification, TermsAndConditions, PrivacyPolicy, FAQ, Report
+from .models import (
+    Notification,
+    TermsAndConditions,
+    PrivacyPolicy,
+    FAQ,
+    Report,
+    MediaLibrary,
+)
 
 
 class HomeView(TemplateView):
@@ -193,3 +202,26 @@ def robots_view(request):
             return HttpResponse(file.read(), content_type="text/plain")
     except FileNotFoundError:
         return HttpResponse("Error: 'robots.txt' file not found.", status=404)
+
+
+@csrf_exempt
+def ckeditor_upload(request):
+    """Custom view for django ckeditor 5 to save the image by default as a media library image"""
+    if request.method == "POST" and request.FILES.get("upload"):
+        uploaded_file = request.FILES["upload"]
+
+        # Create a new MediaLibrary instance
+        media = MediaLibrary(
+            file=uploaded_file,
+            content_type=ContentType.objects.get_for_model(MediaLibrary),
+            object_id=0,
+        )
+        media.save()
+
+        # Prepare the response
+        url = media.file.url
+        return JsonResponse(
+            {"url": url, "uploaded": "1", "fileName": uploaded_file.name}
+        )
+
+    return JsonResponse({"error": {"message": "Invalid request"}}, status=400)

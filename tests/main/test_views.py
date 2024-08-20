@@ -3,6 +3,7 @@ from tempfile import mkdtemp
 from unittest.mock import patch, mock_open
 
 from django.contrib.contenttypes.models import ContentType
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
 
@@ -14,6 +15,7 @@ from apps.main.models import (
     PrivacyPolicy,
     Report,
     Notification,
+    MediaLibrary,
 )
 from tests.base import BaseTestCase
 from tests.factories.main import NotificationFactory
@@ -313,3 +315,145 @@ class RobotsViewTests(BaseTestCase):
         # Verify the response indicates the file was not found
         self.assertEqual(response.status_code, 404)
         self.assertIn("Error: 'robots.txt' file not found.", response.content.decode())
+
+
+class CustomUploadViewTestCase(BaseTestCase):
+    """
+    Test case for the custom upload view used by CKEditor 5.
+    This class tests various scenarios of file uploads, including
+    successful uploads, error cases, and different user roles.
+    """
+
+    def setUp(self):
+        """
+        Set up the test environment before each test method.
+        This method prepares the URL for the custom upload view
+        and gets the content type for the MediaLibrary model.
+        """
+        super().setUp()
+        self.url = reverse("ckeditor_upload")
+        self.content_type = ContentType.objects.get_for_model(MediaLibrary)
+
+    def test_upload_successful(self):
+        """
+        Test a successful file upload.
+        This test verifies that a file can be uploaded successfully,
+        the correct response is returned, and the file is saved in the MediaLibrary.
+        """
+        file_content = b"file_content"
+        file = SimpleUploadedFile(
+            "test_file.jpg", file_content, content_type="image/jpeg"
+        )
+
+        response = self.client.post(self.url, {"upload": file})
+
+        self.assertEqual(response.status_code, 200)
+        json_response = response.json()
+        self.assertEqual(json_response["uploaded"], "1")
+        self.assertIn("url", json_response)
+        self.assertEqual(json_response["fileName"], "test_file.jpg")
+
+        self.assertTrue(
+            MediaLibrary.objects.filter(file__contains="test_file.jpg").exists()
+        )
+
+    def test_upload_no_file(self):
+        """
+        Test the behavior when no file is provided in the upload request.
+        This test ensures that the view returns an appropriate error response
+        when a POST request is made without a file.
+        """
+        response = self.client.post(self.url)
+
+        self.assertEqual(response.status_code, 400)
+        json_response = response.json()
+        self.assertIn("error", json_response)
+
+    def test_upload_wrong_method(self):
+        """
+        Test the response when using the wrong HTTP method.
+        This test verifies that the view returns an error response
+        when a GET request is made instead of a POST request.
+        """
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 400)
+        json_response = response.json()
+        self.assertIn("error", json_response)
+
+    def test_upload_file_content(self):
+        """
+        Test that the uploaded file's content is correctly saved.
+        This test uploads a file with specific content and then verifies
+        that the saved file in the MediaLibrary has the same content.
+        """
+        file_content = b"test_content"
+        file = SimpleUploadedFile(
+            "test_content_file.txt", file_content, content_type="text/plain"
+        )
+
+        self.client.post(self.url, {"upload": file})
+
+        saved_file = MediaLibrary.objects.get(file__contains="test_content_file.txt")
+        with saved_file.file.open("rb") as f:
+            self.assertEqual(f.read(), file_content)
+
+    def test_upload_multiple_files(self):
+        """
+        Test uploading multiple files in succession.
+        This test verifies that multiple files can be uploaded and saved
+        correctly in separate MediaLibrary instances.
+        """
+        for i in range(3):
+            file = SimpleUploadedFile(
+                f"test_file_{i}.jpg", b"content", content_type="image/jpeg"
+            )
+            self.client.post(self.url, {"upload": file})
+
+        self.assertEqual(MediaLibrary.objects.count(), 3)
+
+    def test_upload_large_file(self):
+        """
+        Test uploading a large file (5MB).
+        This test ensures that large files can be uploaded successfully
+        and that their size is preserved in the MediaLibrary.
+        """
+        large_file_content = b"0" * (5 * 1024 * 1024)  # 5MB of zeros
+        large_file = SimpleUploadedFile(
+            "large_file.bin",
+            large_file_content,
+            content_type="application/octet-stream",
+        )
+
+        response = self.client.post(self.url, {"upload": large_file})
+
+        self.assertEqual(response.status_code, 200)
+        json_response = response.json()
+        self.assertEqual(json_response["uploaded"], "1")
+
+        saved_file = MediaLibrary.objects.get(file__contains="large_file.bin")
+        self.assertEqual(saved_file.file.size, 5 * 1024 * 1024)
+
+    def test_upload_as_regular_user(self):
+        """
+        Test file upload as a regular user.
+        This test verifies that a non-superuser can successfully upload files.
+        """
+        self.client.force_login(self.regular_user)
+        file = SimpleUploadedFile(
+            "user_file.jpg", b"content", content_type="image/jpeg"
+        )
+        response = self.client.post(self.url, {"upload": file})
+        self.assertEqual(response.status_code, 200)
+
+    def test_upload_as_superuser(self):
+        """
+        Test file upload as a superuser.
+        This test ensures that a superuser can successfully upload files.
+        """
+        self.client.force_login(self.superuser)
+        file = SimpleUploadedFile(
+            "admin_file.jpg", b"content", content_type="image/jpeg"
+        )
+        response = self.client.post(self.url, {"upload": file})
+        self.assertEqual(response.status_code, 200)
