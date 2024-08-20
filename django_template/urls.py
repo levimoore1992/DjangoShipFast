@@ -20,11 +20,12 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-from apps.main.views import BadRequestView, ServerErrorView
+from apps.main.views import BadRequestView, ServerErrorView, ckeditor_upload
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("users/", include("apps.users.urls")),
+    path("upload/", ckeditor_upload, name="ckeditor_upload"),
     path("", include("apps.main.urls")),
 ]
 

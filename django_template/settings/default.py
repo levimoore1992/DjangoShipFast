@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     # third party apps
     "django_recaptcha",  # Google Captcha
     "waffle",  # Feature Flags
-    "ckeditor",
+    "django_ckeditor_5",
     "django_htmx",
     "admin_sso",  # google login for admin
     # celery apps
@@ -190,47 +190,6 @@ STRIPE_API_SK = os.getenv("STRIPE_SK_KEY")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
 
 
-# CK Editor Config
-CKEDITOR_CONFIGS = {
-    "default": {
-        "toolbar_Basic": (
-            (
-                "Bold",
-                "Italic",
-                "Underline",
-                "Strike",
-            ),
-            (
-                "Link",
-                "Unlink",
-            ),
-            (
-                "Undo",
-                "Redo",
-            ),
-            (
-                "RemoveFormat",
-                "Source",
-            ),
-        ),
-        "toolbar_Custom": [
-            ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"],
-            ["Bold", "Italic", "Underline", "Strike"],
-            ["Outdent", "Indent"],
-            ["NumberedList", "BulletedList"],
-            ["Link", "Unlink"],
-            ["Undo", "Redo"],
-            ["RemoveFormat", "Source"],
-            [
-                "TextColor",
-            ],
-        ],
-        "toolbar": "Custom",
-        "height": 120,
-        "width": 600,
-    }
-}
-
 # Authentication settings
 
 AUTH_USER_MODEL = "users.User"
@@ -291,3 +250,121 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+# CK Editor Config
+CKEDITOR_5_FILE_STORAGE = MEDIA_URL
+CKEDITOR_5_CONFIGS = {
+    "default": {
+        "toolbar": [
+            "heading",
+            "|",
+            "bold",
+            "italic",
+            "link",
+            "bulletedList",
+            "numberedList",
+            "blockQuote",
+            "imageUpload",
+        ],
+    },
+    "extends": {
+        "blockToolbar": [
+            "paragraph",
+            "heading1",
+            "heading2",
+            "heading3",
+            "|",
+            "bulletedList",
+            "numberedList",
+            "|",
+            "blockQuote",
+        ],
+        "toolbar": [
+            "heading",
+            "|",
+            "outdent",
+            "indent",
+            "|",
+            "bold",
+            "italic",
+            "link",
+            "underline",
+            "strikethrough",
+            "code",
+            "subscript",
+            "superscript",
+            "highlight",
+            "|",
+            "codeBlock",
+            "sourceEditing",
+            "insertImage",
+            "bulletedList",
+            "numberedList",
+            "todoList",
+            "|",
+            "blockQuote",
+            "imageUpload",
+            "|",
+            "fontSize",
+            "fontFamily",
+            "fontColor",
+            "fontBackgroundColor",
+            "mediaEmbed",
+            "removeFormat",
+            "insertTable",
+        ],
+        "image": {
+            "toolbar": [
+                "imageTextAlternative",
+                "|",
+                "imageStyle:alignLeft",
+                "imageStyle:alignRight",
+                "imageStyle:alignCenter",
+                "imageStyle:side",
+                "|",
+            ],
+            "styles": [
+                "full",
+                "side",
+                "alignLeft",
+                "alignRight",
+                "alignCenter",
+            ],
+        },
+        "heading": {
+            "options": [
+                {
+                    "model": "paragraph",
+                    "title": "Paragraph",
+                    "class": "ck-heading_paragraph",
+                },
+                {
+                    "model": "heading1",
+                    "view": "h1",
+                    "title": "Heading 1",
+                    "class": "ck-heading_heading1",
+                },
+                {
+                    "model": "heading2",
+                    "view": "h2",
+                    "title": "Heading 2",
+                    "class": "ck-heading_heading2",
+                },
+                {
+                    "model": "heading3",
+                    "view": "h3",
+                    "title": "Heading 3",
+                    "class": "ck-heading_heading3",
+                },
+            ]
+        },
+    },
+    "list": {
+        "properties": {
+            "styles": "true",
+            "startIndex": "true",
+            "reversed": "true",
+        }
+    },
+}
+CK_EDITOR_5_UPLOAD_FILE_VIEW_NAME = "ckeditor_upload"
