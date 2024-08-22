@@ -372,4 +372,4 @@ CKEDITOR_5_CONFIGS = {
 }
 CK_EDITOR_5_UPLOAD_FILE_VIEW_NAME = "ckeditor_upload"
 
-TAILWIND_APP_NAME = 'apps.theme'
+TAILWIND_APP_NAME = "apps.theme"

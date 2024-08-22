@@ -2,4 +2,6 @@ from django.apps import AppConfig
 
 
 class ThemeConfig(AppConfig):
-    name = 'apps.theme'
+    """App for the tailwind theme made by django-tailwind package"""
+
+    name = "apps.theme"
