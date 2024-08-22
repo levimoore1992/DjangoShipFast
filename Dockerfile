@@ -18,6 +18,13 @@ RUN apt-get update && \
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
+
+# Install Node.js
+RUN apt-get update && apt-get install -y curl
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get install -y nodejs
+
+
 RUN mkdir /app
 COPY . /app/
 WORKDIR /app
@@ -25,6 +32,7 @@ WORKDIR /app
 # Install any needed packages specified in requirements.txt as well as uwsgi
 RUN pip install --upgrade pip && \
     pip install -r requirements/dev.txt
+
 
 # Make port 8000 available to the world outside this container
 EXPOSE 8000

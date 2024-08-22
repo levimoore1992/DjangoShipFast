@@ -41,3 +41,11 @@ restore-dev:
 # Create superuser
 superuser:
 	docker compose exec $(SERVICE_NAME) python manage.py createsuperuser
+
+# start tailwind
+tailwind-start:
+	docker compose exec $(SERVICE_NAME) python manage.py tailwind start
+
+# build tailwind and compile
+tailwind-build:
+	docker compose exec $(SERVICE_NAME) python manage.py tailwind build

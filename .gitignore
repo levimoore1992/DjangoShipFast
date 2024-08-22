@@ -7,3 +7,5 @@ restore.dump
 /.pytest_cache/
 .coverage
 /django_template/media/
+/node_modules/
+package-lock.json

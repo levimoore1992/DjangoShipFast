@@ -52,6 +52,9 @@ INSTALLED_APPS = [
     "django_ckeditor_5",
     "django_htmx",
     "admin_sso",  # google login for admin
+    # Tailwind apps
+    "tailwind",
+    "apps.theme",
     # celery apps
     "django_celery_beat",
     "django_celery_results",
@@ -368,3 +371,5 @@ CKEDITOR_5_CONFIGS = {
     },
 }
 CK_EDITOR_5_UPLOAD_FILE_VIEW_NAME = "ckeditor_upload"
+
+TAILWIND_APP_NAME = 'apps.theme'
