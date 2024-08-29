@@ -141,11 +141,21 @@ After creating your app, you dont need to update the app as long as you place yo
 Because we use npm to minify our styles its possible that 2 developers working on styles may make something that will conflict with each other.
 The solution is simply for a developer to accept the changes of anything, then the file will recompile it anyways.
 
+## Tailwind Instructions
+To run the node code to run tailwind there is a make command
+```
+make tailwind-start
+```
+before deploying you need to make sure to end this command and then run the build command
+```
+make tailwind-build
+```
+
 ### Features
 - [x] Dockerized
 - [x] Django 5.0
 - [x] Python 3.12
-- [x] Tailwind CSS
+- [x] Tailwind CSS with django-tailwind
 - [x] Business Pages such as Contact, Privacy Policy, Terms of Service, FAQs
 - [x] User Blocking and Tracking with IP address and device agent
 - [x] All apps moved to an apps folder
