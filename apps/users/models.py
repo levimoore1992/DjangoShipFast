@@ -3,6 +3,7 @@ import requests
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import CIEmailField
 from django.db import models
+from django.templatetags.static import static
 
 from apps.main.mixins import CreateMediaLibraryMixin
 
@@ -29,7 +30,7 @@ class User(CreateMediaLibraryMixin, AbstractUser):
         """Return the URL of the user's avatar."""
         if self.avatar:
             return self.avatar.url
-        return "https://www.gravatar.com/avatar/"
+        return static("images/default_user.jpeg")
 
 
 class UserIPManager(models.Manager):
