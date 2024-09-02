@@ -156,6 +156,7 @@ make tailwind-build
 - [x] Django 5.0
 - [x] Python 3.12
 - [x] Tailwind CSS with django-tailwind
+- [x] Hyperscript library 
 - [x] Business Pages such as Contact, Privacy Policy, Terms of Service, FAQs
 - [x] User Blocking and Tracking with IP address and device agent
 - [x] All apps moved to an apps folder
