@@ -32,12 +32,6 @@ DEBUG_TOOLBAR_PANELS = [
     "django_template.dev_utils.ReplaceImagesPanel",
 ]
 
-
-# Local Email
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-DEFAULT_FROM_EMAIL = "admin@localhost"
-
-
 LOGGING = {
     "version": 1,
     "handlers": {
