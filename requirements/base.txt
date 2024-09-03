@@ -28,3 +28,6 @@ django-ipware==7.0.1
 
 # For admin login with google
 django-admin-sso==5.2.0
+
+# For emails
+django-anymail[mailgun]==11.1

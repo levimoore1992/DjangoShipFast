@@ -1,5 +1,6 @@
 from unittest import mock
 
+from django.templatetags.static import static
 from django.test import TestCase
 
 from tests.factories.users import UserFactory, UserDeviceFactory, UserIPFactory
@@ -64,7 +65,7 @@ class UserTest(TestCase):
         user = UserFactory(avatar=None)
 
         # Check if the avatar_url returns the default Gravatar URL
-        self.assertEqual(user.avatar_url, "https://www.gravatar.com/avatar/")
+        self.assertEqual(user.avatar_url, static('images/default_user.jpeg'))
 
 
 class UserIPLocationTestCase(TestCase):
