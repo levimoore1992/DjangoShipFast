@@ -224,7 +224,7 @@ ANYMAIL = {
     "MAILGUN_SENDER_DOMAIN": os.getenv("MAILGUN_SENDER_DOMAIN"),
 }
 EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
-DEFAULT_FROM_EMAIL = f"no-reply@{os.getenv("MAILGUN_SENDER_DOMAIN")}"
+DEFAULT_FROM_EMAIL = f"no-reply@{os.getenv('MAILGUN_SENDER_DOMAIN')}"
 
 # DigitalOcean Spaces settings
 AWS_ACCESS_KEY_ID = os.getenv("DIGITAL_OCEAN_ACCESS_KEY")
