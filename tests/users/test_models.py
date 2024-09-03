@@ -65,7 +65,7 @@ class UserTest(TestCase):
         user = UserFactory(avatar=None)
 
         # Check if the avatar_url returns the default Gravatar URL
-        self.assertEqual(user.avatar_url, static('images/default_user.jpeg'))
+        self.assertEqual(user.avatar_url, static("images/default_user.jpeg"))
 
 
 class UserIPLocationTestCase(TestCase):
