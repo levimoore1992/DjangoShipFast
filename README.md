@@ -141,6 +141,14 @@ After creating your app, you dont need to update the app as long as you place yo
 Because we use npm to minify our styles its possible that 2 developers working on styles may make something that will conflict with each other.
 The solution is simply for a developer to accept the changes of anything, then the file will recompile it anyways.
 
+## Email
+The repo is opinionated to using mailgun. Check the mailgun docs for full setup guide
+Generally speaking for local testing you can use your sandbox domain from mailgun and for production you can use yours
+They can both be represented in the env variables.
+The default FROM_EMAIL is "no-reply"@<yourdomain> but you can change that in default.py
+
+
+
 ### Features
 - [x] Dockerized
 - [x] Django 5.0
@@ -167,3 +175,4 @@ The solution is simply for a developer to accept the changes of anything, then t
 - [x] Robots.txt view setup
 - [x] Djhtml setup in makefile and actions to make sure templates are formatted
 - [x] Latest version of ckeditor with file upload
+- [x] Email settings with mailgun and anymail
