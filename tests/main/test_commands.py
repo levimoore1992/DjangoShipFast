@@ -211,7 +211,7 @@ class RestoreDbCommandTest(TestCase):
         mock_target_commands,
         mock_source_commands,
         mock_exit,
-    ):  # pylint: disable=too-many-arguments
+    ):  # pylint: disable=too-many-positional-arguments,too-many-arguments
         """
         Test that the handle method exits with no commands message when no commands are available.
         """

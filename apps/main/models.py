@@ -1,6 +1,7 @@
 import os
 
 import auto_prefetch
+from django.conf import settings
 
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -9,6 +10,7 @@ from django.urls import reverse
 from model_utils.models import TimeStampedModel
 
 from apps.main.consts import ContactStatus
+from apps.main.tasks import send_email_task
 
 
 class TermsAndConditions(models.Model):
@@ -64,6 +66,16 @@ class Contact(models.Model):
         ordering = ["-contact_date"]
         verbose_name = "Contact Request"
         verbose_name_plural = "Contact Requests"
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            send_email_task.delay(
+                subject=f"Contact request made with {self.subject}",
+                message=f"A contact request was made saying {self.message}",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[settings.NOTIFICATION_USER_EMAIL],
+            )
+        super().save(*args, **kwargs)
 
 
 class SocialMediaLink(models.Model):
