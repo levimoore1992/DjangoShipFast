@@ -226,6 +226,10 @@ ANYMAIL = {
 EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
 DEFAULT_FROM_EMAIL = f"no-reply@{os.getenv('MAILGUN_SENDER_DOMAIN')}"
 
+NOTIFICATION_USER_EMAIL = os.getenv(
+    "NOTIFICATION_USER_EMAIL"
+)  # Email that will be sent an email notification if something happens we need to be aware of.
+
 # DigitalOcean Spaces settings
 AWS_ACCESS_KEY_ID = os.getenv("DIGITAL_OCEAN_ACCESS_KEY")
 AWS_SECRET_ACCESS_KEY = os.getenv("DIGITAL_OCEAN_SECRET_ACCESS_KEY")
