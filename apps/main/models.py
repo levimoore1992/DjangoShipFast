@@ -12,6 +12,7 @@ from model_utils.models import TimeStampedModel
 from apps.main.consts import ContactStatus
 from apps.main.tasks import send_email_task
 
+
 class TermsAndConditions(models.Model):
     """
     Model for the Terms and Conditions

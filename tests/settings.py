@@ -41,4 +41,4 @@ CELERY_BROKER_URL = "memory://"
 CELERY_RESULT_BACKEND = "cache+memory://"
 CELERY_TASK_ALWAYS_EAGER = True
 
-NOTIFICATION_USER_EMAIL = '' # set to blank so you dont get spam emails during testing
+NOTIFICATION_USER_EMAIL = ""  # set to blank so you dont get spam emails during testing
