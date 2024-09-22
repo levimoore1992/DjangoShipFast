@@ -37,6 +37,7 @@ docker compose up --build
 <li>Change the value in 'meta_tags.html' to reflect what you want for you application</li>
 <li>Change the value of you app name in admin/base_site.html</li>
 <li>Change the value of YOURAPPNAME in apps/user/auth</li>
+<li>Marquee module text boxes and call to action should change</li>
 </ul>
 
 ## How to Use `restore_local_db` Management Command
@@ -176,3 +177,4 @@ The default FROM_EMAIL is "no-reply"@<yourdomain> but you can change that in def
 - [x] Djhtml setup in makefile and actions to make sure templates are formatted
 - [x] Latest version of ckeditor with file upload
 - [x] Email settings with mailgun and anymail
+- [x] Marquee module for the landing page
