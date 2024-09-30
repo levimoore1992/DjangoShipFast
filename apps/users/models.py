@@ -1,7 +1,6 @@
 import auto_prefetch
 import requests
 from django.contrib.auth.models import AbstractUser
-from django.contrib.postgres.fields import CIEmailField
 from django.db import models
 from django.templatetags.static import static
 
@@ -12,7 +11,12 @@ class User(CreateMediaLibraryMixin, AbstractUser):
     """An override of the user model to extend any new fields or remove others."""
 
     # override the default email field so that we can make it unique
-    email = CIEmailField(max_length=255, unique=True, verbose_name="Email Address")
+    email = models.EmailField(
+        max_length=255,
+        unique=True,
+        verbose_name="Email Address",
+        db_collation="en-x-icu",
+    )
     avatar = models.ImageField(upload_to="profile_image/", null=True, blank=True)
 
     # Add any custom fields for your application here

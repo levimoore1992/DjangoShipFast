@@ -19,7 +19,7 @@ services:
         container_name: django_template
         build:
             context: .
-            dockerfile: Dockerfile
+            dockerfile: Dockerfile-local
         volumes:
             - .:/app
         ports:
@@ -51,7 +51,7 @@ services:
         user: "1000:1000"
         build:
             context: .
-            dockerfile: Dockerfile
+            dockerfile: Dockerfile-local
         command: "celery -A django_template worker --loglevel=info"
         volumes:
             - .:/app
@@ -67,7 +67,7 @@ services:
     celery-beat:
         build:
             context: .
-            dockerfile: Dockerfile
+            dockerfile: Dockerfile-local
         command: "celery -A django_template beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler"
         volumes:
             - .:/app
