@@ -15,7 +15,7 @@ class User(CreateMediaLibraryMixin, AbstractUser):
         max_length=255,
         unique=True,
         verbose_name="Email Address",
-        db_collation="en-x-icu"
+        db_collation="en-x-icu",
     )
     avatar = models.ImageField(upload_to="profile_image/", null=True, blank=True)
 
