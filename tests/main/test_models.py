@@ -36,7 +36,7 @@ class TermsAndConditionsTest(TestCase):
         terms = TermsAndConditions.objects.create(terms="Sample Terms")
         self.assertTrue(isinstance(terms, TermsAndConditions))
         self.assertEqual(
-            str(terms), f"Terms And Conditions  were not created at {terms.created_at}"
+            str(terms), f"Terms And Conditions created at {terms.created_at}"
         )
 
 
