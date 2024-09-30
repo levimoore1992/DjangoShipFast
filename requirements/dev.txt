@@ -6,20 +6,20 @@ djhtml==3.0.6
 
 # For Django Extensions ex: run_server_plus to run on https locally
 django-extensions==3.2.3
-Werkzeug==3.0.3
+Werkzeug==3.0.4
 pyOpenSSL==24.2.1
 
-pytest==8.3.1
-pytest-django==4.8.0
+pytest==8.3.3
+pytest-django==4.9.0
 pytest-mock==3.14.0
 pytest-xdist==3.6.1
-factory-boy==3.3.0
+factory-boy==3.3.1
 pytest-cov==5.0.0
 
 # For user switching
 django-hijack==3.6.0
 
 # Linting libraries
-flake8==7.1.0
-black==24.4.2
+flake8==7.1.1
+black==24.8.0
 pylint-django==2.5.5
