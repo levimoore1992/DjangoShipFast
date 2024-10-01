@@ -134,3 +134,37 @@ class CommentFactory(factory.django.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     content = factory.Faker("paragraph")
     created = factory.LazyFunction(timezone.now)
+
+
+class TermsAndConditionsFactory(factory.django.DjangoModelFactory):
+    """
+    Factory for creating TermsAndConditions instances.
+
+    This factory generates TermsAndConditions objects with realistic-looking data
+    for use in tests. It uses Faker to generate plausible content for the terms field.
+    """
+
+    class Meta:
+        model = "main.TermsAndConditions"
+
+    terms = factory.Faker("paragraph", nb_sentences=10)
+    created_at = factory.Faker(
+        "date_time_this_year", tzinfo=timezone.get_current_timezone()
+    )
+
+
+class PrivacyPolicyFactory(factory.django.DjangoModelFactory):
+    """
+    Factory for creating PrivacyPolicy instances.
+
+    This factory generates PrivacyPolicy objects with realistic-looking data
+    for use in tests. It uses Faker to generate plausible content for the policy field.
+    """
+
+    class Meta:
+        model = "main.PrivacyPolicy"
+
+    policy = factory.Faker("paragraph", nb_sentences=15)
+    created_at = factory.Faker(
+        "date_time_this_year", tzinfo=timezone.get_current_timezone()
+    )

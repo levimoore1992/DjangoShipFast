@@ -78,7 +78,7 @@ MIDDLEWARE = [
     "waffle.middleware.WaffleMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
     "allauth.account.middleware.AccountMiddleware",
-    "apps.users.middleware.TrackUserIPAndDeviceMiddleware",
+    "apps.users.middleware.SecurityMiddleware",
     "apps.main.middleware.HTMXExceptionMiddleware",
 ]
 

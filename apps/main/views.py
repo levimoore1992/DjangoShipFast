@@ -43,7 +43,7 @@ class TermsAndConditionsView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["terms"] = TermsAndConditions.objects.latest("created_at").terms
+        context["terms"] = TermsAndConditions.objects.latest("created_at")
         return context
 
 
