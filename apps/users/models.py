@@ -42,6 +42,10 @@ class UserIPManager(models.Manager):
     A custom manager for the UserIP model.
     """
 
+    def is_ip_blocked(self, ip_address):
+        """Checks if the ip address is blocked"""
+        return self.filter(ip_address=ip_address, is_blocked=True).exists()
+
     def is_ip_blocked_or_suspicious(self, ip_address):
         """
         Check if an IP address is blocked or suspicious.
@@ -49,7 +53,7 @@ class UserIPManager(models.Manager):
         :return:
         """
         return (
-            self.filter(ip_address=ip_address, is_blocked=True).exists()
+            self.is_ip_blocked(ip_address)
             or self.filter(ip_address=ip_address, is_suspicious=True).exists()
         )
 

@@ -71,12 +71,10 @@ class SecurityMiddleware:
         ip_address, _ = get_client_ip(request)
         device_identifier = get_device_identifier(request)
 
-        ip_blocked_or_suspicious = UserIP.objects.is_ip_blocked_or_suspicious(
-            ip_address
-        )
+        ip_blocked = UserIP.objects.is_ip_blocked(ip_address)
         device_blocked = UserDevice.objects.is_device_blocked(device_identifier)
 
-        return ip_blocked_or_suspicious or device_blocked
+        return ip_blocked or device_blocked
 
     def handle_blocked_user(self, request):
         """

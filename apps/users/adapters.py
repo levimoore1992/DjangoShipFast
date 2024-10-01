@@ -22,15 +22,9 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         # This hook is called before the social account is logged in
         # and before the pre_social_login signal is emitted.
         user = sociallogin.user
-        if user.id:
-            return
-        try:
-            # If user exists, connect the account to the existing account and login
-            existing_user = User.objects.get(email=user.email)
+        # If user exists, connect the account to the existing account and login
+        if existing_user := User.objects.filter(email=user.email).first():
             sociallogin.connect(request, existing_user)
-        except User.DoesNotExist:
-            # If user does not exist, let allauth create a new user
-            pass
 
     def populate_user(self, request, sociallogin, data):
         user = super().populate_user(request, sociallogin, data)
