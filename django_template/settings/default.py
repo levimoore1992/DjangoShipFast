@@ -46,11 +46,17 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
     # third party apps
     "django_recaptcha",  # Google Captcha
     "waffle",  # Feature Flags
     "django_ckeditor_5",
     "django_htmx",
+    # auth apps
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
     "admin_sso",  # google login for admin
     # celery apps
     "django_celery_beat",
@@ -71,6 +77,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "waffle.middleware.WaffleMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
     "apps.users.middleware.TrackUserIPAndDeviceMiddleware",
     "apps.main.middleware.HTMXExceptionMiddleware",
 ]
@@ -145,6 +152,9 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Site settings
+SITE_ID = 1
+
 DATE_FORMAT = "j/n/y"  # Day/Month/Year without leading zeros.
 TIME_FORMAT = "P"  # Hour in 12-hour format with AM/PM.
 DATETIME_FORMAT = "P j/n/y"  # Combination of both time and date.
@@ -197,6 +207,7 @@ AUTH_USER_MODEL = "users.User"
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",  # Default backend
     "apps.users.auth.DjangoAdminAuthBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
 )
 
 DJANGO_ADMIN_SSO_OAUTH_CLIENT_ID = os.getenv("DJANGO_ADMIN_SSO_OAUTH_CLIENT_ID")
@@ -206,6 +217,35 @@ DJANGO_ADMIN_SSO_OAUTH_CLIENT_SECRET = os.getenv("DJANGO_ADMIN_SSO_OAUTH_CLIENT_
 DJANGO_ADMIN_SSO_ADD_LOGIN_BUTTON = False
 
 LOGIN_URL = "login"
+
+# Authentication and allauth settings
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "APP": {
+            "client_id": DJANGO_ADMIN_SSO_OAUTH_CLIENT_ID,
+            "secret": DJANGO_ADMIN_SSO_OAUTH_CLIENT_SECRET,
+            "key": "",
+        },
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        },
+        "OAUTH_PKCE_ENABLED": True,
+    }
+}
+# Avoid a confirmation screen for Oauth libraries
+SOCIALACCOUNT_LOGIN_ON_GET = True
+# Social Account Settings
+SOCIALACCOUNT_AUTO_SIGNUP = True
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_ADAPTER = "apps.users.adapters.CustomAccountAdapter"
+SOCIALACCOUNT_ADAPTER = "apps.users.adapters.CustomSocialAccountAdapter"
 
 # settings.py
 CELERY_BROKER_URL = os.getenv("REDIS_URL")
