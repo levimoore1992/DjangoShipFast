@@ -55,7 +55,7 @@ class SecurityMiddlewareTests(BaseTestCase):
             ).exists()
         )
 
-    @patch("apps.users.middleware.UserIP.objects.is_ip_blocked_or_suspicious")
+    @patch("apps.users.middleware.UserIP.objects.is_ip_blocked")
     @patch("apps.users.middleware.UserDevice.objects.is_device_blocked")
     def test_is_ip_or_device_blocked(self, mock_device_blocked, mock_ip_blocked):
         """
