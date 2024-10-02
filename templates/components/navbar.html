@@ -31,14 +31,9 @@
                 <img src="{{ user.avatar_url }}" alt="{{ user.username }}" class="object-cover">
               </div>
             </label>
-            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 z-20">
               <li><a href="#">My Profile</a></li>
-              <li>
-                <form action="{% url 'account_logout' %}" method="post">
-                  {% csrf_token %}
-                  <button type="submit" class="w-full text-left">Logout</button>
-                </form>
-              </li>
+              <li><a href="{% url 'account_logout' %}">Log Out</a></li>
             </ul>
           </div>
         </div>
