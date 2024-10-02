@@ -236,9 +236,8 @@ SOCIALACCOUNT_PROVIDERS = {
         "OAUTH_PKCE_ENABLED": True,
     }
 }
-# Avoid a confirmation screen for Oauth libraries
-SOCIALACCOUNT_LOGIN_ON_GET = True
 # Social Account Settings
+SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_AUTO_SIGNUP = True
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
