@@ -222,6 +222,8 @@ LOGIN_URL = "login"
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "APP": {
+            # we use the same variables for the ADMIN SSO because the variables above cant change
+            # because of admin sso library but they are the same values
             "client_id": DJANGO_ADMIN_SSO_OAUTH_CLIENT_ID,
             "secret": DJANGO_ADMIN_SSO_OAUTH_CLIENT_SECRET,
             "key": "",
