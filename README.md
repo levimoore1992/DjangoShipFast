@@ -127,7 +127,7 @@ For admin login we use admin sso library to make sure an attacker cant just get 
 2. Click on "Select a project" and then "New Project".
 3. Enter the project name and create it.
 
-### Create OAuth 2.0 Credentials
+### Create Google OAuth 2.0 Credentials
 
 1. Go to the "Credentials" tab.
 2. Click on "Create Credentials" and select "OAuth 2.0 Client ID".
@@ -162,7 +162,7 @@ The default FROM_EMAIL is "no-reply"@<yourdomain> but you can change that in def
 - [x] Makefile for easy commands
 - [x] Meta Tags in meta_tags.html
 - [x] django-celery-beat for periodic tasks
-- [x] User Login Create and Logout Features
+- [x] Authentication built with django allauth with google social
 - [x] Custom User Model with Avatar field for profile pictures
 - [x] User Tracking IP Address and devices
 - [x] Built in linters with black and flake8 as well as commands in makefile
