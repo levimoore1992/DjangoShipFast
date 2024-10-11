@@ -135,6 +135,41 @@ For admin login we use admin sso library to make sure an attacker cant just get 
 4. For the application type, select "Web application".
 5. Set the authorized redirect URIs. This should be your Django application's URL where you handle the OAuth callback, e.g., `http://localhost:8000/accounts/google/login/callback/`.
 
+# Setting up GitHub Authentication
+
+This project uses django-allauth for GitHub authentication. Follow these steps to set it up:
+
+## 1. Create a GitHub OAuth App
+
+1. Go to your GitHub account settings
+2. Navigate to Developer settings > OAuth Apps > New OAuth App
+3. Fill in the application details:
+   - Application name: [Your App Name]
+   - Homepage URL: `https://localhost:8000/` (or your domain in production)
+   - Authorization callback URL: `https://localhost:8000/accounts/github/login/callback/`
+4. Register the application
+5. Note your Client ID and Client Secret
+
+## 2. Set Environment Variables
+
+Set the following environment variables with your GitHub OAuth App credentials:
+
+```
+GITHUB_CLIENT_ID=your_client_id_here
+GITHUB_CLIENT_SECRET=your_client_secret_here
+```
+
+Replace `your_client_id_here` and `your_client_secret_here` with the values from your GitHub OAuth App.
+
+## Security Notes
+
+- Keep your `client_id` and `secret` confidential
+- In production, ensure you're using HTTPS
+- Make sure your callback URL in GitHub settings matches your actual callback URL
+
+That's it! Your application should now support GitHub authentication. Users can log in by clicking the "Login with GitHub" button on the login page.
+
+
 ### Important Note:
 After creating your app, you dont need to update the app as long as you place your app in the apps directory
 
@@ -147,7 +182,6 @@ The repo is opinionated to using mailgun. Check the mailgun docs for full setup 
 Generally speaking for local testing you can use your sandbox domain from mailgun and for production you can use yours
 They can both be represented in the env variables.
 The default FROM_EMAIL is "no-reply"@<yourdomain> but you can change that in default.py
-
 
 
 ### Features
@@ -178,3 +212,4 @@ The default FROM_EMAIL is "no-reply"@<yourdomain> but you can change that in def
 - [x] Latest version of ckeditor with file upload
 - [x] Email settings with mailgun and anymail
 - [x] Marquee module for the landing page
+- [x] Django allauth account login with Google and Github

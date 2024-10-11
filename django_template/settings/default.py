@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
+    "allauth.socialaccount.providers.github",
     "admin_sso",  # google login for admin
     # celery apps
     "django_celery_beat",
@@ -236,7 +237,14 @@ SOCIALACCOUNT_PROVIDERS = {
             "access_type": "online",
         },
         "OAUTH_PKCE_ENABLED": True,
-    }
+    },
+    "github": {
+        "APP": {
+            "client_id": os.getenv("GITHUB_CLIENT_ID"),
+            "secret": os.getenv("GITHUB_SECRET_KEY"),
+            "key": "",
+        }
+    },
 }
 # Social Account Settings
 SOCIALACCOUNT_LOGIN_ON_GET = True
