@@ -99,6 +99,9 @@ TEMPLATES = [
                 "apps.main.context_processors.report_form",
                 "apps.main.context_processors.notifications",
             ],
+            "builtins": [
+                "waffle.templatetags.waffle_tags",
+            ],
         },
     },
 ]
