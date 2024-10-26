@@ -6,7 +6,7 @@ djhtml==3.0.6
 
 # For Django Extensions ex: run_server_plus to run on https locally
 django-extensions==3.2.3
-Werkzeug==3.0.4
+Werkzeug==3.0.6
 pyOpenSSL==24.2.1
 
 pytest==8.3.3
