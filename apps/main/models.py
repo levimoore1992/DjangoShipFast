@@ -1,6 +1,8 @@
 import os
 
 import auto_prefetch
+from django_lifecycle import LifecycleModel, hook, BEFORE_CREATE
+
 from django.conf import settings
 
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -11,7 +13,6 @@ from model_utils.models import TimeStampedModel
 
 from apps.main.consts import ContactStatus
 from apps.main.tasks import send_email_task
-from django_lifecycle import LifecycleModel, hook, BEFORE_CREATE
 
 
 class TermsAndConditions(models.Model):
