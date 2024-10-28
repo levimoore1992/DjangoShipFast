@@ -32,3 +32,6 @@ django-admin-sso==5.2.0
 
 # For emails
 django-anymail[mailgun]==12.0
+
+# For lifecycle hooks signal like feature
+django-lifecycle==1.2.4
