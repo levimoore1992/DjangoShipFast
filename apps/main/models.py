@@ -11,6 +11,7 @@ from model_utils.models import TimeStampedModel
 
 from apps.main.consts import ContactStatus
 from apps.main.tasks import send_email_task
+from django_lifecycle import LifecycleModel, hook, BEFORE_CREATE
 
 
 class TermsAndConditions(models.Model):
@@ -41,7 +42,7 @@ class PrivacyPolicy(models.Model):
         return f"Privacy Policy created at {self.created_at}"
 
 
-class Contact(models.Model):
+class Contact(LifecycleModel):
     """
     Model representing a user's contact request.
     """
@@ -67,15 +68,17 @@ class Contact(models.Model):
         verbose_name = "Contact Request"
         verbose_name_plural = "Contact Requests"
 
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            send_email_task.delay(
-                subject=f"Contact request made with {self.subject}",
-                message=f"A contact request was made saying {self.message}",
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[settings.NOTIFICATION_USER_EMAIL],
-            )
-        super().save(*args, **kwargs)
+    @hook(BEFORE_CREATE)
+    def notify_admin(self):
+        """
+        Send email notification to admin when a new contact is created.
+        """
+        send_email_task.delay(
+            subject=f"Contact request made with {self.subject}",
+            message=f"A contact request was made saying {self.message}",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[settings.NOTIFICATION_USER_EMAIL],
+        )
 
 
 class SocialMediaLink(models.Model):
