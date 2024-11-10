@@ -22,7 +22,7 @@ jobs:
       - name: Setup Python Linter
         if: ${{ env.template_py_diff != '' }}
         run: |
-          python3 -m pip install flake8==7.1.1 black==24.8.0
+          python3 -m pip install flake8==7.1.1 black==24.10.0
 
       - name: Run Black - Confirm files have been formatted using Black
         if: ${{ env.template_py_diff != '' }}
