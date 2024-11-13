@@ -1,5 +1,7 @@
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
+
+from apps.main.tasks import notify_by_slack
 from apps.users.models import User
 
 
@@ -12,6 +14,7 @@ class CustomAccountAdapter(DefaultAccountAdapter):
         user.username = user.email  # Set username to email
         if commit:
             user.save()
+            notify_by_slack(f"A new user has been created: {user.email}")
         return user
 
 
