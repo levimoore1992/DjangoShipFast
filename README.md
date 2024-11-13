@@ -183,6 +183,31 @@ Generally speaking for local testing you can use your sandbox domain from mailgu
 They can both be represented in the env variables.
 The default FROM_EMAIL is "no-reply"@<yourdomain> but you can change that in default.py
 
+## Slack
+I'll give you a concise guide focused just on creating the Slack app and getting the required tokens.
+
+1. Create Slack App:
+   - Go to https://api.slack.com/apps
+   - Click "Create New App" 
+   - Choose "From scratch"
+   - Name your app and select your workspace
+   - Click "Create App"
+
+2. Get Bot Token:
+   - In your app's settings, go to "OAuth & Permissions"
+   - Under "Scopes", add these Bot Token Scopes:
+     * `chat:write`
+     * `chat:write.public`
+   - Click "Install to Workspace" at the top of the page
+   - After installation, copy the "Bot User OAuth Token" - it starts with `xoxb-`
+
+3. Set your environment variables:
+```
+SLACK_BOT_TOKEN=xoxb-your-bot-token-here  # The Bot User OAuth Token you copied
+DEFAULT_SLACK_CHANNEL=general              # The channel name without the # symbol
+```
+
+That's it! Your bot token will let you send messages to any public channel the bot is added to. Just add the bot to your desired channel by mentioning it (@your-bot-name) or inviting it through the channel menu.
 
 ### Features
 - [x] Dockerized
@@ -213,3 +238,4 @@ The default FROM_EMAIL is "no-reply"@<yourdomain> but you can change that in def
 - [x] Email settings with mailgun and anymail
 - [x] Marquee module for the landing page
 - [x] Django allauth account login with Google and Github
+- [x] Slack notifications for a specific chatroom
