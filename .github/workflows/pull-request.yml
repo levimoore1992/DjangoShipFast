@@ -3,105 +3,93 @@ name: Pull Request Checks
 on: pull_request
 
 jobs:
-
-  run-linter:
-    name: Lint Code Base
+  lint-and-format:
+    name: Lint and Format
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
         with:
-          # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Build Docker Environment
+        run: |
+          cp .env.example .env
+          docker compose up -d
 
       - name: Check for Modified Python Files
         run: echo "template_py_diff=$(git diff --name-only --diff-filter=ACMRTUXB origin/$GITHUB_BASE_REF | grep  -E "(.py$)" | tr "\n" " ")" >> $GITHUB_ENV
 
-      - name: Setup Python Linter
-        if: ${{ env.template_py_diff != '' }}
+      - name: Install Python Linters
         run: |
           python3 -m pip install flake8==7.1.1 black==24.10.0
 
-      - name: Run Black - Confirm files have been formatted using Black
-        if: ${{ env.template_py_diff != '' }}
-        run: python3 -m black ${{env.template_py_diff}} --check
+      - name: Run All Linting Checks
+        run: |
+          # Run Black
+          if [ -n "$template_py_diff" ]; then
+            echo "Running Black..."
+            python3 -m black ${{env.template_py_diff}} --check
+          fi
 
-      - name: Run Python Linter
-        if: ${{ env.template_py_diff != '' }}
-        run: python3 -m flake8 ${{env.template_py_diff}} --ignore=E501,F405,W503
+          # Run Flake8
+          if [ -n "$template_py_diff" ]; then
+            echo "Running Flake8..."
+            python3 -m flake8 ${{env.template_py_diff}} --ignore=E501,F405,W503
+          fi
 
-  run-migration-check:
+          # Run Pylint
+          echo "Running Pylint..."
+          docker compose run web pylint django_template apps tests
+
+          # Run djhtml
+          echo "Running djhtml..."
+          docker compose run web djhtml templates --check
+
+  check-migrations:
     name: Check for Migrations
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    needs: lint-and-format
 
     steps:
-      - name: 'Checkout Github Action'
+      - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: 'Build `docker compose` Environment'
+      - name: Build Docker Environment
         run: |
           cp .env.example .env
           docker compose up -d
 
-      - name: 'Check Running Containers'
-        run: docker ps -a
-
-      - name: 'Check for Missing Migrations'
+      - name: Check for Missing Migrations
         run: docker compose run web bash -c "python manage.py makemigrations --dry-run --check | grep -v 'admin_sso'"
 
-
-  run-pylint:
-    name: Pylint Checks
+  run-tests:
+    name: Run Tests and Coverage
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [lint-and-format, check-migrations]
 
     steps:
-      - name: 'Checkout Github Action'
+      - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: 'Build `docker compose` Environment'
+      - name: Build Docker Environment
         run: |
           cp .env.example .env
           docker compose up -d
 
-      - name: 'Run Pylint'
-        run: docker compose run web pylint django_template apps tests
-
-  run-djhtml:
-    name: HTML Formatting Checks
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: 'Checkout Github Action'
-        uses: actions/checkout@v2
-
-      - name: 'Build `docker compose` Environment'
-        run: |
-          cp .env.example .env
-          docker compose up -d
-
-      - name: 'Run Djhtml'
-        run: docker compose run web djhtml templates --check
-
-  run-codecov:
-    name: Code Coverage
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: 'Checkout Github Action'
-        uses: actions/checkout@v2
-
-      - name: 'Build `docker compose` Environment'
-        run: |
-          cp .env.example .env
-          docker compose up -d
-
-      - name: 'Run Code Coverage'
+      - name: Run Tests with Coverage
         run: docker compose run web pytest -n auto --cov=apps --cov-report=json --cov-report=term-missing
 
-      - name: 'Check Coverage Percentage'
+      - name: Check Coverage Percentage
         run: |
           COVERAGE=$(jq '.totals.percent_covered' coverage.json)
           if (( $(echo "$COVERAGE < 100" |bc -l) )); then
@@ -109,7 +97,7 @@ jobs:
             exit 1
           fi
 
-      - name: 'Upload Code Coverage'
+      - name: Upload Code Coverage
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
