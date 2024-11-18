@@ -220,7 +220,7 @@ DJANGO_ADMIN_SSO_OAUTH_CLIENT_SECRET = os.getenv("DJANGO_ADMIN_SSO_OAUTH_CLIENT_
 # We use our own template, don't add the admin_sso login button
 DJANGO_ADMIN_SSO_ADD_LOGIN_BUTTON = False
 
-LOGIN_URL = "login"
+LOGIN_URL = "account_login"
 
 # Authentication and allauth settings
 SOCIALACCOUNT_PROVIDERS = {
