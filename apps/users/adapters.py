@@ -1,6 +1,7 @@
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 
+from apps.main.tasks import notify_by_slack
 from apps.users.models import User
 
 
@@ -26,6 +27,8 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         # If user exists, connect the account to the existing account and login
         if existing_user := User.objects.filter(email=user.email).first():
             sociallogin.connect(request, existing_user)
+        else:
+            notify_by_slack(f"New user signing up via {sociallogin.account.provider}: {user.email}")
 
     def populate_user(self, request, sociallogin, data):
         user = super().populate_user(request, sociallogin, data)
