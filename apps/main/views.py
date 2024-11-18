@@ -5,9 +5,12 @@ from django.contrib import messages
 from django.contrib.admin.utils import unquote
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import TemplateView, RedirectView, ListView
+from django.views.decorators.http import require_http_methods
+from django.views.generic import TemplateView, RedirectView
+from django.contrib.auth.decorators import login_not_required
 from django.http import (
     HttpResponseBadRequest,
     HttpResponseServerError,
@@ -30,32 +33,24 @@ from .models import (
 )
 
 
-class HomeView(TemplateView):
+@login_not_required
+def home(request):
     """View to the home page."""
+    return render(request, "main/home.html")
 
-    template_name = "main/home.html"
 
-
-class TermsAndConditionsView(TemplateView):
+@login_not_required
+def terms_and_conditions(request):
     """View to the terms and conditions page."""
-
-    template_name = "main/terms_and_conditions.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["terms"] = TermsAndConditions.objects.latest("created_at")
-        return context
+    context = {"terms": TermsAndConditions.objects.latest("created_at")}
+    return render(request, "main/terms_and_conditions.html", context)
 
 
-class PrivacyPolicyView(TemplateView):
+@login_not_required
+def privacy_policy(request):
     """View to the privacy policy page."""
-
-    template_name = "main/privacy_policy.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["privacy_policy"] = PrivacyPolicy.objects.latest("created_at")
-        return context
+    context = {"privacy_policy": PrivacyPolicy.objects.latest("created_at")}
+    return render(request, "main/privacy_policy.html", context)
 
 
 class BadRequestView(TemplateView):
@@ -118,6 +113,7 @@ class MarkAsReadAndRedirectView(RedirectView):
         return HttpResponseRedirect(decoded_url)  # Redirect to the decoded URL
 
 
+@method_decorator(login_not_required, name="dispatch")
 class ContactUsView(View):
     """
     View to handle the Contact Us form.
@@ -145,49 +141,47 @@ class ContactUsView(View):
         return render(request, self.template_name, {"form": form})
 
 
-class FAQListView(ListView):
+@login_not_required
+def faq_list(request):
     """
     View to display the list of FAQs.
     """
-
-    model = FAQ
-    template_name = "main/faqs.html"
-    context_object_name = "faqs"
+    faqs = FAQ.objects.all()
+    return render(request, "main/faqs.html", {"faqs": faqs})
 
 
-class ReportView(View):
+@require_http_methods(["POST"])
+def report(request: HttpRequest, model_name: str, object_id: int):
     """
     A view for handling reports of inappropriate content.
 
-    Methods:
-        post(request, model_type, object_id): Handles the report creation.
+    Args:
+        request: The HTTP request
+        model_name: Name of the model being reported
+        object_id: ID of the object being reported
+
+    Returns:
+        HttpResponse redirecting back to previous page or home
     """
+    try:
+        model = ContentType.objects.get(model=model_name).model_class()
+        obj = get_object_or_404(model, pk=object_id)
+    except Http404:
+        return HttpResponseNotFound("Object not found")
 
-    def post(self, request: HttpRequest, model_name: str, object_id: int):
-        """
-        Get the model class based on the model_type string
-        :param request:
-        :param model_name:
-        :param object_id:
-        :return:
-        """
-        try:
-            model = ContentType.objects.get(model=model_name).model_class()
-            obj = get_object_or_404(model, pk=object_id)
-        except Http404:
-            return HttpResponseNotFound("Object not found")
+    # Create the report
+    Report.objects.create(
+        content_type=ContentType.objects.get_for_model(obj),
+        object_id=obj.id,
+        reporter=request.user,
+        reason=request.POST.get("reason", "No reason provided."),
+    )
 
-        # Create the report
-        Report.objects.create(
-            content_type=ContentType.objects.get_for_model(obj),
-            object_id=obj.id,
-            reporter=request.user,
-            reason=request.POST.get("reason", "No reason provided."),
-        )
-        # Refresh the page the user was on. If for some reason it doesnt work then take the user home.
-        return HttpResponseRedirect(request.META.get("HTTP_REFERER", "home"))
+    # Refresh the page the user was on. If for some reason it doesnt work then take the user home.
+    return HttpResponseRedirect(request.META.get("HTTP_REFERER", "home"))
 
 
+@login_not_required
 def robots_view(request):
     """
     Serve the 'robots.txt' file.

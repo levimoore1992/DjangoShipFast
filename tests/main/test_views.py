@@ -22,13 +22,14 @@ from tests.factories.main import NotificationFactory
 from tests.factories.users import UserFactory
 
 
-class MarkAsReadAndRedirectViewTestCase(TestCase):
+class MarkAsReadAndRedirectViewTestCase(BaseTestCase):
     """
     Test cases for the MarkAsReadAndRedirectView.
     """
 
     def setUp(self) -> None:
         super().setUp()
+        self.client.force_login(self.regular_user)
         self.notification = NotificationFactory()
         self.url = reverse(
             "mark_as_read_and_redirect",
@@ -331,6 +332,7 @@ class CustomUploadViewTestCase(BaseTestCase):
         and gets the content type for the MediaLibrary model.
         """
         super().setUp()
+        self.client.force_login(self.regular_user)
         self.url = reverse("ckeditor_upload")
         self.content_type = ContentType.objects.get_for_model(MediaLibrary)
 

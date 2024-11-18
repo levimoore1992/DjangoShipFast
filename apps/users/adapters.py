@@ -28,7 +28,9 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         if existing_user := User.objects.filter(email=user.email).first():
             sociallogin.connect(request, existing_user)
         else:
-            notify_by_slack(f"New user signing up via {sociallogin.account.provider}: {user.email}")
+            notify_by_slack(
+                f"New user signing up via {sociallogin.account.provider}: {user.email}"
+            )
 
     def populate_user(self, request, sociallogin, data):
         user = super().populate_user(request, sociallogin, data)

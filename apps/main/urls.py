@@ -2,29 +2,27 @@ from django.urls import path
 
 
 from .views import (
-    HomeView,
+    home,
     MarkAsReadAndRedirectView,
-    TermsAndConditionsView,
-    PrivacyPolicyView,
+    terms_and_conditions,
+    privacy_policy,
     ContactUsView,
-    FAQListView,
-    ReportView,
+    faq_list,
+    report,
     robots_view,
 )
 
 urlpatterns = [
-    path("", HomeView.as_view(), name="home"),
+    path("", home, name="home"),
     path(
         "terms-and-conditions/",
-        TermsAndConditionsView.as_view(),
+        terms_and_conditions,
         name="terms_and_conditions",
     ),
-    path("privacy-policy/", PrivacyPolicyView.as_view(), name="privacy_policy"),
+    path("privacy-policy/", privacy_policy, name="privacy_policy"),
     path("contact-us/", ContactUsView.as_view(), name="contact_us"),
-    path("faqs/", FAQListView.as_view(), name="faqs"),
-    path(
-        "report/<str:model_name>/<int:object_id>/", ReportView.as_view(), name="report"
-    ),
+    path("faqs/", faq_list, name="faqs"),
+    path("report/<str:model_name>/<int:object_id>/", report, name="report"),
     # File path views
     path("robots.txt", robots_view, name="robots_view"),
     # Notification views
