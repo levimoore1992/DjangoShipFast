@@ -8,6 +8,7 @@
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Feature Improvement
+- [ ] Tech Debt
 
 ## Checklist:
 - [ ] I have performed a self-review of my own code.
