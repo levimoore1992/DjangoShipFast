@@ -2,6 +2,8 @@ import auto_prefetch
 import requests
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import Value, F
+from django.db.models.functions import Concat
 from django.templatetags.static import static
 
 from apps.main.mixins import CreateMediaLibraryMixin
@@ -19,15 +21,21 @@ class User(CreateMediaLibraryMixin, AbstractUser):
     )
     avatar = models.ImageField(upload_to="profile_image/", null=True, blank=True)
 
+    full_name = models.GeneratedField(
+        expression=Concat(
+            F("first_name"),
+            Value(" "),
+            F("last_name"),
+            output_field=models.CharField(),
+        ),
+        output_field=models.CharField(max_length=255),
+        db_persist=True,
+    )
+
     # Add any custom fields for your application here
 
     def __str__(self):
         return self.email
-
-    @property
-    def full_name(self):
-        """Return the user's full name."""
-        return f"{self.first_name} {self.last_name}"
 
     @property
     def avatar_url(self):
