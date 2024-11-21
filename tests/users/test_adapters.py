@@ -134,3 +134,30 @@ class CustomSocialAccountAdapterTests(BaseTestCase):
 
         self.assertEqual(populated_user.email, "test@example.com")
         self.assertEqual(populated_user.username, "test@example.com")
+
+    def test_pre_social_login_new_user(self):
+        """
+        Test the pre_social_login method of CustomSocialAccountAdapter for a new user.
+
+        This test verifies that:
+        1. When a social login attempt is made with an email that doesn't match any existing user,
+           the notify_by_slack method is called with the correct provider and email information.
+        2. The connect method is not called since there's no existing user to connect to.
+
+        It simulates a scenario where a new user tries to sign up using a social account.
+        """
+        new_social_user = User(email="newuser@example.com")
+        social_account = SocialAccount(provider="google", uid="12345", extra_data={})
+        social_login = SocialLogin(user=new_social_user, account=social_account)
+
+        with patch("apps.users.adapters.notify_by_slack") as mock_notify, patch.object(
+            SocialLogin, "connect"
+        ) as mock_connect:
+            self.adapter.pre_social_login(self.client.request, social_login)
+
+            # Verify notify_by_slack was called with correct message
+            mock_notify.assert_called_once_with(
+                "New user signing up via google: newuser@example.com"
+            )
+            # Verify connect was not called since there's no existing user
+            mock_connect.assert_not_called()
