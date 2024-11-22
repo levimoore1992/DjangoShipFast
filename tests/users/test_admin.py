@@ -66,6 +66,9 @@ class UserAdminTest(TestCase):
         # Check if the user's devices are blocked
         self.assertTrue(device.is_blocked, "User's device should be marked as blocked")
 
+        # Check if the user's IPs are marked as suspicious
+        self.assertTrue(ip.is_blocked, "User's IP should be marked as suspicious")
+
 
 class UserIPAdminTest(TestCase):
     """
