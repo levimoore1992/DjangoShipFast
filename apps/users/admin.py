@@ -4,7 +4,6 @@ from django.contrib import admin
 from django.db.models import Count
 
 from .models import User, UserIP, UserDevice
-from .utils import block_user_and_devices
 
 
 class UserIPInline(admin.TabularInline):
@@ -93,7 +92,7 @@ class UserAdmin(BaseUserAdmin):
         :return:
         """
         for user in queryset:
-            block_user_and_devices(user.id)
+            user.block_user()
 
     block_users_and_devices.short_description = "Block selected users and their devices"
 
@@ -111,7 +110,8 @@ class UserIPAdmin(admin.ModelAdmin):
         "last_seen",
     )
     search_fields = ("user__username", "ip_address")
-    list_filter = ("last_seen",)
+    list_filter = ("last_seen", "is_blocked")
+    sortable_by = ("ip_address", "last_seen", "user", "shared_user_count")
     readonly_fields = (
         "user",
         "ip_address",
@@ -185,7 +185,7 @@ class UserDeviceAdmin(admin.ModelAdmin):
 
     list_display = ("user", "device_identifier", "last_seen")
     search_fields = ("user__username", "device_identifier")
-    list_filter = ("last_seen",)
+    list_filter = ("last_seen", "is_blocked")
 
     readonly_fields = (
         "last_seen",
@@ -193,4 +193,6 @@ class UserDeviceAdmin(admin.ModelAdmin):
         "device_identifier",
     )
 
-    fieldsets = ((None, {"fields": ("user", "device_identifier", "last_seen")}),)
+    fieldsets = (
+        (None, {"fields": ("user", "device_identifier", "last_seen", "is_blocked")}),
+    )

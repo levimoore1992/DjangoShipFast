@@ -44,6 +44,27 @@ class User(CreateMediaLibraryMixin, AbstractUser):
             return self.avatar.url
         return static("images/default_user.jpeg")
 
+    def deactivate_user(self):
+        """Does a soft delete of a user"""
+
+        self.is_active = False
+        self.save()
+
+    def block_user(self):
+        """Deactivate the user and block all devices and IP's"""
+        self.deactivate_user()
+        self.block_devices()
+        self.block_ips()
+
+    def block_devices(self):
+        """Block all devices that are related to a user"""
+
+        self.devices.all().update(is_blocked=True)
+
+    def block_ips(self):
+        """Block all ip addresses related to a user"""
+        self.ips.all().update(is_blocked=True)
+
 
 class UserIPManager(models.Manager):
     """

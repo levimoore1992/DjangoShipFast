@@ -1,3 +1,5 @@
+import hashlib
+
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.shortcuts import redirect
@@ -7,7 +9,6 @@ from django.utils import timezone
 from ipware import get_client_ip
 
 from .models import UserIP, UserDevice
-from .utils import get_device_identifier
 
 security_middleware_excluded_views = [
     "terms_and_conditions",
@@ -39,6 +40,28 @@ class SecurityMiddleware:
         """
         self.get_response = get_response
 
+    def get_device_identifier(self, request):
+        """
+        Generates a unique device identifier based on request headers.
+
+        This method uses a combination of HTTP headers to create a hash
+        that serves as a unique identifier for the user's device.
+
+        Returns:
+            str: A hashed string representing the device identifier.
+        """
+
+        user_agent = request.META.get("HTTP_USER_AGENT", "")
+        accept_language = request.META.get("HTTP_ACCEPT_LANGUAGE", "")
+
+        # You can include more headers as needed for better uniqueness
+        raw_string = user_agent + accept_language
+
+        # Hashing for privacy and consistency
+        hashed_string = hashlib.sha256(raw_string.encode()).hexdigest()
+
+        return hashed_string
+
     def __call__(self, request):
         """
         Process the request through the middleware.
@@ -69,7 +92,7 @@ class SecurityMiddleware:
             bool: True if the IP or device is blocked, False otherwise.
         """
         ip_address, _ = get_client_ip(request)
-        device_identifier = get_device_identifier(request)
+        device_identifier = self.get_device_identifier(request)
 
         ip_blocked = UserIP.objects.is_ip_blocked(ip_address)
         device_blocked = UserDevice.objects.is_device_blocked(device_identifier)
@@ -105,7 +128,7 @@ class SecurityMiddleware:
             request (HttpRequest): The request object containing user and request information.
         """
         ip_address, _ = get_client_ip(request)
-        device_identifier = get_device_identifier(request)
+        device_identifier = self.get_device_identifier(request)
 
         if ip_address:
             UserIP.objects.update_or_create(

@@ -27,7 +27,7 @@ class SecurityMiddlewareTests(BaseTestCase):
         self.client.force_login(self.regular_user)
 
     @patch("apps.users.middleware.get_client_ip")
-    @patch("apps.users.middleware.get_device_identifier")
+    @patch("apps.users.middleware.SecurityMiddleware.get_device_identifier")
     def test_update_user_tracking(self, mock_get_device, mock_get_ip):
         """
         Test the user tracking functionality of the middleware.
