@@ -1,10 +1,15 @@
 import hashlib
+import re
+from typing import Callable, Optional
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import logout
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.urls import resolve
 from django.utils import timezone
+from django.contrib.auth.middleware import LoginRequiredMiddleware
 
 from ipware import get_client_ip
 
@@ -18,6 +23,69 @@ security_middleware_excluded_views = [
     "robots_view",
     "home",
 ]
+
+
+class CustomLoginRequiredMiddleware(LoginRequiredMiddleware):
+    """
+    Custom middleware that extends Django's LoginRequiredMiddleware to allow specific URL patterns
+    to bypass authentication requirements.
+
+    This middleware is designed to handle authentication exemptions for third-party applications
+    and specific routes that should remain publicly accessible. It first checks if a URL matches
+    any exempt patterns before applying the standard login requirements.
+
+    Attributes:
+        exempt_urls (list[Pattern]): A list of compiled regular expressions patterns that match URLs
+            which should bypass authentication requirements. These patterns are defined in
+            settings.LOGIN_REQUIRED_URLS_EXCEPTIONS.
+    """
+
+    def __init__(self, get_response: Callable) -> None:
+        """
+        Initialize the middleware with exempted URL patterns.
+
+        Compiles the regular expressions defined in settings.LOGIN_REQUIRED_URLS_EXCEPTIONS
+        into Pattern objects for URL matching.
+
+        Args:
+            get_response: Callable that takes a request and returns a response,
+                         provided by Django's middleware framework.
+        """
+        super().__init__(get_response)
+        self.exempt_urls = [
+            re.compile(pattern) for pattern in settings.LOGIN_REQUIRED_URLS_EXCEPTIONS
+        ]
+
+    def process_view(
+        self,
+        request: HttpRequest,
+        view_func: Callable,
+        view_args: list,
+        view_kwargs: dict,
+    ) -> Optional[HttpResponse]:
+        """
+        Process the incoming request before the view is called.
+
+        Checks if the requested URL matches any exempt patterns. If it matches,
+        allows the request to proceed without authentication. If not, delegates
+        to the parent LoginRequiredMiddleware for standard authentication handling.
+
+        Args:
+            request: The incoming HTTP request.
+            view_func: The view function that will be called.
+            view_args: Positional arguments that will be passed to the view.
+            view_kwargs: Keyword arguments that will be passed to the view.
+
+        Returns:
+            None if the request should proceed (either because the URL is exempt
+            or authentication passes), or an HttpResponse redirect to the login
+            page if authentication is required and fails.
+        """
+        path = request.path_info
+        if any(pattern.match(path) for pattern in self.exempt_urls):
+            return None
+
+        return super().process_view(request, view_func, view_args, view_kwargs)
 
 
 class SecurityMiddleware:
