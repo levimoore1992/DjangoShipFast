@@ -74,7 +74,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.auth.middleware.LoginRequiredMiddleware",
+    "apps.users.middleware.CustomLoginRequiredMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "waffle.middleware.WaffleMiddleware",
@@ -222,6 +222,15 @@ DJANGO_ADMIN_SSO_OAUTH_CLIENT_SECRET = os.getenv("DJANGO_ADMIN_SSO_OAUTH_CLIENT_
 DJANGO_ADMIN_SSO_ADD_LOGIN_BUTTON = False
 
 LOGIN_URL = "account_login"
+
+LOGIN_REQUIRED_URLS_EXCEPTIONS = [
+    r"^/accounts/",  # allauth URLs
+    r"^/cookies/",  # cookie consent URLs
+    r"^/static/",  # static files
+    r"^/media/",  # media files
+    r"^/admin/admin_sso/",
+    # Add any other paths you want to exempt from login
+]
 
 # Authentication and allauth settings
 SOCIALACCOUNT_PROVIDERS = {
