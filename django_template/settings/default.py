@@ -229,6 +229,7 @@ LOGIN_REQUIRED_URLS_EXCEPTIONS = [
     r"^/static/",  # static files
     r"^/media/",  # media files
     r"^/admin/admin_sso/",
+    r"^/__debug__/"
     # Add any other paths you want to exempt from login
 ]
 
