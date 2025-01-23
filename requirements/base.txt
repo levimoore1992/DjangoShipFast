@@ -1,40 +1,42 @@
 # Core libraries
-Django>=5.1.0,<=5.2.0
-psycopg==3.2.3
-Pillow==11.0.0
-requests==2.32.3
-django-auto-prefetch==1.11.0
-django-htmx==1.21.0
-whitenoise==6.8.2
+Django~=5.1.0
+psycopg~=3.2.3
+Pillow~=11.0.0
+requests~=2.32.3
+django-auto-prefetch~=1.11.0
+django-htmx~=1.21.0
+whitenoise~=6.8.2
+
 # General Libraries
-django-ckeditor-5==0.2.15
-django-model-utils==5.0.0
+django-ckeditor-5~=0.2.15
+django-model-utils~=5.0.0
+
 # Authentication
-django-allauth[socialaccount]==65.2.0
+django-allauth[socialaccount]~=65.2.0
 
 # Celery and Redis
-celery>=5.3.0,<=5.4.0
-redis==5.2.0
-django-celery-beat==2.7.0
-django-celery-results==2.5.1
+celery~=5.3.0
+redis~=5.2.0
+django-celery-beat~=2.7.0
+django-celery-results~=2.5.1
 
-# For google recaptcha
-django-recaptcha==4.0.0
+# For Google reCAPTCHA
+django-recaptcha~=4.0.0
 
 # For feature flags
-django-waffle==4.1.0
+django-waffle~=4.1.0
 
-# Tracking user ip
-django-ipware==7.0.1
+# Tracking user IP
+django-ipware~=7.0.1
 
-# For admin login with google
-django-admin-sso==5.2.0
+# For admin login with Google
+django-admin-sso~=5.2.0
 
 # For emails
-django-anymail[mailgun]==12.0
+django-anymail[mailgun]~=12.0
 
-# For lifecycle hooks signal like feature
-django-lifecycle==1.2.4
+# For lifecycle hooks signal-like feature
+django-lifecycle~=1.2.4
 
-# For slack notifications
-slack-sdk==3.33.3
+# For Slack notifications
+slack-sdk~=3.33.3
