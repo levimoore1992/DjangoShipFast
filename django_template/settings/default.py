@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
     "allauth.socialaccount.providers.github",
+    "allauth.socialaccount.providers.naver",
     "admin_sso",  # google login for admin
     # celery apps
     "django_celery_beat",
@@ -229,7 +230,7 @@ LOGIN_REQUIRED_URLS_EXCEPTIONS = [
     r"^/static/",  # static files
     r"^/media/",  # media files
     r"^/admin/admin_sso/",
-    r"^/__debug__/"
+    r"^/__debug__/",
     # Add any other paths you want to exempt from login
 ]
 
@@ -258,6 +259,16 @@ SOCIALACCOUNT_PROVIDERS = {
             "secret": os.getenv("GITHUB_SECRET_KEY"),
             "key": "",
         }
+    },
+    "naver": {
+        "APP": {
+            "client_id": os.getenv("NAVER_CLIENT_ID"),
+            "secret": os.getenv("NAVER_SECRET_KEY"),
+            "key": "",
+        },
+        "SCOPE": ["profile", "email"],
+        "AUTH_PARAMS": {"auth_type": "reauthenticate"},
+        "METHOD": "oauth2",
     },
 }
 # Social Account Settings
