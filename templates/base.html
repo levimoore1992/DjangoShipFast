@@ -14,7 +14,7 @@
     {# tailwind #}
         <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.2/dist/full.min.css" rel="stylesheet" type="text/css" />
         <script src="https://cdn.tailwindcss.com"></script>
-    {#    alpine js    #}
+        {#    alpine js    #}
         <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     {#    Hyperscript  #}
         <script src="https://unpkg.com/hyperscript.org"></script>
@@ -31,18 +31,20 @@
         {% block extraheader %}
         {% endblock %}
     </head>
-    <body>
-        <div class="main-wrapper">
-
+    <body hx-indicator="#loading-container">
+        <div class="min-h-screen flex flex-col">
             {% include 'components/navbar.html' %}
-        <!-- Messages area -->
+
+    <!-- Messages area -->
             {% include 'components/django_messages.html' %}
+            {% include 'components/loading.html' %}
 
 
-        <!-- Content area -->
-            <div class="content-area">
+    <!-- Content area -->
+            <div class="flex-1">
                 {% block content %}{% endblock %}
             </div>
+
             {% include 'components/footer.html' %}
         </div>
     </body>

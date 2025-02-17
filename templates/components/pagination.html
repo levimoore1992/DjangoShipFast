@@ -1,33 +1,32 @@
 {% load custom_filters %}
 
-<div class="pagination-controls-container">
+<div class="flex flex-row flex-nowrap mt-8 justify-between">
     <div>
         Showing {{ page_obj.start_index }}-{{ page_obj.end_index }} of {{ paginator.count }} {{ label }}
     </div>
     {% if paginator.count > 1 %}
-        <div class="pagination-controls font-size-small font-weight-bold">
+        <div class="flex flex-row flex-nowrap leading-8 text-sm font-bold">
             {% if page_obj.has_previous %}
-                <a href="{% if page_obj.has_previous %}{% get_page_link page_obj.previous_page_number %}{% else %}#{% endif %}">
-                    <div class="pagination-next">
+                <a href="{% if page_obj.has_previous %}{% get_page_link page_obj.previous_page_number %}{% else %}#{% endif %}" class="text-black no-underline">
+                    <div class="mx-4">
                         Previous
                     </div>
                 </a>
             {% else %}
-                <div class="pagination-disabled">Previous</div>
+                <div class="mx-4 opacity-50">Previous</div>
             {% endif %}
 
             {% pagination_numbers %}
 
             {% if page_obj.has_next %}
-                <a href="{% if page_obj.has_next %}{% get_page_link page_obj.next_page_number %}{% else %}#{% endif %}">
-                    <div class="pagination-next">
+                <a href="{% if page_obj.has_next %}{% get_page_link page_obj.next_page_number %}{% else %}#{% endif %}" class="text-black no-underline">
+                    <div class="mx-4">
                         Next
                     </div>
                 </a>
             {% else %}
-                <div class="pagination-disabled pagination-next">Next</div>
+                <div class="mx-4 opacity-50">Next</div>
             {% endif %}
         </div>
     {% endif %}
 </div>
-

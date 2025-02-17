@@ -2,8 +2,6 @@
 
 //This should NOT be used to changes styles of anything else
 
-@import "../base/base";
-
 #loading-container {
     display: none;
     position: fixed;
@@ -14,7 +12,6 @@
     background: rgba(255, 255, 255, 0.8);
     z-index: 9999;
 
-    &.active,
 	&.htmx-request {  // use this class to toggle visibility
         display: flex;
         align-items: center;
@@ -79,6 +76,6 @@
 }
 
 :root {
-    --primary-stop-color: #{$primary-color};  // Sass variable interpolation
-    --secondary-stop-color: #{$secondary-color};
+    --primary-stop-color: #66ccff;  // Sass variable interpolation
+    --secondary-stop-color: #0099cc;
 }

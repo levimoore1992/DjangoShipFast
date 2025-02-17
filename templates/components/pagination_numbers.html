@@ -1,13 +1,14 @@
 {% load custom_filters %}
 {% for num in page_numbers %}
     {% if num.active %}
-        <div class="pagination-number pagination-current-page">{{ num.page_number }}</div>
+        <div class="h-8 w-8 rounded text-center leading-8 font-normal text-white bg-[#66ccff]">{{ num.page_number }}</div>
     {% else %}
         {% if num.page_number %}
-            <div class="pagination-number"><a href="{% get_page_link num.page_number %}">{{ num.page_number }}</a></div>
+            <div class="h-8 w-8 rounded text-center leading-8 font-normal">
+                <a href="{% get_page_link num.page_number %}" class="text-black no-underline">{{ num.page_number }}</a>
+            </div>
         {% else %}
-            <div class="pagination-number">...</div>
+            <div class="h-8 w-8 rounded text-center leading-8 font-normal">...</div>
         {% endif %}
-
     {% endif %}
 {% endfor %}
