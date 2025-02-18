@@ -9,12 +9,6 @@ from django_template.settings.default import (
 )
 
 
-
-
-
-
-
-
 ALLOWED_HOSTS.extend(
     [
         "localhost",
