@@ -6,7 +6,7 @@ from django_template.settings.default import (
     INSTALLED_APPS,
     DEBUG,
     BASE_DIR,
-)  # noqa: F401,F403
+)
 
 ALLOWED_HOSTS.extend(
     [
