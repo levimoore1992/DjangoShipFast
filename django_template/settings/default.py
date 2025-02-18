@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "waffle",  # Feature Flags
     "django_ckeditor_5",
     "django_htmx",
+    "heroicons",
     # auth apps
     "allauth",
     "allauth.account",
@@ -103,6 +104,7 @@ TEMPLATES = [
             ],
             "builtins": [
                 "waffle.templatetags.waffle_tags",
+                "heroicons.templatetags.heroicons",
             ],
         },
     },
