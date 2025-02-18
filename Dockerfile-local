@@ -1,30 +1,43 @@
+# Use the official Python 3.13 image as the base
 FROM python:3.13
 
-#################################
-# For the restore db command
-#################################
- #Add PostgreSQL 16 repository for Debian
-RUN sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" > /etc/apt/sources.list.d/pgdg.list' && \
-    wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-
-# Install PostgreSQL 16 client
+# Install necessary system dependencies
 RUN apt-get update && \
-    apt-get install -y postgresql-client-16 && \
-    apt-get clean && \
+    apt-get install -y --no-install-recommends \
+    wget \
+    curl \
+    gnupg \
+    ca-certificates \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Add PostgreSQL 16 repository and install PostgreSQL client
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
+    wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends postgresql-client-16 && \
     rm -rf /var/lib/apt/lists/*
-#################################
-#################################
 
-ENV PYTHONUNBUFFERED 1
-ENV PYTHONDONTWRITEBYTECODE 1
+# Install uv package manager
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
-RUN mkdir /app
-COPY . /app/
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
+
+# Create and set working directory
 WORKDIR /app
 
-# Install any needed packages specified in requirements.txt as well as uwsgi
-RUN pip install --upgrade pip && \
-    pip install -r requirements/dev.txt
+# Copy only the requirements file first to leverage Docker cache
+COPY requirements/dev.txt /app/requirements/dev.txt
 
-# Make port 8000 available to the world outside this container
+# Install project dependencies using uv
+RUN uv sync -r requirements/dev.txt
+
+# Copy the rest of the project files into the container
+COPY . /app/
+
+# Expose port 8000
 EXPOSE 8000
+
