@@ -1,10 +1,11 @@
 import tempfile
 
-from django_template.settings.default import *  # noqa: F401,F403
+from django_template.settings.default import *
 
 ALLOWED_HOSTS = ["localhost", "testserver", "127.0.0.1", ".ngrok.io"]
 
 INSTALLED_APPS.append("tests.test_app")  # noqa: F405
+
 
 DATABASES = {
     "default": {
