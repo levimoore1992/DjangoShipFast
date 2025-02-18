@@ -1,12 +1,6 @@
 # pylint: disable=duplicate-code
 
-from django_template.settings.default import (
-    ALLOWED_HOSTS,
-    MIDDLEWARE,
-    INSTALLED_APPS,
-    DEBUG,
-    BASE_DIR,
-)
+from django_template.settings.default import *
 
 
 ALLOWED_HOSTS.extend(
