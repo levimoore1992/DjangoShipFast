@@ -18,13 +18,17 @@ jobs:
         with:
           python-version: '3.13'
 
+      - name: Run Ruff
+        uses: astral-sh/ruff-action@v3
+        with:
+          args: check .
+
       - name: Build Docker Environment
         run: |
           cp .env.example .env
           docker compose up -d
 
-      - name: Run Ruff
-        uses: astral-sh/ruff-action@v3
+      
 
       - name: Run Pylint
         run: docker compose run web pylint django_template apps tests
