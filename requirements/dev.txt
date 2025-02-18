@@ -20,6 +20,5 @@ pytest-cov~=6.0.0
 django-hijack~=3.7.0
 
 # Linting libraries
-flake8~=7.1.1
-black~=24.10.0
 pylint-django~=2.6.1
+ruff~=0.9.6
