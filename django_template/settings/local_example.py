@@ -8,6 +8,13 @@ from django_template.settings.default import (
     BASE_DIR,
 )
 
+
+
+
+
+
+
+
 ALLOWED_HOSTS.extend(
     [
         "localhost",
