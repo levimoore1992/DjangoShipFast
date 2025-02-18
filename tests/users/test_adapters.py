@@ -150,9 +150,10 @@ class CustomSocialAccountAdapterTests(BaseTestCase):
         social_account = SocialAccount(provider="google", uid="12345", extra_data={})
         social_login = SocialLogin(user=new_social_user, account=social_account)
 
-        with patch("apps.users.adapters.notify_by_slack") as mock_notify, patch.object(
-            SocialLogin, "connect"
-        ) as mock_connect:
+        with (
+            patch("apps.users.adapters.notify_by_slack") as mock_notify,
+            patch.object(SocialLogin, "connect") as mock_connect,
+        ):
             self.adapter.pre_social_login(self.client.request, social_login)
 
             # Verify notify_by_slack was called with correct message

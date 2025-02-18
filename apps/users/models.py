@@ -123,9 +123,7 @@ class UserIP(auto_prefetch.Model):
         """
         Return the location of the user based off ipinfo
         """
-        response = requests.get(
-            f"https://ipinfo.io/{self.ip_address}/json", timeout=10
-        )  # noqa
+        response = requests.get(f"https://ipinfo.io/{self.ip_address}/json", timeout=10)  # noqa
         if response.status_code == 200:
             json = response.json()
             return f"{json['country']}, {json['region']}, {json['city']}"

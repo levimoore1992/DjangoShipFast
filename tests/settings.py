@@ -1,6 +1,6 @@
 import tempfile
 
-from django_template.settings.default import *  # noqa: F401,F403
+from django_template.settings.default import BASE_DIR, INSTALLED_APPS  # noqa: F401,F403
 
 ALLOWED_HOSTS = ["localhost", "testserver", "127.0.0.1", ".ngrok.io"]
 

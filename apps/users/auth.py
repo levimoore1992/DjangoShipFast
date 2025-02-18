@@ -20,7 +20,7 @@ class DjangoAdminAuthBackend(ModelBackend):
         request: Optional[HttpRequest],
         username: Optional[str] = None,
         password: Optional[str] = None,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> Optional[User]:
         """
         Authenticates a user based on the SSO email.
