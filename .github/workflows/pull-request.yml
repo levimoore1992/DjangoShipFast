@@ -18,10 +18,10 @@ jobs:
         with:
           python-version: '3.13'
 
-      - name: Run Ruff
+      - name: Run Ruff Format Check
         uses: astral-sh/ruff-action@v3
         with:
-          args: check .
+          args: format --check .
 
       - name: Build Docker Environment
         run: |

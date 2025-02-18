@@ -6,6 +6,12 @@ ALLOWED_HOSTS = ["localhost", "testserver", "127.0.0.1", ".ngrok.io"]
 
 INSTALLED_APPS.append("tests.test_app")  # noqa: F405
 
+
+
+
+
+
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
