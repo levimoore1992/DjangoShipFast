@@ -1,6 +1,7 @@
 name: Pull Request Checks
 
-on: pull_request
+on:
+  pull_request:
 
 jobs:
   lint-and-format:
@@ -11,8 +12,9 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+
+      - name: Run Ruff
+        uses: astral-sh/ruff-action@v3
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -27,31 +29,11 @@ jobs:
       - name: Check for Modified Python Files
         run: echo "template_py_diff=$(git diff --name-only --diff-filter=ACMRTUXB origin/$GITHUB_BASE_REF | grep  -E "(.py$)" | tr "\n" " ")" >> $GITHUB_ENV
 
-      - name: Install Python Linters
-        run: |
-          python3 -m pip install flake8==7.1.1 black==24.10.0
+      - name: Run Pylint
+        run: docker compose run web pylint django_template apps tests
 
-      - name: Run All Linting Checks
-        run: |
-          # Run Black
-          if [ -n "$template_py_diff" ]; then
-            echo "Running Black..."
-            python3 -m black ${{env.template_py_diff}} --check
-          fi
-
-          # Run Flake8
-          if [ -n "$template_py_diff" ]; then
-            echo "Running Flake8..."
-            python3 -m flake8 ${{env.template_py_diff}} --ignore=E501,F405,W503
-          fi
-
-          # Run Pylint
-          echo "Running Pylint..."
-          docker compose run web pylint django_template apps tests
-
-          # Run djhtml
-          echo "Running djhtml..."
-          docker compose run web djhtml templates --check
+      - name: Run djhtml
+        run: docker compose run web djhtml templates --check
 
   check-migrations:
     name: Check for Migrations
@@ -92,7 +74,7 @@ jobs:
       - name: Check Coverage Percentage
         run: |
           COVERAGE=$(jq '.totals.percent_covered' coverage.json)
-          if (( $(echo "$COVERAGE < 100" |bc -l) )); then
+          if (( $(echo "$COVERAGE < 100" | bc -l) )); then
             echo "Coverage is below 100%"
             exit 1
           fi
