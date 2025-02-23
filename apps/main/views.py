@@ -28,7 +28,6 @@ from .models import (
     TermsAndConditions,
     PrivacyPolicy,
     FAQ,
-    Report,
     MediaLibrary,
 )
 
@@ -169,10 +168,7 @@ def report(request: HttpRequest, model_name: str, object_id: int):
     except Http404:
         return HttpResponseNotFound("Object not found")
 
-    # Create the report
-    Report.objects.create(
-        content_type=ContentType.objects.get_for_model(obj),
-        object_id=obj.id,
+    obj.report(
         reporter=request.user,
         reason=request.POST.get("reason", "No reason provided."),
     )

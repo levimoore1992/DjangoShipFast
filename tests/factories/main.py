@@ -102,7 +102,6 @@ class ReportFactory(factory.django.DjangoModelFactory):
     object_id = factory.Sequence(lambda n: n)
     reporter = factory.SubFactory(UserFactory)
     reason = factory.Faker("paragraph")
-    created_at = factory.Faker("date_time_this_year")
 
 
 class MediaLibraryFactory(factory.django.DjangoModelFactory):

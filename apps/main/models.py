@@ -1,8 +1,9 @@
 import os
 
 import auto_prefetch
-from django_lifecycle import LifecycleModel, hook, BEFORE_CREATE
+from django_lifecycle import LifecycleModel, hook, BEFORE_CREATE, AFTER_CREATE
 
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -10,7 +11,7 @@ from django.urls import reverse
 from model_utils.models import TimeStampedModel
 
 from apps.main.consts import ContactStatus
-from apps.main.tasks import notify_by_slack
+from apps.main.tasks import notify_by_slack, send_email_task
 
 
 class TermsAndConditions(models.Model):
@@ -108,7 +109,7 @@ class FAQ(models.Model):
         verbose_name_plural = "FAQs"
 
 
-class Report(auto_prefetch.Model):
+class Report(auto_prefetch.Model, TimeStampedModel, LifecycleModel):
     """
     A flexible report model for reporting inappropriate content across various models.
 
@@ -118,7 +119,6 @@ class Report(auto_prefetch.Model):
         content_object (GenericForeignKey): The generic foreign key to the related object.
         reporter (ForeignKey): The user who created the report.
         reason (TextField): The reason for the report.
-        created_at (DateTimeField): The datetime when the report was created.
     """
 
     content_type = auto_prefetch.ForeignKey(ContentType, on_delete=models.CASCADE)
@@ -128,7 +128,109 @@ class Report(auto_prefetch.Model):
         "users.User", on_delete=models.CASCADE, related_name="reports"
     )
     reason = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta(auto_prefetch.Model.Meta):
+        verbose_name = "Report"
+        verbose_name_plural = "Reports"
+
+    @hook(AFTER_CREATE)
+    def send_notification_email(self):
+        """
+        Send an email to the admin when a new report is created.
+        """
+        subject = "Report Received: Thank You"
+        message = f"""
+            Thank you for submitting a report. 
+        
+            Your report has been received and will be reviewed by our moderation team.
+        
+            Report details:
+            - Report ID: {self.id}
+            - Submitted on: {self.created}
+        
+            We appreciate your help in keeping our community safe.
+            """
+        from_email = settings.DEFAULT_FROM_EMAIL
+        recipient_list = [self.reporter.email]
+
+        send_email_task.delay(
+            subject=subject,
+            message=message,
+            from_email=from_email,
+            recipient_list=recipient_list,
+        )
+
+
+class ReportableObject(models.Model):
+    """Model to be attached to models that can be reported."""
+
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        abstract = True
+
+    def report(self, reporter, reason):
+        """
+        Report this object as inappropriate or violating terms.
+
+        Args:
+            reporter: The User who is creating the report.
+            reason: Text explaining why the object is being reported.
+
+        Returns:
+            Report: The newly created Report instance.
+        """
+
+        content_type = ContentType.objects.get_for_model(self)
+
+        report = Report.objects.create(
+            content_type=content_type,
+            object_id=self.pk,
+            reporter=reporter,
+            reason=reason,
+        )
+
+        return report
+
+    @property
+    def reports_count(self):
+        """
+        Returns the number of reports for this object.
+
+        Returns:
+            int: The count of reports for this object.
+        """
+
+        content_type = ContentType.objects.get_for_model(self)
+        return Report.objects.filter(
+            content_type=content_type, object_id=self.pk
+        ).count()
+
+    def deactivate(self):
+        """
+        Deactivate this object. Must be implemented by any class inheriting from ReportableObject.
+        This method should handle the specific deactivation logic for the model.
+
+        Example implementation:
+            def deactivate(self):
+                self.active = False
+                self.save()
+                # Add any additional deactivation logic here
+        """
+        self.active = False
+        self.save(update_fields=["active"])
+
+    @property
+    def report_url(self):
+        """
+        Returns the URL for reporting this object.
+
+        Returns:
+            str: The URL to report this object.
+        """
+        return reverse(
+            "report", kwargs={"model_name": self._meta.model_name, "object_id": self.pk}
+        )
 
 
 class Notification(auto_prefetch.Model):
@@ -215,7 +317,7 @@ class MediaLibrary(TimeStampedModel, models.Model):
         verbose_name_plural = "Media Libraries"
 
 
-class Comment(TimeStampedModel, auto_prefetch.Model):
+class Comment(TimeStampedModel, auto_prefetch.Model, ReportableObject):
     """
     Represents a comment in the system.
     """
@@ -239,3 +341,8 @@ class Comment(TimeStampedModel, auto_prefetch.Model):
         verbose_name = "Comment"
         verbose_name_plural = "Comments"
         ordering = ["-created"]
+
+    @property
+    def content_display(self):
+        """Displays the content if the comment is active."""
+        return self.content if self.active else "[This comment has been removed]"

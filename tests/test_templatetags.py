@@ -4,9 +4,9 @@ from django.template import Context, Template
 from django.test import RequestFactory
 
 from apps.main.forms import ReportForm
-from apps.main.templatetags.custom_filters import get_page_link
+from apps.main.templatetags.custom_filters import get_page_link, report_button
 from tests.base import BaseTestCase
-from tests.factories.main import ContentTypeFactory, ReportFactory
+from tests.factories.main import CommentFactory
 from tests.factories.users import UserFactory
 
 
@@ -42,51 +42,45 @@ class AddClassTemplateTagTest(BaseTestCase):
 
 
 class ReportButtonTagTest(BaseTestCase):
-    """
-    Test cases for the 'report_button' template tag.
-    """
+    """Test cases for the report_button template tag."""
 
     def setUp(self):
-        """
-        Setup the initial data for the tests.
-        :return:
-        """
-        self.factory = RequestFactory()
-        self.content_type = ContentTypeFactory.create()
-        self.reporter = UserFactory.create()
-        self.report = ReportFactory.create(
-            content_type=self.content_type, reporter=self.reporter
-        )
-        self.report_form = ReportForm()
+        """Set up data for all test methods."""
+        super().setUp()
+        self.request = RequestFactory().get("/")
+        self.context = Context({"request": self.request})
+        self.comment = CommentFactory()
 
-    def test_report_button_tag(self):
-        """
-        Test the 'report_button' template tag.
-        :return:
-        """
-        # Create a mock request
-        request = self.factory.get("/")
+    def test_report_button_returns_correct_model_type(self):
+        """Test that the correct model_type is returned."""
+        result = report_button(self.context, self.comment)
+        self.assertEqual(result["model_type"], "comment")
 
-        # Create a template that uses the report_button tag
-        template = Template(
-            "{% load custom_filters %}{% report_button model_type object_id %}"
-        )
+    def test_report_button_returns_correct_object_id(self):
+        """Test that the correct object_id is returned."""
+        result = report_button(self.context, self.comment)
+        self.assertEqual(result["object_id"], self.comment.id)
 
-        # Render the template with a context that contains the necessary data
-        rendered_template = template.render(
-            Context(
-                {
-                    "request": request,
-                    "model_type": self.content_type.model,
-                    "object_id": self.report.object_id,
-                    "report_form": self.report_form,
-                }
-            )
-        )
+    def test_report_button_returns_object(self):
+        """Test that the original object is returned."""
+        result = report_button(self.context, self.comment)
+        self.assertEqual(result["object"], self.comment)
 
-        # Assert that the rendered template contains the expected data
-        self.assertIn(str(self.report.object_id), rendered_template)
-        self.assertIn(self.content_type.model, rendered_template)
+    def test_report_button_returns_report_form(self):
+        """Test that a ReportForm instance is returned."""
+        result = report_button(self.context, self.comment)
+        self.assertIsInstance(result["report_form"], ReportForm)
+
+    def test_report_button_returns_request(self):
+        """Test that the request object is returned."""
+        result = report_button(self.context, self.comment)
+        self.assertEqual(result["request"], self.request)
+
+    def test_report_button_raises_error_without_request(self):
+        """Test that KeyError is raised when request is missing from context."""
+        empty_context = Context({})
+        with self.assertRaises(KeyError):
+            report_button(empty_context, self.comment)
 
 
 class PaginationTagsTest(BaseTestCase):

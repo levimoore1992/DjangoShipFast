@@ -141,7 +141,9 @@ class ReportAdmin(admin.ModelAdmin):
     """
 
     readonly_fields = ["content_object_link"]
-    list_display = ["reporter", "content_object_link", "created_at"]
+    list_display = ["reporter", "content_object_link", "created"]
+    list_filter = ["content_type"]
+    sortable_by = ["created"]
 
     def content_object_link(self, obj):
         """
