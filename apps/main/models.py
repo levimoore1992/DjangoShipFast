@@ -1,5 +1,4 @@
 import os
-from abc import abstractmethod
 
 import auto_prefetch
 from django_lifecycle import LifecycleModel, hook, BEFORE_CREATE, AFTER_CREATE
@@ -207,7 +206,6 @@ class ReportableObject(models.Model):
             content_type=content_type, object_id=self.pk
         ).count()
 
-    @abstractmethod
     def deactivate(self):
         """
         Deactivate this object. Must be implemented by any class inheriting from ReportableObject.
@@ -219,9 +217,8 @@ class ReportableObject(models.Model):
                 self.save()
                 # Add any additional deactivation logic here
         """
-        raise NotImplementedError(
-            "Classes inheriting from ReportableObject must implement deactivate()"
-        )
+        self.active = False
+        self.save(update_fields=["active"])
 
     @property
     def report_url(self):
@@ -345,14 +342,7 @@ class Comment(TimeStampedModel, auto_prefetch.Model, ReportableObject):
         verbose_name_plural = "Comments"
         ordering = ["-created"]
 
-    def deactivate(self):
-        """
-        Deactivates the comment and performs any necessary cleanup.
-        """
-        self.active = False
-
-        self.save()
-
+    @property
     def content_display(self):
         """Displays the content if the comment is active."""
         return self.content if self.active else "[This comment has been removed]"

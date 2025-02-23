@@ -277,7 +277,7 @@ class ReportAdminTest(TestCase):
         """
         self.assertIn("reporter", self.report_admin.list_display)
         self.assertIn("content_object_link", self.report_admin.list_display)
-        self.assertIn("created_at", self.report_admin.list_display)
+        self.assertIn("created", self.report_admin.list_display)
 
     def test_readonly_fields_contains_expected_fields(self):
         """
