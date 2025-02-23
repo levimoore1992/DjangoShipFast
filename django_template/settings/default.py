@@ -99,7 +99,6 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "apps.main.context_processors.report_form",
                 "apps.main.context_processors.notifications",
             ],
             "builtins": [
