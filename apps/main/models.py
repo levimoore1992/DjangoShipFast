@@ -2,9 +2,9 @@ import os
 from abc import abstractmethod
 
 import auto_prefetch
-from django.conf import settings
 from django_lifecycle import LifecycleModel, hook, BEFORE_CREATE, AFTER_CREATE
 
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models

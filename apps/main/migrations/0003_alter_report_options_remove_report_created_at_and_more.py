@@ -6,33 +6,44 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0002_initial'),
+        ("main", "0002_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='report',
-            options={'base_manager_name': 'prefetch_manager', 'verbose_name': 'Report', 'verbose_name_plural': 'Reports'},
+            name="report",
+            options={
+                "base_manager_name": "prefetch_manager",
+                "verbose_name": "Report",
+                "verbose_name_plural": "Reports",
+            },
         ),
         migrations.RemoveField(
-            model_name='report',
-            name='created_at',
+            model_name="report",
+            name="created_at",
         ),
         migrations.AddField(
-            model_name='comment',
-            name='active',
+            model_name="comment",
+            name="active",
             field=models.BooleanField(default=True),
         ),
         migrations.AddField(
-            model_name='report',
-            name='created',
-            field=model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='created'),
+            model_name="report",
+            name="created",
+            field=model_utils.fields.AutoCreatedField(
+                default=django.utils.timezone.now,
+                editable=False,
+                verbose_name="created",
+            ),
         ),
         migrations.AddField(
-            model_name='report',
-            name='modified',
-            field=model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, editable=False, verbose_name='modified'),
+            model_name="report",
+            name="modified",
+            field=model_utils.fields.AutoLastModifiedField(
+                default=django.utils.timezone.now,
+                editable=False,
+                verbose_name="modified",
+            ),
         ),
     ]

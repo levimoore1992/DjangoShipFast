@@ -138,9 +138,9 @@ class ReportForm(forms.Form):
         widget=forms.Textarea(
             attrs={
                 "class": "textarea textarea-bordered w-full h-32",
-                "placeholder": "Please explain why you are reporting this content"
+                "placeholder": "Please explain why you are reporting this content",
             }
         ),
         required=True,
-        label="Reason for reporting"
+        label="Reason for reporting",
     )
