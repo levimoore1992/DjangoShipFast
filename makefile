@@ -40,3 +40,9 @@ restore-dev:
 # Create superuser
 superuser:
 	docker compose exec $(SERVICE_NAME) python manage.py createsuperuser
+
+start:
+	docker compose up $(ARGS)
+
+stop:
+	docker compose down

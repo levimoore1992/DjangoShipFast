@@ -1,5 +1,7 @@
 from enum import Enum
 
+from django.db import models
+
 
 class ContactStatus(Enum):
     """
@@ -46,3 +48,7 @@ class ContactType(Enum):
 
 # Classes for attaching to fields in any form that uses our normal styles
 FORM_CLASSES = "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+
+
+class ChannelChoices(models.TextChoices):
+    """Represent the channels our application has that we can send messages to"""

@@ -10,8 +10,12 @@ from django.db import models
 from django.urls import reverse
 from model_utils.models import TimeStampedModel
 
-from apps.main.consts import ContactStatus
-from apps.main.tasks import notify_by_slack, send_email_task
+from apps.main.consts import ContactStatus, ChannelChoices
+from apps.main.tasks import (
+    notify_by_slack,
+    send_email_task,
+    create_discord_announcement,
+)
 
 
 class TermsAndConditions(models.Model):
@@ -346,3 +350,83 @@ class Comment(TimeStampedModel, auto_prefetch.Model, ReportableObject):
     def content_display(self):
         """Displays the content if the comment is active."""
         return self.content if self.active else "[This comment has been removed]"
+
+
+class DiscordAnnouncement(LifecycleModel, auto_prefetch.Model):
+    """
+    Model for Discord channel announcements.
+
+    Attributes:
+        title (CharField): Title of the Discord embed.
+        message (TextField): Main content of the Discord embed.
+        channel_id (CharField): Discord channel ID to send to.
+        color (IntegerField): Color for Discord embed sidebar.
+        url (URLField): Optional URL for clickable title.
+        footer_text (CharField): Text for Discord embed footer.
+        created_at (DateTimeField): When the announcement was created.
+    """
+
+    COLOR_CHOICES = [
+        (0x3498DB, "Blue"),
+        (0xFF5733, "Orange"),
+        (0x27AE60, "Green"),
+        (0xE74C3C, "Red"),
+        (0x9B59B6, "Purple"),
+    ]
+
+    title = models.CharField(max_length=255)
+    message = models.TextField()
+    channel_id = models.CharField(
+        choices=ChannelChoices.choices,
+        max_length=20,
+        help_text="Discord channel ID to send the announcement to.",
+    )
+    color = models.IntegerField(
+        choices=COLOR_CHOICES,
+        default=0x3498DB,
+        help_text="Color for the Discord embed sidebar.",
+    )
+    url = models.URLField(
+        blank=True, null=True, help_text="Optional URL to make the title clickable."
+    )
+    footer_text = models.CharField(
+        max_length=255,
+        default="LanguageLoom | Connect and Learn",
+        help_text="Text to appear in the footer of the Discord embed.",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta(auto_prefetch.Model.Meta):
+        """A meta class because django-lifecycle and auto-prefetch both override default model"""
+
+        ordering = ["-created_at"]
+        verbose_name = "Discord Announcement"
+        verbose_name_plural = "Discord Announcements"
+
+    def __str__(self):
+        return f"Discord: {self.title}"
+
+    @hook(AFTER_CREATE)
+    def send_to_discord(self):
+        """Send the announcement to Discord after creation"""
+
+        # Create embed dict
+        embed = {
+            "title": self.title,
+            "description": self.message,
+            "color": self.color,
+        }
+
+        # Add URL if provided
+        if self.url:
+            embed["url"] = self.url
+
+        # Add footer
+        if self.footer_text:
+            embed["footer_text"] = self.footer_text
+
+        # Send announcement
+        create_discord_announcement(
+            channel_id=self.channel_id,
+            embed=embed,
+        )

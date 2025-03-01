@@ -40,6 +40,7 @@ django-lifecycle~=1.2.4
 
 # For Slack notifications
 slack-sdk~=3.33.3
+discord.py~=2.5
 
 # icons for the app
 heroicons~=2.11

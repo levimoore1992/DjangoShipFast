@@ -1,4 +1,5 @@
 import os
+from unittest.mock import patch
 
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
@@ -21,6 +22,7 @@ from tests.factories.main import (
     FAQFactory,
     MediaLibraryFactory,
     CommentFactory,
+    DiscordAnnouncementFactory,
 )
 from tests.factories.users import UserFactory
 from tests.utils import create_mock_image
@@ -296,3 +298,75 @@ class ReportableObjectTest(BaseTestCase):
         expected_content_type = ContentType.objects.get_for_model(self.comment)
 
         self.assertEqual(report.content_type, expected_content_type)
+
+
+class DiscordAnnouncementTest(BaseTestCase):
+    """Test cases for DiscordAnnouncement model"""
+
+    @patch("apps.main.models.create_discord_announcement")
+    def test_announcement_creation_sends_to_discord(
+        self, mock_create_discord_announcement
+    ):
+        """Test that creating a new announcement sends it to Discord"""
+        # Create a new announcement
+        DiscordAnnouncementFactory(
+            title="Test Announcement",
+            message="This is a test announcement",
+        )
+
+        # Check if create_discord_announcement was called
+        mock_create_discord_announcement.assert_called_once()
+
+        # Check the arguments passed to create_discord_announcement
+        args, kwargs = mock_create_discord_announcement.call_args
+        self.assertEqual(kwargs["channel_id"], "mock")
+        self.assertIn("embed", kwargs)
+        self.assertEqual(kwargs["embed"]["title"], "Test Announcement")
+        self.assertEqual(kwargs["embed"]["description"], "This is a test announcement")
+        self.assertEqual(kwargs["embed"]["color"], 0x3498DB)  # Default blue color
+
+    @patch("apps.main.models.create_discord_announcement")
+    def test_announcement_with_url(self, mock_create_discord_announcement):
+        """Test that URL is included in the embed when provided"""
+        test_url = "https://example.com/test"
+        DiscordAnnouncementFactory(
+            title="Test with URL", message="This announcement has a URL", url=test_url
+        )
+
+        # Check the URL was included in the embed
+        args, kwargs = mock_create_discord_announcement.call_args
+        self.assertEqual(kwargs["embed"]["url"], test_url)
+
+    @patch("apps.main.models.create_discord_announcement")
+    def test_announcement_with_custom_footer(self, mock_create_discord_announcement):
+        """Test that custom footer text is included in the embed"""
+        custom_footer = "Custom Footer Text"
+        DiscordAnnouncementFactory(
+            title="Test with Footer",
+            message="This announcement has a custom footer",
+            footer_text=custom_footer,
+        )
+
+        # Check the footer was included in the embed
+        args, kwargs = mock_create_discord_announcement.call_args
+        self.assertEqual(kwargs["embed"]["footer_text"], custom_footer)
+
+    @patch("apps.main.models.create_discord_announcement")
+    def test_announcement_with_custom_color(self, mock_create_discord_announcement):
+        """Test that custom color is included in the embed"""
+        # Green color
+        custom_color = 0x27AE60
+        DiscordAnnouncementFactory(
+            title="Test with Color",
+            message="This announcement has a custom color",
+            color=custom_color,
+        )
+
+        # Check the color was included in the embed
+        args, kwargs = mock_create_discord_announcement.call_args
+        self.assertEqual(kwargs["embed"]["color"], custom_color)
+
+    def test_string_representation(self):
+        """Test the string representation of the model"""
+        announcement = DiscordAnnouncementFactory(title="Test String Repr")
+        self.assertEqual(str(announcement), "Discord: Test String Repr")

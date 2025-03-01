@@ -22,6 +22,7 @@ from .models import (
     Report,
     MediaLibrary,
     Comment,
+    DiscordAnnouncement,
 )
 
 
@@ -211,3 +212,24 @@ class MediaLibraryAdmin(admin.ModelAdmin):
     list_display = ["id", "file", "content_type", "created"]
     list_filter = ["content_type", "created"]
     search_fields = ["file"]
+
+
+@admin.register(DiscordAnnouncement)
+class DiscordAnnouncementAdmin(admin.ModelAdmin):
+    """Admin for Discord announcements"""
+
+    list_display = ("title", "channel_id", "created_at")
+    list_filter = ("created_at", "channel_id")
+    search_fields = ("title", "message")
+    date_hierarchy = "created_at"
+    readonly_fields = ("created_at",)
+
+    fieldsets = (
+        (None, {"fields": ("title", "message", "url")}),
+        ("Discord Settings", {"fields": ("channel_id", "color", "footer_text")}),
+        ("Status", {"fields": ("created_at",), "classes": ("collapse",)}),
+    )
+
+    def has_change_permission(self, request, obj=None):
+        """No user can change"""
+        return False

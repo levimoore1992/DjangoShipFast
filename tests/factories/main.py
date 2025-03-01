@@ -167,3 +167,17 @@ class PrivacyPolicyFactory(factory.django.DjangoModelFactory):
     created_at = factory.Faker(
         "date_time_this_year", tzinfo=timezone.get_current_timezone()
     )
+
+
+class DiscordAnnouncementFactory(factory.django.DjangoModelFactory):
+    """Factory for creating DiscordAnnouncement instances."""
+
+    class Meta:
+        model = "main.DiscordAnnouncement"
+
+    title = factory.Sequence(lambda n: f"Announcement {n}")
+    message = factory.Faker("paragraph")
+    channel_id = "mock"
+    color = 0x3498DB  # Blue
+    url = factory.Faker("url")
+    footer_text = factory.Faker("paragraph")

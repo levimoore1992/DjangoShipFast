@@ -8,6 +8,8 @@ from celery import shared_task
 from django.conf import settings
 from django.core.mail import send_mail
 
+from apps.main.bot import discord_bot
+
 logger = logging.getLogger("celery")
 
 
@@ -53,3 +55,33 @@ def send_slack_message(message: str) -> None:
 def notify_by_slack(message: str) -> None:
     """Queue a Slack notification"""
     send_slack_message.delay(message)
+
+
+@shared_task
+def send_discord_announcement(message=None, channel_id=None, embed=None):
+    """
+    Celery task to send an announcement to a Discord channel.
+
+    Args:
+        message (str, optional): Plain text message
+        channel_id (str): Channel ID to send to
+        embed (dict, optional): Embed configuration
+
+    Returns:
+        bool: Success status
+    """
+
+    return discord_bot.send_announcement(message, channel_id, embed)
+
+
+def create_discord_announcement(message=None, channel_id=None, embed=None):
+    """
+    Wrapper function that handles calling the Celery task
+
+    This ensures the task is always called with .delay() consistently
+    """
+    send_discord_announcement.delay(
+        message=message,
+        channel_id=channel_id,
+        embed=embed,
+    )
