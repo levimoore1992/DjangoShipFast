@@ -1,6 +1,6 @@
 import tempfile
 
-from django_template.settings.default import *
+from core.settings.default import *
 
 ALLOWED_HOSTS = ["localhost", "testserver", "127.0.0.1", ".ngrok.io"]
 

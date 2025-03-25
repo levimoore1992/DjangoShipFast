@@ -1,9 +1,9 @@
 import logging
 
-from django_template.settings.default import *  # noqa: F401,F403
+from core.settings.default import *  # noqa: F401,F403
 
 try:
-    from django_template.settings.local import *  # noqa: F401,F403
+    from core.settings.local import *  # noqa: F401,F403
 except ImportError:
     pass
 

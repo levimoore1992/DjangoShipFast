@@ -7,7 +7,7 @@ SERVICE_NAME := web
 lint:
 	docker compose exec $(SERVICE_NAME) ruff format
 	docker compose exec $(SERVICE_NAME) djhtml templates
-	docker compose exec $(SERVICE_NAME) pylint django_template apps tests
+	docker compose exec $(SERVICE_NAME) pylint core apps tests
 
 # Test command with coverage
 test:

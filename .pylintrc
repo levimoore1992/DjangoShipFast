@@ -7,7 +7,7 @@ init-hook='import sys; sys.path.append("/app")'
 load-plugins=pylint_django
 
 # Point to your Django settings module
-django-settings-module=django_template.settings
+django-settings-module=core.settings
 
 # Add directories to ignore
 ignore=.github,.pytest_cache,

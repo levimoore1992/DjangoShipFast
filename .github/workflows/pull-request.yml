@@ -31,7 +31,7 @@ jobs:
       
 
       - name: Run Pylint
-        run: docker compose run web pylint django_template apps tests
+        run: docker compose run web pylint core apps tests
 
       - name: Run djhtml
         run: docker compose run web djhtml templates --check
