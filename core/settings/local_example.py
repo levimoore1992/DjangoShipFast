@@ -1,6 +1,6 @@
 # pylint: disable=duplicate-code
 
-from django_template.settings.default import *
+from core.settings.default import *
 
 
 ALLOWED_HOSTS.extend(
@@ -30,7 +30,7 @@ DEBUG_TOOLBAR_PANELS = [
     "debug_toolbar.panels.templates.TemplatesPanel",
     "debug_toolbar.panels.logging.LoggingPanel",
     "debug_toolbar.panels.redirects.RedirectsPanel",
-    "django_template.dev_utils.ReplaceImagesPanel",
+    "core.dev_utils.ReplaceImagesPanel",
 ]
 
 LOGGING = {

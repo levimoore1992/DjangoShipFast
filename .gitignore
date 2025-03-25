@@ -1,9 +1,9 @@
 .idea/vcs.xml
 *.pyc
-django_template/settings/local.py
+core/settings/local.py
 .env
-/django_template/staticfiles/
+/core/staticfiles/
 restore.dump
 /.pytest_cache/
 .coverage
-/django_template/media/
+/core/media/
