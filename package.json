@@ -1,0 +1,19 @@
+{
+  "name": "djangoshipfast",
+  "version": "1.0.0",
+  "description": "Django boilerplate to get started quickly",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "tailwindcss": "^3.3.0",
+    "vite": "^5.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.0",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.21"
+  }
+}

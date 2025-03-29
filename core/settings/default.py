@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "django_ckeditor_5",
     "django_htmx",
     "heroicons",
+    "django_vite", # For javascript bundling
     # auth apps
     "allauth",
     "allauth.account",
@@ -167,6 +168,13 @@ DATETIME_FORMAT = "P j/n/y"  # Combination of both time and date.
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
+
+DJANGO_VITE = {
+    "default": {
+        "dev_mode": DEBUG,
+        "static_url_prefix": "static/",
+    }
+}
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [

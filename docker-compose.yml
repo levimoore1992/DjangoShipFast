@@ -33,13 +33,13 @@ services:
         env_file:
             -   .env
 
-    sass:
+    vite:
         build:
             context: .
             dockerfile: source_scss/Dockerfile
-        volumes:
-            - .:/app
-        command: "npx sass source_scss:static --watch --no-source-map --style=compressed"
+
+        command: "npm run dev"
+
 
     redis:
         image: "redis:latest"
