@@ -31,20 +31,17 @@
         {% block extraheader %}
         {% endblock %}
     </head>
-    <body hx-indicator="#loading-container">
-        <div class="main-wrapper">
-
+    <body hx-indicator="#loading-container" class="bg-gray-50">
+        <div class="min-h-screen flex flex-col">
             {% include 'components/navbar.html' %}
-        <!-- Messages area -->
+            
             {% include 'components/django_messages.html' %}
             {% include 'components/loading.html' %}
 
-
-
-        <!-- Content area -->
-            <div class="content-area">
+            <div class="flex-1">
                 {% block content %}{% endblock %}
             </div>
+            
             {% include 'components/footer.html' %}
         </div>
     </body>

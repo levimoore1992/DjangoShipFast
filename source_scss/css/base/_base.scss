@@ -1,4 +1,0 @@
-//The base scss file is a file that should be inherited by the other files but not by the style.css file due to circular imports
-// This file should only contain styles that are not specific to a particular component or module but to the application globally
-
-@import "colors";
