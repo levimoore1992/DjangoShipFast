@@ -34,14 +34,14 @@
     <body hx-indicator="#loading-container" class="bg-gray-50">
         <div class="min-h-screen flex flex-col">
             {% include 'components/navbar.html' %}
-            
+
             {% include 'components/django_messages.html' %}
             {% include 'components/loading.html' %}
 
             <div class="flex-1">
                 {% block content %}{% endblock %}
             </div>
-            
+
             {% include 'components/footer.html' %}
         </div>
     </body>
