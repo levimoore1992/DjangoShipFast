@@ -29,7 +29,6 @@ docker compose up --build
 <li>In the github actions the variable to see changed files is called template_diff. You may want to change that based on your app but it isnt required</li>
 <li>If you want to change the branch style of your deployment then you would need to change the name of the workflows files to match the branch you want</li>
 <li>In the footer change "Your App Name" to its value</li>
-<li>Change the colors in source_css/css/base/_colors.scss to be colors reflecting your brand</li>
 <li>Change the redis project name in docker-compose.yml</li>
 <li>In core.dev_utils line 99 replace the url in the code with your actual production url for media</li>
 <li>Change the value in 'meta_tags.html' to reflect what you want for you application</li>
