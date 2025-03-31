@@ -28,10 +28,23 @@ services:
                 condition: service_healthy
             redis:
                 condition: service_started
+            
         restart: on-failure:1
         command: "python manage.py runserver_plus 0.0.0.0:8000 --cert-file .mock_certs/cert.pem --key-file .mock_certs/key.pem"
         env_file:
             -   .env
+
+    frontend:
+        image: node:20-slim  # Using the slim variant
+        working_dir: /app/frontend
+        volumes:
+            - .:/app
+        command: bash -c "npm install && npm run dev"
+        environment:
+            - ROLLUP_SKIP_NODE_RESOLUTION=true
+            - NODE_OPTIONS=--max-old-space-size=4096
+        ports:
+            - "5173:5173"
 
     redis:
         image: "redis:latest"
