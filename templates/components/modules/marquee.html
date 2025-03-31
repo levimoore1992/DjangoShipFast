@@ -3,12 +3,12 @@
         <div class="container mx-auto flex w-full flex-col items-center justify-center p-4">
             <div class="relative flex w-full max-w-[1000px] flex-col items-center justify-center overflow-hidden rounded-[2rem] border py-14">
                 <div class="absolute inset-0 rotate-[35deg] overflow-hidden" style="top: -50%; bottom: -50%;">
-                    <div x-data="marquee()" class="marquee-container">
+                    <div x-data="marquee()" class="flex flex-col gap-8">
                         <template x-for="(row, rowIndex) in rows" :key="rowIndex">
-                            <div class="marquee-row">
-                                <div class="marquee-content">
+                            <div class="whitespace-nowrap">
+                                <div class="inline-flex animate-marquee">
                                     <template x-for="(question, index) in [...row, ...row]" :key="index">
-                                        <figure class="marquee-item cursor-pointer overflow-hidden rounded-[2rem] border p-4 opacity-85">
+                                        <figure class="mx-4 cursor-pointer overflow-hidden rounded-[2rem] border p-4 opacity-85 bg-white">
                                             <blockquote class="text-sm text-center opacity-20" x-text="question"></blockquote>
                                         </figure>
                                     </template>
@@ -31,6 +31,16 @@
         </div>
     </div>
 </section>
+
+<style>
+    @keyframes marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-100%); }
+    }
+    .animate-marquee {
+        animation: marquee 30s linear infinite;
+    }
+</style>
 
 <script>
     function marquee() {

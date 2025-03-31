@@ -33,14 +33,6 @@ services:
         env_file:
             -   .env
 
-    sass:
-        build:
-            context: .
-            dockerfile: source_scss/Dockerfile
-        volumes:
-            - .:/app
-        command: "npx sass source_scss:static --watch --no-source-map --style=compressed"
-
     redis:
         image: "redis:latest"
         ports:
