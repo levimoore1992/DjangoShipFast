@@ -1,7 +1,7 @@
 {
   "name": "frontend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "vite.config.mjs",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -13,5 +13,10 @@
   "description": "",
   "devDependencies": {
     "vite": "^6.2.4"
+  },
+  "dependencies": {
+    "alpinejs": "^3.14.9",
+    "htmx.org": "^2.0.4",
+    "hyperscript.org": "^0.9.14"
   }
 }
