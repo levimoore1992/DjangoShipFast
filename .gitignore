@@ -7,3 +7,4 @@ restore.dump
 /.pytest_cache/
 .coverage
 /core/media/
+frontend/node_modules/

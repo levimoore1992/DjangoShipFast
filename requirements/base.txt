@@ -43,3 +43,6 @@ slack-sdk~=3.35
 
 # icons for the app
 heroicons~=2.11
+
+# For modularizing css and javascript
+django-vite~=3.1

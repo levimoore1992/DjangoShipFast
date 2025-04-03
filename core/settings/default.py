@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "django_ckeditor_5",
     "django_htmx",
     "heroicons",
+    "django_vite",
     # auth apps
     "allauth",
     "allauth.account",
@@ -167,6 +168,19 @@ DATETIME_FORMAT = "P j/n/y"  # Combination of both time and date.
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
+
+DJANGO_VITE = {
+    "default": {
+        "dev_mode": DEBUG,
+        "dev_server_port": 5173,
+        "dev_server_host": "localhost",
+        "static_url_prefix": "vite/",
+        "dev_server_protocol": "https",
+    }
+}
+
+VITE_APP_DIR = BASE_DIR / "frontend"
+
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [
