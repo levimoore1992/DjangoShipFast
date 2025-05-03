@@ -24,9 +24,6 @@ WORKDIR /app
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Copy requirements directory to the container
-COPY requirements/ ./requirements/
-
 # Install dependencies using pip
 RUN uv pip install -r requirements/dev.txt --system
 
