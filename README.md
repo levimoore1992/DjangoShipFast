@@ -33,7 +33,6 @@ docker compose up --build
 <li>In core.dev_utils line 99 replace the url in the code with your actual production url for media</li>
 <li>Change the value in 'meta_tags.html' to reflect what you want for you application</li>
 <li>Change the value of you app name in admin/base_site.html</li>
-<li>Change the value of YOURAPPNAME in apps/user/auth</li>
 <li>Marquee module text boxes and call to action should change</li>
 </ul>
 

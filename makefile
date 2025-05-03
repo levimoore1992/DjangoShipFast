@@ -20,6 +20,7 @@ shell:
 # makemigrations command
 makemigrations:
 	docker compose exec $(SERVICE_NAME) python manage.py makemigrations
+	make migrate
 
 # migrate command
 migrate:
