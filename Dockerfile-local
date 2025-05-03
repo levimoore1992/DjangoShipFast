@@ -22,9 +22,12 @@ RUN mkdir /app
 COPY . /app/
 WORKDIR /app
 
-# Install any needed packages specified in requirements.txt as well as uwsgi
-RUN pip install --upgrade pip && \
-    pip install -r requirements/dev.txt
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+# Install dependencies using pip
+RUN uv pip install -r requirements/dev.txt --system
 
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
+
+CMD ["python", "manage.py", "runserver_plus", "0.0.0.0:8000", "--cert-file", ".mock_certs/cert.pem", "--key-file", ".mock_certs/key.pem"]

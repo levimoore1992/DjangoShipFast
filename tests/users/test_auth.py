@@ -65,7 +65,7 @@ class DjangoAdminAuthBackendTests(TestCase):
         mock_messages.error.assert_called_once_with(
             self.request.wsgi_request,
             "Your email address does not have access to this site. "
-            "Please contact a YourAppName administrator to fix this issue.",
+            "Please contact an administrator to fix this issue.",
         )
 
     @patch("apps.users.auth.logger")
@@ -94,5 +94,5 @@ class DjangoAdminAuthBackendTests(TestCase):
         mock_messages.error.assert_called_once_with(
             self.request.wsgi_request,
             "Your email address does not have access to this site. "
-            "Please contact a YourAppName administrator to fix this issue.",
+            "Please contact an administrator to fix this issue.",
         )

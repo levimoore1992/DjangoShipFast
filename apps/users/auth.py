@@ -52,7 +52,7 @@ class DjangoAdminAuthBackend(ModelBackend):
 
             msg = (
                 "Your email address does not have access to this site. "
-                "Please contact a YourAppName administrator to fix this issue."
+                "Please contact an administrator to fix this issue."
             )
 
             messages.error(request, msg)
