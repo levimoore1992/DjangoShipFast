@@ -11,7 +11,7 @@ whitenoise~=6.8.2
 django-ckeditor-5~=0.2.15
 django-model-utils~=5.0.0
 # Task manager
-procrastinate[django]~=3.1.0
+procrastinate[django]~=3.2
 # Authentication
 django-allauth[socialaccount]~=65.6.0
 
