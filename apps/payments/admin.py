@@ -8,5 +8,5 @@ class PurchaseAdmin(admin.ModelAdmin):
     """Admin for the Purchase model"""
 
     list_display = ("user", "purchasable_item", "created")
-    search_fields = ("user__username", "purchasable_item__name")
+    search_fields = ("user__username",)
     readonly_fields = ("user", "purchasable_item", "status", "created")
