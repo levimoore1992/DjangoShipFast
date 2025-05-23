@@ -38,5 +38,7 @@ def stripe_webhook(request):
         purchase.activate()
     elif event.type == "charge.dispute.closed":
         purchase.handle_dispute(event["data"]["object"])
+    else:
+        logger.info(f"Unhandled event type: {event.type}")
 
     return JsonResponse({"status": "success"})
