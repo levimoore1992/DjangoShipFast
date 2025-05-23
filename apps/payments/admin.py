@@ -9,4 +9,4 @@ class PurchaseAdmin(admin.ModelAdmin):
 
     list_display = ("user", "purchasable_item", "created")
     search_fields = ("user__username",)
-    readonly_fields = ("user", "purchasable_item", "status", "created")
+    readonly_fields = ("user", "purchasable_item", "created")
