@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     # project apps
     "apps.main",
     "apps.users",
+    "apps.payments",
 ]
 
 MIDDLEWARE = [

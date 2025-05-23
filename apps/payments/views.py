@@ -1,13 +1,14 @@
+import logging
+
 import stripe
 from django.conf import settings
 from django.contrib.auth.decorators import login_not_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.utils.log import getLogger
 
 from apps.payments.models import Purchase
 
-logger = getLogger(__name__)
+logger = logging.getLogger("payments")
 
 
 @login_not_required

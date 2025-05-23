@@ -3,8 +3,9 @@ import stripe
 from model_utils.models import TimeStampedModel
 from django.db import models
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
-from apps.payments.consts import Plan
 
 stripe.api_key = settings.STRIPE_API_SK
 
@@ -12,10 +13,21 @@ stripe.api_key = settings.STRIPE_API_SK
 class Purchase(TimeStampedModel):
     """Represent a purchase of a plan by a user"""
 
+    content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.CASCADE,
+        help_text="The model type of the purchasable item",
+    )
+    object_id = models.PositiveIntegerField(
+        help_text="The ID of the specific purchasable item"
+    )
+    # This creates the actual generic relationship
+    purchasable_item = GenericForeignKey("content_type", "object_id")
+
     user = models.ForeignKey(
         "users.User", on_delete=models.CASCADE, related_name="purchases"
     )
-    plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
+
     stripe_payment_intent_id = models.CharField(max_length=100)
 
     price_paid = models.DecimalField(
@@ -27,16 +39,11 @@ class Purchase(TimeStampedModel):
     is_active = models.BooleanField(default=False)
 
     class Meta:
-        """
-        Meta class for the model
-        We set constraints so a user cant purchase the same plan twice
-        """
+        # Ensure unique purchases per user per item
+        unique_together = ["content_type", "object_id", "user"]
 
-        constraints = [
-            models.UniqueConstraint(
-                fields=["user", "plan"], name="unique_purchase_per_user_per_plan"
-            )
-        ]
+    def __str__(self):
+        return f"{self.user.username} purchased {self.purchasable_item}"
 
     @property
     def status(self):
