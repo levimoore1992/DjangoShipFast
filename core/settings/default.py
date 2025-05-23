@@ -62,9 +62,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.google",
     "allauth.socialaccount.providers.github",
     "admin_sso",  # google login for admin
-    # celery apps
-    "django_celery_beat",
-    "django_celery_results",
+    "procrastinate.contrib.django",
     # project apps
     "apps.main",
     "apps.users",
@@ -203,15 +201,28 @@ SENTRY_ENV = os.getenv("SENTRY_ENV", "unknown")
 
 LOGGING = {
     "version": 1,
+    "formatters": {
+        "procrastinate": {"format": "%(asctime)s %(levelname)-7s %(name)s %(message)s"},
+    },
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
+        },
+        "procrastinate": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "procrastinate",
         },
     },
     "loggers": {
         "admin": {  # for loggers in the admin
             "handlers": ["console"],
             "level": "INFO",
+        },
+        "procrastinate": {
+            "handlers": ["procrastinate"],
+            "level": "DEBUG",
+            "propagate": False,
         },
     },
 }
@@ -287,10 +298,6 @@ ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_ADAPTER = "apps.users.adapters.CustomAccountAdapter"
 SOCIALACCOUNT_ADAPTER = "apps.users.adapters.CustomSocialAccountAdapter"
 
-# settings.py
-CELERY_BROKER_URL = os.getenv("REDIS_URL")
-CELERY_RESULT_BACKEND = "django-db"
-CELERY_RESULT_EXTENDED = True  # needed for django-celery results
 
 # Google Captcha Settings
 RECAPTCHA_PRIVATE_KEY = os.getenv("RECAPTCHA_PRIVATE_KEY")
@@ -448,3 +455,4 @@ CK_EDITOR_5_UPLOAD_FILE_VIEW_NAME = "ckeditor_upload"
 
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
 SLACK_DEFAULT_CHANNEL = os.getenv("DEFAULT_SLACK_CHANNEL")
+ENABLE_SLACK_MESSAGES = os.getenv("ENABLE_SLACK_MESSAGES", "FALSE").upper() == "TRUE"

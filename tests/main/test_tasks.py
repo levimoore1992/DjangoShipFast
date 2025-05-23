@@ -1,7 +1,7 @@
 import smtplib
 from unittest.mock import patch, Mock
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.conf import settings
 
 from slack_sdk.errors import SlackApiError
@@ -70,7 +70,7 @@ class SlackNotificationTests(TestCase):
 
         # Execute
         # Call the task directly, not through Celery
-        send_slack_message.apply(args=[self.message]).get()
+        send_slack_message(self.message)
 
         # Assert
         mock_webclient.assert_called_once_with(token=settings.SLACK_BOT_TOKEN)
@@ -100,6 +100,7 @@ class SlackNotificationTests(TestCase):
             "Error sending Slack message: %s", error
         )
 
+    @override_settings(ENABLE_SLACK_MESSAGES=True)
     @patch("apps.main.tasks.send_slack_message")
     def test_notify_by_slack(self, mock_send):
         """Test notify_by_slack queues task"""
@@ -107,4 +108,4 @@ class SlackNotificationTests(TestCase):
         notify_by_slack(self.message)
 
         # Assert
-        mock_send.delay.assert_called_once_with(self.message)
+        mock_send.defer.assert_called_once_with(self.message)
