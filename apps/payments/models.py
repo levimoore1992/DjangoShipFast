@@ -1,13 +1,7 @@
-import stripe
-
 from model_utils.models import TimeStampedModel
 from django.db import models
-from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-
-
-stripe.api_key = settings.STRIPE_API_SK
 
 
 class Purchase(TimeStampedModel):
@@ -17,9 +11,11 @@ class Purchase(TimeStampedModel):
         ContentType,
         on_delete=models.CASCADE,
         help_text="The model type of the purchasable item",
+        db_index=True,
     )
     object_id = models.PositiveIntegerField(
-        help_text="The ID of the specific purchasable item"
+        help_text="The ID of the specific purchasable item",
+        db_index=True,
     )
     # This creates the actual generic relationship
     purchasable_item = GenericForeignKey("content_type", "object_id")
@@ -44,24 +40,6 @@ class Purchase(TimeStampedModel):
 
     def __str__(self):
         return f"{self.user.username} purchased {self.purchasable_item}"
-
-    @property
-    def status(self):
-        """Return the status from Stripe"""
-        if not self.payment_intent_id:
-            return "No payment intent ID"
-
-        try:
-            payment_intent = stripe.PaymentIntent.retrieve(self.payment_intent_id)
-            if (
-                payment_intent.status == "requires_payment_method"
-            ):  # Stripe returns this instead of failed when a payment fails
-                return "Failed"
-
-            return payment_intent.status
-        except stripe.error.StripeError as e:
-            # Handle potential Stripe API errors
-            return f"Error retrieving status: {str(e)}"
 
     def activate(self):
         """Activate the purchase"""
