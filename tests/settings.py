@@ -5,6 +5,7 @@ from core.settings.default import *
 ALLOWED_HOSTS = ["localhost", "testserver", "127.0.0.1", ".ngrok.io"]
 
 INSTALLED_APPS.append("tests.test_app")  # noqa: F405
+SECURE_SSL_REDIRECT = False
 
 
 DATABASES = {
@@ -36,8 +37,3 @@ STORAGES = {
 # This is added here because the tests need to be able to access the media files
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
-
-# Celery test settings
-CELERY_BROKER_URL = "memory://"
-CELERY_RESULT_BACKEND = "cache+memory://"
-CELERY_TASK_ALWAYS_EAGER = True

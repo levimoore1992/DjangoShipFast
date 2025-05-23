@@ -26,8 +26,7 @@ services:
         depends_on:
             db:
                 condition: service_healthy
-            redis:
-                condition: service_started
+            
             
         restart: on-failure:1
         env_file:
@@ -45,40 +44,16 @@ services:
         ports:
             - "5173:5173"
 
-    redis:
-        image: "redis:latest"
-        ports:
-            - "6379:6379"
-
-    celery:
-        user: "1000:1000"
+    procrastinate-worker:
         build:
             context: .
             dockerfile: Dockerfile-local
-        command: "celery -A core worker --loglevel=info"
+        command: "python manage.py procrastinate worker"
         volumes:
             - .:/app
         depends_on:
             db:
                 condition: service_healthy
-            redis:
-                condition: service_started
-        env_file:
-            - .env
-
-
-    celery-beat:
-        build:
-            context: .
-            dockerfile: Dockerfile-local
-        command: "celery -A core beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler"
-        volumes:
-            - .:/app
-        depends_on:
-            db:
-                condition: service_healthy
-            redis:
-                condition: service_started
         env_file:
             - .env
 

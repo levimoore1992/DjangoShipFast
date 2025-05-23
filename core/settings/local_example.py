@@ -33,19 +33,6 @@ DEBUG_TOOLBAR_PANELS = [
     "core.dev_utils.ReplaceImagesPanel",
 ]
 
-LOGGING = {
-    "version": 1,
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-        },
-    },
-    "root": {
-        "handlers": ["console"],
-        "level": "DEBUG",
-    },
-}
-
 # For django hijack to redirect home after hijacking
 LOGIN_REDIRECT_URL = "/"
 

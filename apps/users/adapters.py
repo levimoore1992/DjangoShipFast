@@ -19,11 +19,9 @@ class CustomAccountAdapter(DefaultAccountAdapter):
 
     def get_phone(self, user):
         """Get the phone number of the user"""
-        return None
 
     def get_user_by_phone(self, phone):
         """Get the user by the phone number"""
-        return None
 
     def send_verification_code_sms(self, user, phone: str, code: str, **kwargs):
         """Send the verification code to the user we dont use this method but we need to implement it"""

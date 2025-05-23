@@ -153,7 +153,7 @@ class Report(auto_prefetch.Model, TimeStampedModel, LifecycleModel):
         from_email = settings.DEFAULT_FROM_EMAIL
         recipient_list = [self.reporter.email]
 
-        send_email_task.delay(
+        send_email_task.defer(
             subject=subject,
             message=message,
             from_email=from_email,
