@@ -26,6 +26,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("upload/", ckeditor_upload, name="ckeditor_upload"),
     path("accounts/", include("allauth.urls")),
+    path("payments/", include("apps.payments.urls")),
     path("", include("apps.main.urls")),
 ]
 

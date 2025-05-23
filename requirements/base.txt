@@ -41,3 +41,6 @@ heroicons~=2.11
 
 # For modularizing css and javascript
 django-vite~=3.1
+
+# For payments
+stripe~=12.1.0
