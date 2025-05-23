@@ -136,7 +136,9 @@ class Report(auto_prefetch.Model, TimeStampedModel, LifecycleModel):
     @hook(AFTER_CREATE)
     def send_notification_email(self):
         """
-        Send an email to the admin when a new report is created.
+        Sends a confirmation email to the reporter after a new report is created.
+        
+        The email thanks the user for their submission and includes the report ID and creation date.
         """
         subject = "Report Received: Thank You"
         message = f"""
