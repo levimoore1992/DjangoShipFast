@@ -57,5 +57,13 @@ services:
         env_file:
             - .env
 
+    stripe-cli:
+        image: stripe/stripe-cli:latest
+        command: "listen --api-key ${STRIPE_SK_KEY} --forward-to https://web:8000/payments/stripe-webhook/ --skip-verify"
+        env_file:
+            - .env
+        depends_on:
+            - web
+
 volumes:
     postgres_data:
