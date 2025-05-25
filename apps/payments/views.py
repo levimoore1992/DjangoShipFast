@@ -36,8 +36,8 @@ def stripe_webhook(request):
 
     if event.type == "payment_intent.succeeded":
         purchase.activate()
-    elif event.type == "charge.dispute.closed":
-        purchase.handle_dispute(event["data"]["object"])
+    elif event.type == "charge.dispute.funds_withdrawn":
+        purchase.handle_dispute()
     else:
         logger.info("Unhandled event type: {event.type}", event=event)
 

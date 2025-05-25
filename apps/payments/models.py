@@ -51,12 +51,6 @@ class Purchase(TimeStampedModel):
         self.is_active = False
         self.save(update_fields=["is_active"])
 
-    def handle_dispute(self, stripe_event):
+    def handle_dispute(self):
         """Handle a dispute event"""
-        event_data = stripe_event["data"]["object"]
-
-        # If we did not lose the dispute then do nothing
-        if not event_data.get("status") == "lost":
-            return
-
         self.deactivate()

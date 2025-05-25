@@ -63,6 +63,15 @@ class StripeWebhookViewTestCase(TestCase):
             },
         )
 
+        self.dispute_funds_withdrawn_payload = MockStripeEvent(
+            "charge.dispute.funds_withdrawn",
+            {
+                "data": {
+                    "object": {"payment_intent": "pi_test123456789", "status": "lost"}
+                }
+            },
+        )
+
     @patch("stripe.Webhook.construct_event")
     def test_payment_intent_succeeded_activates_purchase(self, mock_construct_event):
         """Test that payment_intent.succeeded event activates the purchase"""
@@ -245,3 +254,30 @@ class StripeWebhookViewTestCase(TestCase):
                 content_type="application/json",
                 HTTP_STRIPE_SIGNATURE="test_signature",
             )
+
+    @patch("stripe.Webhook.construct_event")
+    def test_dispute_funds_withdrawn(self, mock_construct_event):
+        """Test that dispute.funds_withdrawn event deactivates the purchase"""
+        mock_construct_event.return_value = self.dispute_funds_withdrawn_payload
+
+        # Ensure purchase starts as active
+        self.purchase.is_active = True
+        self.purchase.save()
+
+        # Make webhook request
+        response = self.client.post(
+            self.webhook_url,
+            data=json.dumps(
+                {"test": "data"}
+            ),  # Content doesn't matter since we're mocking
+            content_type="application/json",
+            HTTP_STRIPE_SIGNATURE="test_signature",
+        )
+
+        # Check response
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"status": "success"})
+
+        # Check purchase was deactivated
+        self.purchase.refresh_from_db()
+        self.assertFalse(self.purchase.is_active)

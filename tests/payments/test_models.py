@@ -8,6 +8,14 @@ from tests.factories.users import UserFactory
 class PurchaseFactoryTestCase(BasePurchaseTestCase):
     """Example test case using the factories"""
 
+    def test_string_representation(self):
+        """Test string representation of purchase"""
+        user_to_purchase = UserFactory()
+        purchase = PurchaseFactory.for_object(user_to_purchase)
+        self.assertEqual(
+            str(purchase), f"{purchase.user.username} purchased {user_to_purchase}"
+        )
+
     def test_basic_purchase_creation_with_manual_setup(self):
         """Test basic purchase factory with manual content type setup"""
         # Using User model as an example purchasable item
@@ -91,5 +99,15 @@ class PurchaseFactoryTestCase(BasePurchaseTestCase):
 
         # Test deactivation
         purchase.deactivate()
+        purchase.refresh_from_db()
+        self.assertFalse(purchase.is_active)
+
+    def test_purchase_handle_dispute(self):
+        """Test purchase handle dispute method"""
+        user_to_purchase = UserFactory()
+        purchase = PurchaseFactory.for_object(user_to_purchase, is_active=True)
+
+        # Test dispute handling
+        purchase.handle_dispute()
         purchase.refresh_from_db()
         self.assertFalse(purchase.is_active)
