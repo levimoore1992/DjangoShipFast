@@ -27,9 +27,6 @@ django-ipware~=7.0.1
 # For admin login with Google
 django-admin-sso~=5.2.0
 
-# For emails
-django-anymail[mailgun]~=13.0
-
 # For lifecycle hooks signal-like feature
 django-lifecycle~=1.2.4
 
@@ -44,3 +41,6 @@ django-vite~=3.1
 
 # For payments
 stripe~=12.4
+
+# for emails
+resend~=2.13.0

@@ -37,3 +37,5 @@ STORAGES = {
 # This is added here because the tests need to be able to access the media files
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
+
+ENABLE_EMAILS = False
