@@ -306,14 +306,6 @@ RECAPTCHA_PUBLIC_KEY = os.getenv("RECAPTCHA_PUBLIC_KEY")
 # Silencing the error below because we intentionally use the test keys in development
 SILENCED_SYSTEM_CHECKS = ["django_recaptcha.recaptcha_test_key_error"]
 
-# Hosted Email Settings
-ANYMAIL = {
-    "MAILGUN_API_KEY": os.getenv("MAILGUN_API_KEY"),
-    "MAILGUN_SENDER_DOMAIN": os.getenv("MAILGUN_SENDER_DOMAIN"),
-}
-EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
-DEFAULT_FROM_EMAIL = f"no-reply@{os.getenv('MAILGUN_SENDER_DOMAIN')}"
-
 # DigitalOcean Spaces settings
 AWS_ACCESS_KEY_ID = os.getenv("DIGITAL_OCEAN_ACCESS_KEY")
 AWS_SECRET_ACCESS_KEY = os.getenv("DIGITAL_OCEAN_SECRET_ACCESS_KEY")
@@ -457,3 +449,8 @@ CK_EDITOR_5_UPLOAD_FILE_VIEW_NAME = "ckeditor_upload"
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
 SLACK_DEFAULT_CHANNEL = os.getenv("DEFAULT_SLACK_CHANNEL")
 ENABLE_SLACK_MESSAGES = os.getenv("ENABLE_SLACK_MESSAGES", "FALSE").upper() == "TRUE"
+
+# Email settings
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
+DEFAULT_FROM_EMAIL = "noreply@example.com"
+ENABLE_EMAILS = os.getenv("ENABLE_EMAILS", "TRUE").upper() == "TRUE"

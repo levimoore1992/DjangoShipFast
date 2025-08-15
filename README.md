@@ -34,6 +34,7 @@ docker compose up --build
 <li>Change the value in 'meta_tags.html' to reflect what you want for you application</li>
 <li>Change the value of you app name in admin/base_site.html</li>
 <li>Marquee module text boxes and call to action should change</li>
+</li> In settings.py file youll need to change the default from email to your own email</li>
 </ul>
 
 ## How to Use `restore_local_db` Management Command
@@ -231,7 +232,7 @@ That's it! Your bot token will let you send messages to any public channel the b
 - [x] Robots.txt view setup
 - [x] Djhtml setup in makefile and actions to make sure templates are formatted
 - [x] Latest version of ckeditor with file upload
-- [x] Email settings with mailgun and anymail
+- [x] Email settings with resend
 - [x] Marquee module for the landing page
 - [x] Django allauth account login with Google and Github
 - [x] Slack notifications for a specific chatroom
