@@ -255,14 +255,15 @@ class SendEmailTaskTestCase(TestCase):
     def test_send_email_disabled_returns_none(self, mock_send):
         """Test that function returns None when emails are disabled."""
         # Act
-        result = send_email_task(
-            subject=self.subject,
-            message=self.message,
-            recipient_list=self.recipient_list,
-        )
 
         # Assert
-        self.assertIsNone(result)
+        self.assertIsNone(
+            send_email_task(
+                subject=self.subject,
+                message=self.message,
+                recipient_list=self.recipient_list,
+            )
+        )
         mock_send.assert_not_called()
 
 

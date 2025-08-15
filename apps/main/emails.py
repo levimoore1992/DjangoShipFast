@@ -13,11 +13,7 @@ def send_email_task(
     """
     :param subject: Subject of the email.
     :param message: Body of the email.
-    :param from_email: Sender's email address.
     :param recipient_list: A list of recipient email addresses.
-    :param html_message: Optional HTML body. If provided, will be sent as the HTML
-        part of the email.
-    :return: True if the email is sent successfully, False otherwise.
     """
 
     if not settings.ENABLE_EMAILS:
@@ -35,3 +31,5 @@ def send_email_task(
     }
 
     resend.Emails.send(params)
+
+    return None
