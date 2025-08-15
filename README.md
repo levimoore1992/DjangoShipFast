@@ -175,10 +175,10 @@ Because we use npm to minify our styles its possible that 2 developers working o
 The solution is simply for a developer to accept the changes of anything, then the file will recompile it anyways.
 
 ## Email
-The repo is opinionated to using mailgun. Check the mailgun docs for full setup guide
-Generally speaking for local testing you can use your sandbox domain from mailgun and for production you can use yours
+The repo is opinionated to using resend for emails. Check the resend docs for full setup guide
+Generally speaking for local testing you can use your sandbox domain from resend and for production you can use yours
 They can both be represented in the env variables.
-The default FROM_EMAIL is "no-reply"@<yourdomain> but you can change that in default.py
+The default FROM_EMAIL is "no-reply"@example.com but you can change that in default.py
 
 ## Slack
 I'll give you a concise guide focused just on creating the Slack app and getting the required tokens.
