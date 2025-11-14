@@ -103,7 +103,9 @@ class SlackNotificationTests(TestCase):
     @override_settings(ENABLE_SLACK_MESSAGES=True)
     @patch("apps.main.tasks.send_slack_message")
     def test_notify_by_slack(self, mock_send):
-        """Test notify_by_slack queues task"""
+        """
+        Tests that notify_by_slack queues a Slack notification task with the correct message.
+        """
         # Execute
         notify_by_slack(self.message)
 

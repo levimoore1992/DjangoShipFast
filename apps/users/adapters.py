@@ -18,13 +18,25 @@ class CustomAccountAdapter(DefaultAccountAdapter):
         return user
 
     def get_phone(self, user):
-        """Get the phone number of the user"""
+        """
+        Retrieves the phone number associated with the user.
+        
+        This method is a placeholder and does not provide an implementation.
+        """
 
     def get_user_by_phone(self, phone):
-        """Get the user by the phone number"""
+        """
+        Retrieves a user associated with the given phone number.
+        
+        This is a placeholder method and is not implemented.
+        """
 
     def send_verification_code_sms(self, user, phone: str, code: str, **kwargs):
-        """Send the verification code to the user we dont use this method but we need to implement it"""
+        """
+        Placeholder for sending an SMS verification code to a user.
+        
+        This method is not used but must be implemented to satisfy interface requirements.
+        """
 
     def set_phone(self, user, phone: str, verified: bool):
         """Set the phone number of the user"""
