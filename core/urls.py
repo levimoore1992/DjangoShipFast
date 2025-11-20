@@ -17,8 +17,13 @@ if not settings.DEBUG:
     handler404 = BadRequestView.as_view()
     handler500 = ServerErrorView.as_view()
 
-# load dev URLs ONLY when debug is on
+# Dynamically load debug-only URLs without static import
 if settings.DEBUG:
-    from .urls_debug import urlpatterns as debug_urls
+    import importlib
 
-    urlpatterns += debug_urls
+    try:
+        debug_toolbar = importlib.import_module("debug_toolbar")
+        urls_debug = importlib.import_module("core.urls_debug")
+        urlpatterns += urls_debug.urlpatterns
+    except Exception:
+        pass
