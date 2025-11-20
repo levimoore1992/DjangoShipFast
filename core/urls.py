@@ -36,9 +36,12 @@ if not settings.DEBUG:
     handler404 = BadRequestView.as_view()
     handler500 = ServerErrorView.as_view()
 
-if settings.DEBUG:
-    import debug_toolbar
-    from .dev_utils import local_media_proxy
+    import importlib
+
+    debug_toolbar = importlib.import_module("debug_toolbar")
+    dev_utils = importlib.import_module("core.dev_utils")
+
+    local_media_proxy = getattr(dev_utils, "local_media_proxy")
 
     urlpatterns.append(
         path("__debug__/", include(debug_toolbar.urls)),
