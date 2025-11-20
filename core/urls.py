@@ -25,5 +25,5 @@ if settings.DEBUG:
         debug_toolbar = importlib.import_module("debug_toolbar")
         urls_debug = importlib.import_module("core.urls_debug")
         urlpatterns += urls_debug.urlpatterns
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         pass
