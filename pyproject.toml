@@ -1,0 +1,14 @@
+[project]
+requires-python = ">=3.14"
+
+[tool.ty.environment]
+python-version = "3.14"
+root = [".", "./apps", "./core"]
+
+[tool.ty.src]
+include = ["apps/**/*.py", "core/**/*.py", "tests/**/*.py"]
+exclude = ["**/migrations/**", "**/.venv/**"]
+
+[tool.ty.rules]
+possibly-unresolved-reference = "error"
+invalid-type-form = "error"

@@ -22,13 +22,12 @@ jobs:
         uses: astral-sh/ruff-action@v3
         with:
           args: format --check .
+          version: latest
 
       - name: Build Docker Environment
         run: |
           cp .env.example .env
           docker compose up -d
-
-      
 
       - name: Run Pylint
         run: docker compose run web pylint core apps tests
@@ -36,11 +35,29 @@ jobs:
       - name: Run djhtml
         run: docker compose run web djhtml templates --check
 
+  type-check:
+    name: Type Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: lint-and-format
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Docker Environment
+        run: |
+          cp .env.example .env
+          docker compose up -d
+
+      - name: Run Type Check
+        run: docker compose run web ty check .
+
   check-migrations:
     name: Check for Migrations
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: lint-and-format
+    needs: [lint-and-format, type-check]
 
     steps:
       - name: Checkout Code
@@ -58,7 +75,7 @@ jobs:
     name: Run Tests and Coverage
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: [lint-and-format, check-migrations]
+    needs: [lint-and-format, type-check, check-migrations]
 
     steps:
       - name: Checkout Code
