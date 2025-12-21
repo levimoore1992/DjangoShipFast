@@ -13,6 +13,10 @@ lint:
 test:
 	docker compose exec $(SERVICE_NAME) pytest -n auto --cov=apps --cov-report=html:.app_coverage --cov-report=term $(ARGS)
 
+# Type check command
+typecheck:
+	docker compose exec $(SERVICE_NAME) ty check .
+
 # Shell command
 shell:
 	docker compose exec $(SERVICE_NAME) python manage.py shell_plus

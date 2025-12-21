@@ -22,3 +22,4 @@ django-hijack~=3.7.0
 # Linting libraries
 pylint-django~=2.6.1
 ruff~=0.12
+ty~=0.0.5
