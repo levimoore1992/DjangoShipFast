@@ -212,7 +212,7 @@ class RestoreDbCommandTest(TestCase):
     )
     @mock.patch("sys.stdout", new_callable=StringIO)
     @mock.patch("apps.main.management.commands.restore_db.input", return_value="y")
-    def test_handle_no_commands(
+    def test_handle_no_commands(  # pylint: disable=too-many-arguments, too-many-positional-arguments
         self,
         mock_input,
         mock_stdout,

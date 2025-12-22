@@ -40,6 +40,12 @@ VERSION = os.getenv("VERSION")
 ALLOWED_HOSTS = []
 
 
+RAILWAY_HOST = os.getenv(
+    "RAILWAY_PUBLIC_DOMAIN"
+)  # this is only used in production because railway is our provider
+ALLOWED_HOSTS.append(RAILWAY_HOST)
+
+
 # Application definition
 
 INSTALLED_APPS = [
