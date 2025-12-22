@@ -117,11 +117,12 @@ WSGI_APPLICATION = "core.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES: dict[str, dict[str, object]] = {
-    "default": dj_database_url.config(
-        default=os.getenv("DATABASE_URL"),
-        conn_max_age=600,
-        ssl_require=True,
+DATABASES = {
+    "default": dj_database_url.parse(
+        os.getenv("DATABASE_URL"),
+        conn_max_age=30,
+        ssl_require=os.getenv("DATABASE_SSLMODE", "disable") == "require",
+        disable_server_side_cursors=True,
     )
 }
 

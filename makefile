@@ -42,6 +42,9 @@ restore-dev:
 superuser:
 	docker compose exec $(SERVICE_NAME) python manage.py createsuperuser
 
+restart:
+	docker compose restart web
+
 # Build the frontend
 build-frontend:
 	docker compose exec frontend npm run build
