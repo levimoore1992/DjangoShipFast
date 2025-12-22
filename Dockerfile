@@ -11,7 +11,7 @@ RUN npm run build
 
 
 # ---------- Backend runtime stage ----------
-FROM python:3.13-slim
+FROM python:3.14
 
 WORKDIR /app
 
