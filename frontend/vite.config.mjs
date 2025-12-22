@@ -14,7 +14,7 @@ export default defineConfig(({ command }) => {
       emptyOutDir: true,
       rollupOptions: {
         input: {
-          main: resolve("./src/main.js"),
+          "src/main.js": resolve("./src/main.js"),
         },
       },
     },
