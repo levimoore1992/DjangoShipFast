@@ -7,6 +7,7 @@ export default defineConfig(({ command }) => {
 
   return {
     base: "/static/vite/",
+
     build: {
       manifest: true,
       outDir: resolve("../static/vite"),
