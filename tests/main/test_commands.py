@@ -306,7 +306,7 @@ class RestoreDbCommandTest(TestCase):
         return_value=["echo target"],
     )
     @mock.patch("sys.stdout", new_callable=StringIO)
-    def test_handle_user_declines_confirmation(  # pylint: disable=too-many-arguments
+    def test_handle_user_declines_confirmation(  # pylint: disable=too-many-arguments, too-many-positional-arguments
         self,
         mock_stdout,
         mock_generate_target,
