@@ -8,10 +8,10 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
-COPY requirements.txt ./
+COPY requirements/prod.txt ./
 
 # Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements/prod.txt
 RUN npm install
 
 COPY . .
