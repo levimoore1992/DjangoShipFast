@@ -2,7 +2,7 @@
 builder = "dockerfile"
 
 [deploy]
-releaseCommand = "python manage.py migrate --noinput"
+releaseCommand = "python manage.py migrate --noinput && python manage.py collectstatic --noinput"
 startCommand = "sh -c 'gunicorn core.wsgi:application --bind 0.0.0.0:$PORT --log-level info'"
 
 [env]
