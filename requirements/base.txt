@@ -6,6 +6,7 @@ requests~=2.32.3
 django-auto-prefetch~=1.14
 django-htmx~=1.23
 whitenoise~=6.9
+dj-database-url~=3.0
 
 # General Libraries
 django-ckeditor-5~=0.2.15
