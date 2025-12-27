@@ -7,7 +7,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
 WORKDIR /app
 
 # Copy package files
-COPY package*.json ./
+COPY frontend/package*.json ./
 COPY requirements/ requirements/
 
 # Install dependencies
