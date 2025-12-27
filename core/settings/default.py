@@ -125,7 +125,7 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 DATABASES = {
     "default": dj_database_url.parse(
-        os.getenv("DATABASE_URL"),
+        os.getenv("DATABASE_URL", "postgres://django:django@db:5432/django"),
         conn_max_age=30,
         ssl_require=os.getenv("DATABASE_SSLMODE", "disable") == "require",
         disable_server_side_cursors=True,

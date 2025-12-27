@@ -18,10 +18,11 @@ RUN npm install && npm run build
 
 # Back to app root
 WORKDIR /app
-
-# Make start script executable
-RUN chmod +x start.sh
+# Collect static files
+RUN python manage.py collectstatic --noinput
 
 EXPOSE 8080
 
-CMD ["./start.sh"]
+# Note: Migrations run at startup, not build time
+CMD python manage.py migrate --noinput && \
+    gunicorn core.wsgi:application --bind 0.0.0.0:$PORT --log-level info
