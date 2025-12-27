@@ -233,7 +233,7 @@ class Command(BaseCommand):
         if kwargs["drop"] and kwargs["restore"]:
             drop_table_path = os.path.join(
                 settings.BASE_DIR,
-                "apps/courses/management/commands/sql/drop_tables.sql",
+                "apps/main/management/commands/sql/drop_tables.sql",
             )
             command = (
                 f"psql --host={db_config['host']} --port={db_config['port']} "
