@@ -19,6 +19,15 @@ RUN npm install && npm run build
 # Back to app root
 WORKDIR /app
 
+# Create staticfiles directory
+RUN mkdir -p core/staticfiles
+
+# Collect static files
+RUN python manage.py collectstatic --noinput
+
+# Make start script executable
+RUN chmod +x start.sh
+
 EXPOSE 8080
 
-CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8080"]
+CMD ["./start.sh"]
