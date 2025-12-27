@@ -177,14 +177,14 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',  # Your regular static files
+    ROOT_DIR / 'static',  # Your regular static files
 ]
 
 # Django-Vite configuration
 DJANGO_VITE = {
     "default": {
         "dev_mode": DEBUG,
-        "manifest_path": STATIC_ROOT / "vite" / "manifest.json",
+        "manifest_path": STATIC_URL + "vite" + "/manifest.json",
     }
 }
 
