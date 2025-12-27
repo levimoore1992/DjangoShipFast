@@ -8,7 +8,7 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
-COPY requirements ./
+COPY requirements/ requirements/
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements/prod.txt
