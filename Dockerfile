@@ -1,28 +1,27 @@
-# ---------- Frontend build ----------
-FROM node:20-alpine AS frontend-builder
-
-WORKDIR /frontend
-
-COPY frontend/package.json frontend/package-lock.json* ./
-RUN npm install
-
-COPY frontend/ ./
-RUN npm run build
-
-
-# ---------- Backend ----------
 FROM python:3.14
+
+# Install Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs
 
 WORKDIR /app
 
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1
+# Copy package files
+COPY package*.json ./
+COPY requirements.txt ./
 
-COPY requirements/ requirements/
-RUN pip install --no-cache-dir -r requirements/prod.txt
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+RUN npm install
 
 COPY . .
 
-# Copy Vite build artifacts from frontend builder
-COPY --from=frontend-builder /static/vite /app/static/vite
-    
+# Build Vite assets
+RUN npm run build
+
+# Collect static files
+RUN python manage.py collectstatic --noinput
+
+EXPOSE 8000
+
+CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8000"]

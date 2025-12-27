@@ -173,25 +173,21 @@ DATETIME_FORMAT = "P j/n/y"  # Combination of both time and date.
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',  # Your regular static files
+]
+
+# Django-Vite configuration
 DJANGO_VITE = {
     "default": {
         "dev_mode": DEBUG,
-        "dev_server_port": 5173,
-        "dev_server_host": "localhost",
-        "static_url_prefix": "vite/",
-        "dev_server_protocol": "https",
+        "manifest_path": STATIC_ROOT / "vite" / "manifest.json",
     }
 }
 
-VITE_APP_DIR = ROOT_DIR / "frontend"
-
-
-STATIC_URL = "static/"
-STATICFILES_DIRS = [
-    ROOT_DIR / "static",
-]
-
-STATIC_ROOT = BASE_DIR / "staticfiles"
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
