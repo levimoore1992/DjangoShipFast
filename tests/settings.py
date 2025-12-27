@@ -23,7 +23,7 @@ DATABASES = {
 SENTRY_ENV = "test_runner"
 
 STATIC_ROOT = tempfile.mkdtemp()
-STATICFILES_DIRS = [BASE_DIR / "static"]
+STATICFILES_DIRS = [ROOT_DIR / "static"]
 
 STORAGES = {
     "default": {

@@ -23,6 +23,6 @@ RUN pip install --no-cache-dir -r requirements/prod.txt
 
 COPY . .
 
-# Built assets already live in static/vite
-COPY --from=frontend-builder /frontend/../static /app/static
+# Copy Vite build artifacts from frontend builder
+COPY --from=frontend-builder /static/vite /app/static/vite
     

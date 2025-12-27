@@ -183,12 +183,12 @@ DJANGO_VITE = {
     }
 }
 
-VITE_APP_DIR = BASE_DIR / "frontend"
+VITE_APP_DIR = ROOT_DIR / "frontend"
 
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [
-    "static",
+    ROOT_DIR / "static",
 ]
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
