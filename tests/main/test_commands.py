@@ -4,7 +4,11 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 from django.core.management import call_command
-from apps.main.management.commands.restore_db import Command, NO_COMMANDS_MESSAGE
+from apps.main.management.commands.restore_db import (
+    Command,
+    NO_COMMANDS_MESSAGE,
+    create_command,
+)
 
 
 @override_settings(DEBUG=True)
@@ -26,6 +30,23 @@ class RestoreDbCommandTest(TestCase):
         :return: None
         """
         self.command = Command()
+
+    def test_create_command_formats_correctly(self) -> None:
+        """
+        Ensure create_command formats the command template using db_config
+        and additional arguments in the correct order.
+        """
+        db_config: dict[str, str] = {
+            "host": "localhost",
+            "username": "test_user",
+            "dbname": "test_db",
+        }
+
+        template: str = "psql -h {} -U {} -d {} -f {}"
+        result: str = create_command(db_config, template, "schema.sql")
+
+        expected: str = "psql -h localhost -U test_user -d test_db -f schema.sql"
+        self.assertEqual(result, expected)
 
     @mock.patch("apps.main.management.commands.restore_db.sys.exit")
     def test_validate_arguments_target_production(self, mock_exit):
@@ -268,3 +289,43 @@ class RestoreDbCommandTest(TestCase):
 
         # Should have 0 commands
         self.assertEqual(len(commands), 0)
+
+    @override_settings(DEBUG=True)
+    @mock.patch(
+        "apps.main.management.commands.restore_db.sys.exit",
+        side_effect=SystemExit,
+    )
+    @mock.patch("apps.main.management.commands.restore_db.input", return_value="n")
+    @mock.patch("apps.main.management.commands.restore_db.Command.run_commands")
+    @mock.patch(
+        "apps.main.management.commands.restore_db.Command.generate_source_commands",
+        return_value=["echo source"],
+    )
+    @mock.patch(
+        "apps.main.management.commands.restore_db.Command.generate_target_commands",
+        return_value=["echo target"],
+    )
+    @mock.patch("sys.stdout", new_callable=StringIO)
+    def test_handle_user_declines_confirmation(  # pylint: disable=too-many-arguments
+        self,
+        mock_stdout,
+        mock_generate_target,
+        mock_generate_source,
+        mock_run_commands,
+        mock_input,
+        mock_exit,
+    ) -> None:
+        """
+        Test that the command exits gracefully when the user declines confirmation.
+        """
+        with self.assertRaises(SystemExit):
+            call_command(
+                "restore_db",
+                source="production",
+                target="local",
+                no_input=False,
+            )
+
+        self.assertIn("Exiting now", mock_stdout.getvalue())
+        mock_exit.assert_called_once_with(0)
+        mock_run_commands.assert_not_called()
