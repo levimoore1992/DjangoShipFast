@@ -6,18 +6,21 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
 
 WORKDIR /app
 
-# Copy package files
-COPY frontend/package*.json ./
-COPY requirements/ requirements/
-
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements/prod.txt
-RUN npm install
-
+# Copy everything
 COPY . .
 
-# Build Vite assets
-RUN npm run build
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements/prod.txt
+
+# Install npm dependencies and build
+WORKDIR /app/frontend
+RUN npm install && npm run build
+
+# Back to app root
+WORKDIR /app
+
+# Create staticfiles directory (important!)
+RUN mkdir -p core/staticfiles
 
 # Collect static files
 RUN python manage.py collectstatic --noinput

@@ -10,7 +10,7 @@ export default defineConfig(({ command }) => {
 
     build: {
       manifest: true,
-      outDir: 'core/staticfiles/vite',
+      outDir: resolve('../core/staticfiles/vite'),  // Direct to final location
       emptyOutDir: true,
       rollupOptions: {
         input: {

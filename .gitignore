@@ -2,7 +2,8 @@
 *.pyc
 core/settings/local.py
 .env
-/core/staticfiles/
+/core/staticfiles/*
+!/core/staticfiles/.gitkeep
 restore.dump
 /.pytest_cache/
 .coverage
