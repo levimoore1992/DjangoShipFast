@@ -14,10 +14,10 @@ RUN pip install --no-cache-dir -r requirements/prod.txt
 COPY . /app/
 
 # Make startup script executable
-RUN chmod +x /app/start.sh
+RUN chmod +x /app/deploy/start.sh
 
 # Run collectstatic during build
 RUN python manage.py collectstatic --noinput
 
 # Use ENTRYPOINT instead of CMD - harder for platforms to override
-ENTRYPOINT ["/app/start.sh"]
+ENTRYPOINT ["/app/deploy/start.sh"]
