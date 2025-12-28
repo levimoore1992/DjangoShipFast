@@ -50,3 +50,5 @@ stop:
 	make build-frontend
 	docker compose down
 	
+restart:
+	docker compose restart
