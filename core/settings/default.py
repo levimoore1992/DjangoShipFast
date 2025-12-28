@@ -39,6 +39,10 @@ VERSION = os.getenv("VERSION")
 
 ALLOWED_HOSTS = []
 
+# this is only used in production because railway is our provider
+RAILWAY_HOST = os.getenv("RAILWAY_PUBLIC_DOMAIN")
+ALLOWED_HOSTS.append(RAILWAY_HOST)
+
 
 # Application definition
 
@@ -176,7 +180,7 @@ DJANGO_VITE = {
     }
 }
 
-VITE_APP_DIR = BASE_DIR / "frontend"
+VITE_APP_DIR = ROOT_DIR / "frontend"
 
 
 STATIC_URL = "static/"
@@ -292,8 +296,8 @@ SOCIALACCOUNT_ADAPTER = "apps.users.adapters.CustomSocialAccountAdapter"
 
 
 # Google Captcha Settings
-RECAPTCHA_PRIVATE_KEY = os.getenv("RECAPTCHA_PRIVATE_KEY")
-RECAPTCHA_PUBLIC_KEY = os.getenv("RECAPTCHA_PUBLIC_KEY")
+RECAPTCHA_PRIVATE_KEY = os.getenv("RECAPTCHA_PRIVATE_KEY", "")
+RECAPTCHA_PUBLIC_KEY = os.getenv("RECAPTCHA_PUBLIC_KEY", "")
 # Silencing the error below because we intentionally use the test keys in development
 SILENCED_SYSTEM_CHECKS = ["django_recaptcha.recaptcha_test_key_error"]
 

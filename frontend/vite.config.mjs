@@ -16,10 +16,10 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
-    https: {
+    https: fs.existsSync('../.mock_certs/key.pem') && fs.existsSync('../.mock_certs/cert.pem') ? {
       key: fs.readFileSync('../.mock_certs/key.pem'),
       cert: fs.readFileSync('../.mock_certs/cert.pem'),
-    },
+    } : false,
     origin: 'https://localhost:5173',
     fs: {
       allow: ['..']
