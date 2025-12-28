@@ -25,9 +25,6 @@ django-waffle~=5.0
 # Tracking user IP
 django-ipware~=7.0.1
 
-# For admin login with Google
-django-admin-sso~=5.2.0
-
 # For lifecycle hooks signal-like feature
 django-lifecycle~=1.2.4
 

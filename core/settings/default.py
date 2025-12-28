@@ -63,7 +63,6 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
     "allauth.socialaccount.providers.github",
-    "admin_sso",  # google login for admin
     "procrastinate.contrib.django",
     # project apps
     "apps.main",
@@ -241,12 +240,6 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend",
 )
 
-DJANGO_ADMIN_SSO_OAUTH_CLIENT_ID = os.getenv("DJANGO_ADMIN_SSO_OAUTH_CLIENT_ID")
-DJANGO_ADMIN_SSO_OAUTH_CLIENT_SECRET = os.getenv("DJANGO_ADMIN_SSO_OAUTH_CLIENT_SECRET")
-
-# We use our own template, don't add the admin_sso login button
-DJANGO_ADMIN_SSO_ADD_LOGIN_BUTTON = False
-
 LOGIN_URL = "account_login"
 
 LOGIN_REQUIRED_URLS_EXCEPTIONS = [
@@ -254,19 +247,19 @@ LOGIN_REQUIRED_URLS_EXCEPTIONS = [
     r"^/cookies/",  # cookie consent URLs
     r"^/static/",  # static files
     r"^/media/",  # media files
-    r"^/admin/admin_sso/",
     r"^/__debug__/",
     # Add any other paths you want to exempt from login
 ]
+
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 
 # Authentication and allauth settings
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "APP": {
-            # we use the same variables for the ADMIN SSO because the variables above cant change
-            # because of admin sso library but they are the same values
-            "client_id": DJANGO_ADMIN_SSO_OAUTH_CLIENT_ID,
-            "secret": DJANGO_ADMIN_SSO_OAUTH_CLIENT_SECRET,
+            "client_id": GOOGLE_CLIENT_ID,
+            "secret": GOOGLE_CLIENT_SECRET,
             "key": "",
         },
         "SCOPE": [
