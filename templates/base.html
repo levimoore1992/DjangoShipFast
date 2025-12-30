@@ -2,6 +2,7 @@
 {% load django_vite %}
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
+
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Your App Name{% endblock %}</title>
@@ -10,14 +11,13 @@
         {% vite_hmr_client %}
         {% vite_asset 'src/main.js' %}
 
-    {#    icons    #}
+    {# icons #}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
     {# tailwind #}
-        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.2/dist/full.min.css" rel="stylesheet" type="text/css" />
-        <script src="https://cdn.tailwindcss.com"></script>
 
-    {#    Iphone Icon    #}
+
+    {# Iphone Icon #}
         <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/logo.png' %}">
     {#Brand Logo#}
         <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}" />
@@ -27,6 +27,7 @@
         {% block extraheader %}
         {% endblock %}
     </head>
+
     <body hx-indicator="#loading-container" class="bg-gray-50">
         <div class="min-h-screen flex flex-col">
             {% include 'components/navbar.html' %}
@@ -44,4 +45,5 @@
 
     {% block javascript %}
     {% endblock %}
+
 </html>
