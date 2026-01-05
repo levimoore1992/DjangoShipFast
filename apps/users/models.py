@@ -32,6 +32,13 @@ class User(CreateMediaLibraryMixin, AbstractUser):
         db_persist=True,
     )
 
+    referral_source = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+        verbose_name="How did you hear about us?",
+    )
+
     # Add any custom fields for your application here
 
     def __str__(self):
