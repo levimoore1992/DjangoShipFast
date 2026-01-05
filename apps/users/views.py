@@ -1,12 +1,16 @@
+import json
+
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-import json
 
 
 @login_required
 @require_POST
 def update_referral_source(request):
+    """
+    Update the referral source for the current user.
+    """
     data = json.loads(request.body)
     referral_source = data.get("referral_source")
 
