@@ -9,6 +9,8 @@ from slack_sdk.errors import SlackApiError
 
 from procrastinate.contrib.django import app
 
+from apps.main.emails import send_we_miss_you_email
+
 logger = logging.getLogger("procrastinate")
 
 
@@ -53,3 +55,22 @@ def notify_by_slack(message: str) -> None:
         return
 
     send_slack_message.defer(message)
+
+
+@app.task()
+def send_we_miss_you_email_task(user_id: int) -> None:
+    """
+    Send a 'we miss you' email to a user.
+
+    Uses queueing_lock to ensure only one pending task per user.
+    If scheduled again with same user_id, the old pending task is replaced.
+
+    :param user_id: The ID of the user to send the email to.
+    """
+    from apps.users.models import User  # pylint: disable=import-outside-toplevel
+
+    try:
+        user = User.objects.get(id=user_id, is_active=True)
+        send_we_miss_you_email(user)
+    except User.DoesNotExist:
+        logger.warning("User %s not found or inactive, skipping email", user_id)

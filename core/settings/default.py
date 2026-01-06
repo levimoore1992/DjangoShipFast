@@ -449,3 +449,4 @@ ENABLE_SLACK_MESSAGES = os.getenv("ENABLE_SLACK_MESSAGES", "FALSE").upper() == "
 RESEND_API_KEY = os.getenv("RESEND_API_KEY")
 DEFAULT_FROM_EMAIL = "noreply@example.com"
 ENABLE_EMAILS = os.getenv("ENABLE_EMAILS", "TRUE").upper() == "TRUE"
+INACTIVE_USER_EMAIL_DAYS = 10
