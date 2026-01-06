@@ -1,4 +1,6 @@
 from django.conf import settings
+from django.template.loader import render_to_string
+
 import resend
 
 
@@ -33,3 +35,27 @@ def send_email_task(
     resend.Emails.send(params)
 
     return None
+
+
+def send_we_miss_you_email(user) -> None:
+    """
+    Send a 'we miss you' email to an inactive user.
+
+    :param user: The User object to send the email to.
+    """
+    site_url = settings.RAILWAY_HOST or "https://localhost:8000"
+    if site_url and not site_url.startswith("http"):
+        site_url = f"https://{site_url}"
+
+    context = {
+        "user": user,
+        "site_url": site_url,
+    }
+
+    message = render_to_string("emails/we_miss_you.html", context)
+
+    send_email_task(
+        subject="We miss you! Come back and see what's new",
+        message=message,
+        recipient_list=[user.email],
+    )

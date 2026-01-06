@@ -1,15 +1,21 @@
 import auto_prefetch
 import requests
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Value, F
 from django.db.models.functions import Concat
 from django.templatetags.static import static
+from django_lifecycle import LifecycleModelMixin, hook, AFTER_UPDATE
 
+from procrastinate.contrib.django import app
+from procrastinate.contrib.django.models import ProcrastinateJob
+
+from apps.main.tasks import send_we_miss_you_email_task
 from apps.main.mixins import CreateMediaLibraryMixin
 
 
-class User(CreateMediaLibraryMixin, AbstractUser):
+class User(LifecycleModelMixin, CreateMediaLibraryMixin, AbstractUser):
     """An override of the user model to extend any new fields or remove others."""
 
     # override the default email field so that we can make it unique
@@ -43,6 +49,31 @@ class User(CreateMediaLibraryMixin, AbstractUser):
 
     def __str__(self):
         return self.email
+
+    @hook(AFTER_UPDATE, when="last_login", has_changed=True)
+    def schedule_we_miss_you_email(self):
+        """
+        Schedule a 'we miss you' email for X days from now when user logs in.
+
+        If the user logs in again before the email is sent, this will
+        reschedule the task by canceling the old one first.
+        """
+
+        days = settings.INACTIVE_USER_EMAIL_DAYS
+        lock_key = f"we_miss_you_{self.id}"
+
+        # Cancel any existing pending "we miss you" email for this user
+        existing_jobs = ProcrastinateJob.objects.filter(
+            queueing_lock=lock_key, status="todo"
+        )
+        for job in existing_jobs:
+            app.job_manager.cancel_job_by_id(job.id, delete_job=True)
+
+        # Schedule new email
+        send_we_miss_you_email_task.configure(
+            schedule_in={"days": days},
+            queueing_lock=lock_key,
+        ).defer(user_id=self.id)
 
     @property
     def avatar_url(self):
