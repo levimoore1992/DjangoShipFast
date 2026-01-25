@@ -245,10 +245,8 @@ class UserManagerTests(TestCase):
         Test that creating a superuser with invalid flags raises a ValueError
         """
         with self.assertRaisesMessage(ValueError, "Superuser must have is_staff=True."):
-            User.objects.create_superuser(
-                email="admin@example.com", is_staff=False
-            )
-        with self.assertRaisesMessage(ValueError, "Superuser must have is_superuser=True."):
-            User.objects.create_superuser(
-                email="admin@example.com", is_superuser=False
-            )
+            User.objects.create_superuser(email="admin@example.com", is_staff=False)
+        with self.assertRaisesMessage(
+            ValueError, "Superuser must have is_superuser=True."
+        ):
+            User.objects.create_superuser(email="admin@example.com", is_superuser=False)
