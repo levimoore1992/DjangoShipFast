@@ -133,7 +133,7 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [] # we authenticate passwordless so we dont need these fields
+AUTH_PASSWORD_VALIDATORS = []  # we authenticate passwordless so we dont need these fields
 
 
 # Internationalization
@@ -225,9 +225,7 @@ STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
 
 AUTH_USER_MODEL = "users.User"
 
-AUTHENTICATION_BACKENDS = (
-    "allauth.account.auth_backends.AuthenticationBackend",
-)
+AUTHENTICATION_BACKENDS = ("allauth.account.auth_backends.AuthenticationBackend",)
 
 LOGIN_URL = "account_login"
 

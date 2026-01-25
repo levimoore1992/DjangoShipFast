@@ -29,6 +29,13 @@ class UserTest(TestCase):
         user = UserFactory(email="test@example.com")
         self.assertEqual(str(user), "test@example.com")
 
+    def test_get_session_auth_hash(self):
+        """
+        Test the get_session_auth_hash method of the User model.
+        """
+        user = UserFactory(email="test@example.com")
+        self.assertEqual(user.get_session_auth_hash(), "test@example.com")
+
     def test_user_full_name_property(self):
         """
         Test the full_name property of the User model.

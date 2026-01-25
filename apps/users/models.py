@@ -79,6 +79,17 @@ class User(CreateMediaLibraryMixin, AbstractUser):
     def __str__(self):
         return self.email
 
+    def get_session_auth_hash(self):
+        """
+        Return the email field as the auth hash to ensure session stability
+        since the password field is disabled.
+
+        IMPORTANT: This is needed because since we removed password from the
+        user model, the default get_session_auth_hash method will not work.
+
+        """
+        return str(self.email)
+
     @property
     def avatar_url(self):
         """Return the URL of the user's avatar."""
