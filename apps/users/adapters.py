@@ -12,7 +12,6 @@ class CustomAccountAdapter(DefaultAccountAdapter):
         """Save the user with custom fields"""
         user = super().save_user(request, user, form, commit=False)
         user.email = user.email.lower()
-        user.username = user.email  # Set username to email
         if commit:
             user.save()
         return user
@@ -34,7 +33,7 @@ class CustomAccountAdapter(DefaultAccountAdapter):
 
 
 class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
-    """Custom Social Adapter to set username to email"""
+    """Custom Social Adapter to set email to email"""
 
     def pre_social_login(self, request, sociallogin):
         """Pre social login hook"""
@@ -51,5 +50,4 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         """Populate the user with custom fields"""
         user = super().populate_user(request, sociallogin, data)
         user.email = user.email.lower()
-        user.username = user.email  # Set username to email
         return user

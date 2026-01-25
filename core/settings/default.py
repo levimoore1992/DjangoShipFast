@@ -240,7 +240,6 @@ AUTH_USER_MODEL = "users.User"
 
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",  # Default backend
-    "apps.users.auth.DjangoAdminAuthBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 )
 
@@ -287,10 +286,9 @@ SOCIALACCOUNT_PROVIDERS = {
 SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_AUTO_SIGNUP = True
 ACCOUNT_LOGOUT_ON_GET = True
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None  # No username field
+ACCOUNT_LOGIN_METHODS = {"email"}  # Login via email only
+ACCOUNT_SIGNUP_FIELDS = ["email*"]  # Email-only signup, no password
 ACCOUNT_ADAPTER = "apps.users.adapters.CustomAccountAdapter"
 SOCIALACCOUNT_ADAPTER = "apps.users.adapters.CustomSocialAccountAdapter"
 

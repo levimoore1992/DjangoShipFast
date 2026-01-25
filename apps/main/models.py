@@ -335,7 +335,7 @@ class Comment(TimeStampedModel, auto_prefetch.Model, ReportableObject):
     content_object = GenericForeignKey("content_type", "object_id")
 
     def __str__(self):
-        return f"Comment {self.id} by {self.user.username}"
+        return f"Comment {self.id} by {self.user.email}"
 
     class Meta(auto_prefetch.Model.Meta):
         verbose_name = "Comment"

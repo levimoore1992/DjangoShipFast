@@ -16,16 +16,14 @@ class ReferralSourceTests(TestCase):
         """
         Set up test data.
         """
-        self.user = User.objects.create_user(
-            username="testuser", email="test@example.com", password="password"
-        )
+        self.user = User.objects.create_user(email="test@example.com")
         self.url = reverse("update_referral_source")
 
     def test_update_referral_source(self):
         """
         Test updating the referral source.
         """
-        self.client.login(email="test@example.com", password="password")
+        self.client.force_login(self.user)
         data = {"referral_source": "Google"}
         response = self.client.post(
             self.url, data=json.dumps(data), content_type="application/json"
@@ -38,7 +36,7 @@ class ReferralSourceTests(TestCase):
         """
         Test updating the referral source with a custom value.
         """
-        self.client.login(email="test@example.com", password="password")
+        self.client.force_login(self.user)
         data = {"referral_source": "Custom Value"}
         response = self.client.post(
             self.url, data=json.dumps(data), content_type="application/json"
@@ -61,7 +59,7 @@ class ReferralSourceTests(TestCase):
         """
         Test updating the referral source with invalid data.
         """
-        self.client.login(email="test@example.com", password="password")
+        self.client.force_login(self.user)
         data = {}
         response = self.client.post(
             self.url, data=json.dumps(data), content_type="application/json"

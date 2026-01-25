@@ -25,9 +25,7 @@ class UserAdminTest(TestCase):
         super().setUp()
         self.site = AdminSite()
         self.user_admin = UserAdmin(User, self.site)
-        self.admin_user = UserFactory(
-            username="admin", is_staff=True, is_superuser=True
-        )
+        self.admin_user = UserFactory(is_staff=True, is_superuser=True)
 
         self.client.force_login(self.admin_user)
         self.user = UserFactory(first_name="mock", last_name="user", is_active=False)
@@ -50,7 +48,7 @@ class UserAdminTest(TestCase):
         mock_request = Mock(user=self.admin_user)
 
         # Prepare the queryset with the user to be blocked
-        queryset = User.objects.filter(username=self.user.username)
+        queryset = User.objects.filter(email=self.user.email)
 
         # Directly call the action method
         self.user_admin.block_users_and_devices(mock_request, queryset)
@@ -83,8 +81,8 @@ class UserIPAdminTest(TestCase):
         super().setUp()
         self.site = AdminSite()
         self.user_ip_admin = UserIPAdmin(UserIP, self.site)
-        self.user1 = UserFactory(username="user1", email="user1@example.com")
-        self.user2 = UserFactory(username="user2", email="user2@example.com")
+        self.user1 = UserFactory(email="user1@example.com")
+        self.user2 = UserFactory(email="user2@example.com")
 
         # Creating UserIP instances
         self.user_ip1 = UserIPFactory(
@@ -124,7 +122,7 @@ class UserIPAdminTest(TestCase):
         Test the get_users_on_same_ip method of the UserIPAdmin
         :return:
         """
-        expected_users = "user2"
+        expected_users = "user2@example.com"
         self.assertEqual(
             self.user_ip_admin.get_users_on_same_ip(self.user_ip1),
             expected_users,

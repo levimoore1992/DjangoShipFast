@@ -1,6 +1,6 @@
 import auto_prefetch
 import requests
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.db.models import Value, F
 from django.db.models.functions import Concat
@@ -9,8 +9,43 @@ from django.templatetags.static import static
 from apps.main.mixins import CreateMediaLibraryMixin
 
 
+class UserManager(BaseUserManager):
+    """Custom user manager for email-based authentication without username."""
+
+    def create_user(self, email, password=None, **extra_fields):
+        """Create and return a regular user with the given email."""
+        if not email:
+            raise ValueError("The Email field must be set")
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        # Password is not used/persisted
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        """Create and return a superuser with the given email."""
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("is_active", True)
+
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff=True.")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must have is_superuser=True.")
+
+        return self.create_user(email, password, **extra_fields)
+
+
 class User(CreateMediaLibraryMixin, AbstractUser):
     """An override of the user model to extend any new fields or remove others."""
+
+    username = None
+    password = None
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []  # No additional required fields for createsuperuser
+
+    objects = UserManager()
 
     # override the default email field so that we can make it unique
     email = models.EmailField(

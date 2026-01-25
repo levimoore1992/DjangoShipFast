@@ -18,12 +18,9 @@ class UserTest(TestCase):
         """
         Test the creation of the User model.
         """
-        user = UserFactory(
-            username="testuser", email="test@example.com", password="testpass123"
-        )
+        user = UserFactory(email="test@example.com")
         self.assertTrue(isinstance(user, User))
         self.assertEqual(user.email, "test@example.com")
-        self.assertEqual(user.username, "testuser")
 
     def test_user_string_representation(self):
         """
@@ -37,7 +34,6 @@ class UserTest(TestCase):
         Test the full_name property of the User model.
         """
         user = UserFactory(
-            username="testuser",
             first_name="Test",
             last_name="User",
             email="test@example.com",
@@ -142,7 +138,7 @@ class UserIPManagerTests(TestCase):
         Create a user and two user IPs
         :return:
         """
-        self.user = UserFactory(username="testuser", password="12345")
+        self.user = UserFactory()
         self.ip_address = "192.168.1.1"
         UserIPFactory(user=self.user, ip_address=self.ip_address, is_blocked=True)
         UserIPFactory(user=self.user, ip_address="192.168.1.2", is_suspicious=True)
@@ -176,7 +172,7 @@ class UserDeviceManagerTests(TestCase):
         Create a user and a user device
         :return:
         """
-        self.user = UserFactory(username="testdeviceuser", password="12345")
+        self.user = UserFactory()
         self.device_identifier = "device123"
         UserDeviceFactory(
             user=self.user, device_identifier=self.device_identifier, is_blocked=True
@@ -201,3 +197,58 @@ class UserDeviceManagerTests(TestCase):
             self.device_identifier,
             device_history.values_list("device_identifier", flat=True),
         )
+
+
+class UserManagerTests(TestCase):
+    """
+    Test the UserManager
+    """
+
+    def test_create_user(self):
+        """
+        Test creating a new user
+        """
+        user = User.objects.create_user(email="test@example.com")
+        self.assertEqual(user.email, "test@example.com")
+        self.assertTrue(user.is_active)
+        self.assertFalse(user.is_staff)
+        self.assertFalse(user.is_superuser)
+
+    def test_create_user_email_normalization(self):
+        """
+        Test that the email is normalized
+        """
+        user = User.objects.create_user(email="TEST@EXAMPLE.COM")
+        self.assertEqual(user.email, "TEST@example.com")
+
+    def test_create_user_missing_email(self):
+        """
+        Test that creating a user without an email raises a ValueError
+        """
+        with self.assertRaises(ValueError):
+            User.objects.create_user(email="")
+        with self.assertRaises(ValueError):
+            User.objects.create_user(email=None)
+
+    def test_create_superuser(self):
+        """
+        Test creating a superuser
+        """
+        user = User.objects.create_superuser(email="admin@example.com")
+        self.assertEqual(user.email, "admin@example.com")
+        self.assertTrue(user.is_staff)
+        self.assertTrue(user.is_superuser)
+        self.assertTrue(user.is_active)
+
+    def test_create_superuser_invalid_flags(self):
+        """
+        Test that creating a superuser with invalid flags raises a ValueError
+        """
+        with self.assertRaisesMessage(ValueError, "Superuser must have is_staff=True."):
+            User.objects.create_superuser(
+                email="admin@example.com", is_staff=False
+            )
+        with self.assertRaisesMessage(ValueError, "Superuser must have is_superuser=True."):
+            User.objects.create_superuser(
+                email="admin@example.com", is_superuser=False
+            )
