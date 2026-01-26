@@ -99,7 +99,7 @@ class User(CreateMediaLibraryMixin, AbstractUser):
 
     def get_session_auth_hash(self):
         """
-        Return the email field as the auth hash to ensure session stability
+        Return the session_token field as the auth hash to ensure session stability
         since the password field is disabled.
 
         IMPORTANT: This is needed because since we removed password from the
