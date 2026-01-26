@@ -216,7 +216,7 @@ class TestCommentModel(TestCase):
         """
         self.assertEqual(
             str(self.comment),
-            f"Comment {self.comment.id} by {self.comment.user.username}",
+            f"Comment {self.comment.id} by {self.comment.user.email}",
         )
 
 

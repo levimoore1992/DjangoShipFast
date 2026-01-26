@@ -1,6 +1,7 @@
+import secrets
 import auto_prefetch
 import requests
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.db.models import Value, F
 from django.db.models.functions import Concat
@@ -9,8 +10,52 @@ from django.templatetags.static import static
 from apps.main.mixins import CreateMediaLibraryMixin
 
 
+def generate_session_token():
+    """
+    Generate a random session token for a user.
+    This is called this way because the migraton at 0004_user_session_token.py
+    needs to call this function to generate a session token for each user.
+    """
+    return secrets.token_urlsafe(32)
+
+
+class UserManager(BaseUserManager):
+    """Custom user manager for email-based authentication without username."""
+
+    def create_user(self, email, password=None, **extra_fields):
+        """Create and return a regular user with the given email."""
+        if not email:
+            raise ValueError("The Email field must be set")
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        # Password is not used/persisted
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        """Create and return a superuser with the given email."""
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("is_active", True)
+
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff=True.")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must have is_superuser=True.")
+
+        return self.create_user(email, password, **extra_fields)
+
+
 class User(CreateMediaLibraryMixin, AbstractUser):
     """An override of the user model to extend any new fields or remove others."""
+
+    username = None
+    password = None
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []  # No additional required fields for createsuperuser
+
+    objects = UserManager()
 
     # override the default email field so that we can make it unique
     email = models.EmailField(
@@ -19,6 +64,14 @@ class User(CreateMediaLibraryMixin, AbstractUser):
         verbose_name="Email Address",
         db_collation="en-x-icu",
     )
+
+    session_token = models.CharField(
+        max_length=255,
+        unique=True,
+        default=generate_session_token,
+        db_index=True,
+    )
+
     avatar = models.ImageField(upload_to="profile_image/", null=True, blank=True)
 
     full_name = models.GeneratedField(
@@ -43,6 +96,24 @@ class User(CreateMediaLibraryMixin, AbstractUser):
 
     def __str__(self):
         return self.email
+
+    def get_session_auth_hash(self):
+        """
+        Return the email field as the auth hash to ensure session stability
+        since the password field is disabled.
+
+        IMPORTANT: This is needed because since we removed password from the
+        user model, the default get_session_auth_hash method will not work.
+
+        """
+        return self.session_token
+
+    def rotate_session_token(self):
+        """
+        Rotate the session token to invalidate all existing sessions.
+        """
+        self.session_token = generate_session_token()
+        self.save(update_fields=["session_token"])
 
     @property
     def avatar_url(self):

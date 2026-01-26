@@ -43,8 +43,6 @@ class UserAdmin(BaseUserAdmin):
 
     Fields:
     -------
-    - username: The unique identifier for the user. Used for logging in.
-    - password: The hashed password for the user.
     - first_name: The user's first name.
     - last_name: The user's last name.
     - email: The user's email address.
@@ -67,7 +65,6 @@ class UserAdmin(BaseUserAdmin):
     inlines = [UserIPInline, UserDeviceInline]
 
     fieldsets = (
-        (None, {"fields": ("username", "password")}),
         ("Personal info", {"fields": ("first_name", "last_name", "email", "avatar")}),
         (
             "Permissions",
@@ -83,6 +80,7 @@ class UserAdmin(BaseUserAdmin):
         ),
         ("Important dates", {"fields": ("last_login", "date_joined")}),
     )
+    ordering = ("email",)
 
     def block_users_and_devices(self, request, queryset):
         """
@@ -109,7 +107,7 @@ class UserIPAdmin(admin.ModelAdmin):
         "shared_user_count",
         "last_seen",
     )
-    search_fields = ("user__username", "ip_address")
+    search_fields = ("user__email", "ip_address")
     list_filter = ("last_seen", "is_blocked")
     sortable_by = ("ip_address", "last_seen", "user", "shared_user_count")
     readonly_fields = (
@@ -165,14 +163,14 @@ class UserIPAdmin(admin.ModelAdmin):
         """
         Display other users that have used the same IP address.
         :param obj: Instance of the UserIP model.
-        :return: Comma-separated string of usernames.
+        :return: Comma-separated string of emails.
         """
         users = (
             UserIP.objects.filter(ip_address=obj.ip_address)
             .exclude(user=obj.user)
             .select_related("user")
         )
-        return ", ".join([user_ip.user.username for user_ip in users])
+        return ", ".join([user_ip.user.email for user_ip in users])
 
     get_users_on_same_ip.short_description = "Users on Same IP"
 
@@ -184,7 +182,7 @@ class UserDeviceAdmin(admin.ModelAdmin):
     """
 
     list_display = ("user", "device_identifier", "last_seen")
-    search_fields = ("user__username", "device_identifier")
+    search_fields = ("user__email", "device_identifier")
     list_filter = ("last_seen", "is_blocked")
 
     readonly_fields = (

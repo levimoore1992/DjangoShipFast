@@ -39,7 +39,7 @@ class Purchase(TimeStampedModel):
         unique_together = ["content_type", "object_id", "user"]
 
     def __str__(self):
-        return f"{self.user.username} purchased {self.purchasable_item}"
+        return f"{self.user.email} purchased {self.purchasable_item}"
 
     def activate(self):
         """Activate the purchase"""

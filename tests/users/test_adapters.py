@@ -30,8 +30,7 @@ class CustomAccountAdapterTests(BaseTestCase):
 
         This test verifies that:
         1. The user's email is correctly lowercased.
-        2. The username is set to the lowercased email.
-        3. The user is successfully saved to the database (has an ID).
+        2. The user is successfully saved to the database (has an ID).
 
         It simulates a form submission with an uppercase email and checks
         if the adapter correctly processes and saves the user information.
@@ -43,7 +42,7 @@ class CustomAccountAdapterTests(BaseTestCase):
         saved_user = self.adapter.save_user(self.client.request, user, form)
 
         self.assertEqual(saved_user.email, "test@example.com")
-        self.assertEqual(saved_user.username, "test@example.com")
+
         self.assertTrue(saved_user.id)
 
     def test_save_user_without_commit(self):
@@ -52,8 +51,7 @@ class CustomAccountAdapterTests(BaseTestCase):
 
         This test checks that:
         1. The user's email is correctly lowercased.
-        2. The username is set to the lowercased email.
-        3. The user is not saved to the database (no ID is assigned).
+        2. The user is not saved to the database (no ID is assigned).
 
         It simulates a scenario where we want to create a user instance
         without immediately saving it to the database, which is useful
@@ -68,7 +66,7 @@ class CustomAccountAdapterTests(BaseTestCase):
         )
 
         self.assertEqual(saved_user.email, "test@example.com")
-        self.assertEqual(saved_user.username, "test@example.com")
+
         self.assertFalse(saved_user.id)
 
 
@@ -119,7 +117,7 @@ class CustomSocialAccountAdapterTests(BaseTestCase):
 
         This test checks that:
         1. The user's email is correctly lowercased.
-        2. The username is set to the lowercased email.
+
 
         It simulates the population of user data from a social login provider,
         ensuring that the email is properly formatted and used as the username,
@@ -133,7 +131,6 @@ class CustomSocialAccountAdapterTests(BaseTestCase):
         )
 
         self.assertEqual(populated_user.email, "test@example.com")
-        self.assertEqual(populated_user.username, "test@example.com")
 
     def test_pre_social_login_new_user(self):
         """

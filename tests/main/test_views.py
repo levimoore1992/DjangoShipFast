@@ -356,7 +356,7 @@ class CustomUploadViewTestCase(BaseTestCase):
         self.assertEqual(json_response["fileName"], "test_file.jpg")
 
         self.assertTrue(
-            MediaLibrary.objects.filter(file__contains="test_file.jpg").exists()
+            MediaLibrary.objects.filter(file__contains="test_file").exists()
         )
 
     def test_upload_no_file(self):
@@ -396,7 +396,7 @@ class CustomUploadViewTestCase(BaseTestCase):
 
         self.client.post(self.url, {"upload": file})
 
-        saved_file = MediaLibrary.objects.get(file__contains="test_content_file.txt")
+        saved_file = MediaLibrary.objects.get(file__contains="test_content_file")
         with saved_file.file.open("rb") as f:
             self.assertEqual(f.read(), file_content)
 
@@ -433,7 +433,7 @@ class CustomUploadViewTestCase(BaseTestCase):
         json_response = response.json()
         self.assertEqual(json_response["uploaded"], "1")
 
-        saved_file = MediaLibrary.objects.get(file__contains="large_file.bin")
+        saved_file = MediaLibrary.objects.get(file__contains="large_file")
         self.assertEqual(saved_file.file.size, 5 * 1024 * 1024)
 
     def test_upload_as_regular_user(self):

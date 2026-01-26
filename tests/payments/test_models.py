@@ -13,7 +13,7 @@ class PurchaseFactoryTestCase(BasePurchaseTestCase):
         user_to_purchase = UserFactory()
         purchase = PurchaseFactory.for_object(user_to_purchase)
         self.assertEqual(
-            str(purchase), f"{purchase.user.username} purchased {user_to_purchase}"
+            str(purchase), f"{purchase.user.email} purchased {user_to_purchase}"
         )
 
     def test_basic_purchase_creation_with_manual_setup(self):
