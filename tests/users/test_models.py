@@ -34,7 +34,19 @@ class UserTest(TestCase):
         Test the get_session_auth_hash method of the User model.
         """
         user = UserFactory(email="test@example.com")
-        self.assertEqual(user.get_session_auth_hash(), "test@example.com")
+        self.assertEqual(user.get_session_auth_hash(), user.session_token)
+        self.assertIsNotNone(user.session_token)
+
+    def test_rotate_session_token(self):
+        """
+        Test that rotating the session token changes it.
+        """
+        user = UserFactory(email="test@example.com")
+        old_token = user.session_token
+        user.rotate_session_token()
+        user.refresh_from_db()
+        self.assertNotEqual(user.session_token, old_token)
+        self.assertEqual(user.get_session_auth_hash(), user.session_token)
 
     def test_user_full_name_property(self):
         """

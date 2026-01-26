@@ -1,3 +1,4 @@
+import secrets
 import auto_prefetch
 import requests
 from django.contrib.auth.models import AbstractUser, BaseUserManager
@@ -7,6 +8,15 @@ from django.db.models.functions import Concat
 from django.templatetags.static import static
 
 from apps.main.mixins import CreateMediaLibraryMixin
+
+
+def generate_session_token():
+    """
+    Generate a random session token for a user.
+    This is called this way because the migraton at 0004_user_session_token.py
+    needs to call this function to generate a session token for each user.
+    """
+    return secrets.token_urlsafe(32)
 
 
 class UserManager(BaseUserManager):
@@ -54,6 +64,14 @@ class User(CreateMediaLibraryMixin, AbstractUser):
         verbose_name="Email Address",
         db_collation="en-x-icu",
     )
+
+    session_token = models.CharField(
+        max_length=255,
+        unique=True,
+        default=generate_session_token,
+        db_index=True,
+    )
+
     avatar = models.ImageField(upload_to="profile_image/", null=True, blank=True)
 
     full_name = models.GeneratedField(
@@ -88,7 +106,14 @@ class User(CreateMediaLibraryMixin, AbstractUser):
         user model, the default get_session_auth_hash method will not work.
 
         """
-        return str(self.email)
+        return self.session_token
+
+    def rotate_session_token(self):
+        """
+        Rotate the session token to invalidate all existing sessions.
+        """
+        self.session_token = generate_session_token()
+        self.save(update_fields=["session_token"])
 
     @property
     def avatar_url(self):
