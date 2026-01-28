@@ -52,7 +52,7 @@ jobs:
           docker compose up -d
 
       - name: Check for Missing Migrations
-        run: docker compose run web bash -c "python manage.py makemigrations --dry-run --check | grep -v 'admin_sso'"
+        run: docker compose run web bash -c "python manage.py makemigrations --dry-run --check"
 
   run-tests:
     name: Run Tests and Coverage
