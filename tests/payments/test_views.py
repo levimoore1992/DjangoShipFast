@@ -32,13 +32,16 @@ class StripeWebhookViewTestCase(TestCase):
             is_active=False,
         )
 
-        # Create mock objects that behave like Stripe events (support both attribute and dict access)
-        class MockStripeEvent(dict):
-            """Mock Stripe event that supports both dict and attribute access"""
+        # Create mock objects that behave like Stripe v15 events (StripeObject no longer inherits from dict)
+        class MockStripeEvent:
+            """Mock Stripe event that supports attribute and bracket access"""
 
             def __init__(self, event_type, data_dict):
                 self.type = event_type
-                super().__init__(data_dict)
+                self._data = data_dict
+
+            def __getitem__(self, key):
+                return self._data[key]
 
         self.payment_succeeded_payload = MockStripeEvent(
             "payment_intent.succeeded",
@@ -152,12 +155,15 @@ class StripeWebhookViewTestCase(TestCase):
     def test_purchase_not_found_raises_error(self, mock_construct_event):
         """Test that missing purchase raises DoesNotExist error"""
 
-        class MockStripeEvent(dict):
-            """Mock Stripe event that supports both dict and attribute access"""
+        class MockStripeEvent:
+            """Mock Stripe event that supports attribute and bracket access"""
 
             def __init__(self, event_type, data_dict):
                 self.type = event_type
-                super().__init__(data_dict)
+                self._data = data_dict
+
+            def __getitem__(self, key):
+                return self._data[key]
 
         # Create payload with non-existent payment intent
         payload_with_invalid_pi = MockStripeEvent(
@@ -182,12 +188,15 @@ class StripeWebhookViewTestCase(TestCase):
     def test_unknown_event_type_ignores_gracefully(self, mock_construct_event):
         """Test that unknown event types are ignored gracefully"""
 
-        class MockStripeEvent(dict):
-            """Mock Stripe event that supports both dict and attribute access"""
+        class MockStripeEvent:
+            """Mock Stripe event that supports attribute and bracket access"""
 
             def __init__(self, event_type, data_dict):
                 self.type = event_type
-                super().__init__(data_dict)
+                self._data = data_dict
+
+            def __getitem__(self, key):
+                return self._data[key]
 
         unknown_event_payload = MockStripeEvent(
             "customer.created",  # Unknown event type

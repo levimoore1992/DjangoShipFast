@@ -39,7 +39,9 @@ class PurchaseFactory(factory.django.DjangoModelFactory):
 
     # Stripe payment intent ID
     stripe_payment_intent_id = factory.LazyFunction(
-        lambda: f"pi_{fuzzy.FuzzyText(length=24, chars='abcdefghijklmnopqrstuvwxyz0123456789').fuzz()}"
+        lambda: (
+            f"pi_{fuzzy.FuzzyText(length=24, chars='abcdefghijklmnopqrstuvwxyz0123456789').fuzz()}"
+        )
     )
 
     # Price paid
