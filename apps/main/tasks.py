@@ -17,13 +17,16 @@ def send_email_task(
     subject: str, message: str, from_email: str, recipient_list: list[str]
 ) -> bool:
     """
-    A procrastinate task to send an email.
-
-    :param subject: Subject of the email.
-    :param message: Body of the email.
-    :param from_email: Sender's email address.
-    :param recipient_list: A list of recipient email addresses.
-    :return: True if the email is sent successfully, False otherwise.
+    Sends an email asynchronously as a Procrastinate task.
+    
+    Args:
+    	subject: The subject line of the email.
+    	message: The body content of the email.
+    	from_email: The sender's email address.
+    	recipient_list: List of recipient email addresses.
+    
+    Returns:
+    	True if the email was sent successfully; False if an SMTP error occurred.
     """
     try:
         send_mail(subject, message, from_email, recipient_list)
@@ -35,7 +38,11 @@ def send_email_task(
 
 @app.task()
 def send_slack_message(message: str) -> None:
-    """Send a Slack message with @channel mention"""
+    """
+    Sends a message to the default Slack channel with an @channel mention.
+    
+    Attempts to post the provided message to the Slack channel specified in settings using the Slack WebClient. If sending fails due to a Slack API error, the exception is logged and re-raised.
+    """
     client = WebClient(token=settings.SLACK_BOT_TOKEN)
     try:
         client.chat_postMessage(
@@ -47,7 +54,11 @@ def send_slack_message(message: str) -> None:
 
 
 def notify_by_slack(message: str) -> None:
-    """Queue a Slack notification"""
+    """
+    Queues a Slack notification message if Slack messaging is enabled.
+    
+    If Slack messaging is disabled via settings, the function returns without queuing the message.
+    """
 
     if not settings.ENABLE_SLACK_MESSAGES:
         return
