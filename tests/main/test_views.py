@@ -15,10 +15,11 @@ from apps.main.models import (
     PrivacyPolicy,
     Report,
     MediaLibrary,
-    Comment,
 )
 from tests.base import BaseTestCase
-from tests.factories.main import NotificationFactory, CommentFactory
+from tests.factories.main import NotificationFactory
+from tests.factories.dummy import DummyFactory
+from tests.test_app.models import Dummy
 from tests.factories.users import UserFactory
 
 
@@ -202,25 +203,25 @@ class ReportViewTest(TestCase):
 
     def setUp(self):
         """
-        Set up the test case with a reporter and a notification to report.
+        Set up the test case with a reporter and a dummy object to report.
         :return:
         """
         super().setUp()
         self.reporter = UserFactory()
         self.client.force_login(self.reporter)
 
-        self.report_comment = CommentFactory()
+        self.reported_object = DummyFactory()
         # Correctly reference ContentType model name as expected by the view
-        self.model_name = ContentType.objects.get_for_model(Comment).model
-        self.object_id = self.report_comment.pk
+        self.model_name = ContentType.objects.get_for_model(Dummy).model
+        self.object_id = self.reported_object.pk
         self.report_url = reverse("report", args=[self.model_name, self.object_id])
 
-        content_type = ContentType.objects.get_for_model(Comment)
+        content_type = ContentType.objects.get_for_model(Dummy)
         self.model_type = f"{content_type.app_label}_{content_type.model}"
 
     def test_report_creation(self):
         """
-        Test report is created successfully for a Notification object.
+        Test report is created successfully for a dummy object.
         """
         post_data = {"reason": "Inappropriate content"}
         response = self.client.post(self.report_url, post_data)
@@ -258,7 +259,7 @@ class ReportViewTest(TestCase):
         Test report creation with an invalid object ID.
         """
         # Use an object ID that doesn't exist
-        invalid_object_id = self.report_comment.pk + 1
+        invalid_object_id = self.reported_object.pk + 1
 
         post_data = {"reason": "Inappropriate content"}
         report_url = reverse("report", args=[self.model_name, invalid_object_id])
