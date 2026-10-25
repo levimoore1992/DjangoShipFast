@@ -20,7 +20,6 @@ from tests.factories.main import (
     SocialMediaLinkFactory,
     FAQFactory,
     MediaLibraryFactory,
-    CommentFactory,
 )
 from tests.factories.users import UserFactory
 from tests.utils import create_mock_image
@@ -201,98 +200,79 @@ class MediaLibraryTest(TestCase):
         self.assertEqual(str(self.media_library), expected_str)
 
 
-class TestCommentModel(TestCase):
-    """
-    Test the Comment Model
-    """
-
-    def setUp(self):
-        super().setUp()
-        self.comment = CommentFactory()
-
-    def test_string_representation(self):
-        """
-        Test the string representation of the FAQ model.
-        """
-        self.assertEqual(
-            str(self.comment),
-            f"Comment {self.comment.id} by {self.comment.user.email}",
-        )
-
-
 class ReportableObjectTest(BaseTestCase):
-    """Test cases for the ReportableObject functionality using Comment model."""
+    """Test cases for the ReportableObject functionality using the test-only Dummy model."""
 
     def setUp(self):
         """Set up data for all test methods."""
         super().setUp()
-        self.comment = CommentFactory(user=self.regular_user)
+        self.reportable_object = DummyFactory()
 
     def test_report_creates_report(self):
         """Test that the report method creates a Report instance."""
         reason = "This is inappropriate content"
-        report = self.comment.report(self.regular_user, reason)
+        report = self.reportable_object.report(self.regular_user, reason)
 
         self.assertIsInstance(report, Report)
         self.assertEqual(report.reporter, self.regular_user)
         self.assertEqual(report.reason, reason)
-        self.assertEqual(report.content_object, self.comment)
+        self.assertEqual(report.content_object, self.reportable_object)
 
     def test_reports_count_with_no_reports(self):
         """Test reports_count returns 0 when there are no reports."""
-        self.assertEqual(self.comment.reports_count, 0)
+        self.assertEqual(self.reportable_object.reports_count, 0)
 
     def test_reports_count_with_multiple_reports(self):
         """Test reports_count returns correct number with multiple reports."""
         # Create three reports
         for i in range(3):
-            self.comment.report(self.regular_user, f"Reason {i}")
+            self.reportable_object.report(self.regular_user, f"Reason {i}")
 
-        self.assertEqual(self.comment.reports_count, 3)
+        self.assertEqual(self.reportable_object.reports_count, 3)
 
     def test_report_url_generation(self):
         """Test that report_url property returns correct URL."""
         expected_url = reverse(
-            "report", kwargs={"model_name": "comment", "object_id": self.comment.pk}
+            "report",
+            kwargs={"model_name": "dummy", "object_id": self.reportable_object.pk},
         )
-        self.assertEqual(self.comment.report_url, expected_url)
+        self.assertEqual(self.reportable_object.report_url, expected_url)
 
     def test_deactivate_implementation(self):
         """Test that deactivate method works as expected."""
-        original_content = self.comment.content
-        self.assertTrue(self.comment.active)
+        self.assertTrue(self.reportable_object.active)
 
-        self.comment.deactivate()
-        self.comment.refresh_from_db()
+        self.reportable_object.deactivate()
+        self.reportable_object.refresh_from_db()
 
-        self.assertFalse(self.comment.active)
-        self.assertIn("[This comment has been removed]", self.comment.content_display)
-        self.assertNotEqual(self.comment.content_display, original_content)
+        self.assertFalse(self.reportable_object.active)
 
     def test_report_with_existing_content_type(self):
         """Test reporting when ContentType already exists."""
         # Create initial report to ensure ContentType exists
-        first_report = self.comment.report(self.regular_user, "First report")
+        first_report = self.reportable_object.report(self.regular_user, "First report")
 
         # Create second report
-        second_report = self.comment.report(self.superuser, "Second report")
+        second_report = self.reportable_object.report(self.superuser, "Second report")
 
         self.assertEqual(first_report.content_type, second_report.content_type)
         self.assertEqual(Report.objects.count(), 2)
 
     def test_default_active_status(self):
-        """Test that new comments are active by default."""
-        new_comment = CommentFactory(user=self.regular_user)
-        self.assertTrue(new_comment.active)
+        """Test that new reportable objects are active by default."""
+        new_object = DummyFactory()
+        self.assertTrue(new_object.active)
 
     def test_report_with_empty_reason(self):
         """Test reporting with an empty reason."""
-        report = self.comment.report(self.regular_user, "")
+        report = self.reportable_object.report(self.regular_user, "")
         self.assertEqual(report.reason, "")
 
     def test_report_creates_correct_content_type(self):
         """Test that the report is created with the correct ContentType."""
-        report = self.comment.report(self.regular_user, "Test reason")
-        expected_content_type = ContentType.objects.get_for_model(self.comment)
+        report = self.reportable_object.report(self.regular_user, "Test reason")
+        expected_content_type = ContentType.objects.get_for_model(
+            self.reportable_object
+        )
 
         self.assertEqual(report.content_type, expected_content_type)

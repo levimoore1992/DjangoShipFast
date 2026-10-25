@@ -6,7 +6,7 @@ from django.test import RequestFactory
 from apps.main.forms import ReportForm
 from apps.main.templatetags.custom_filters import get_page_link, report_button
 from tests.base import BaseTestCase
-from tests.factories.main import CommentFactory
+from tests.factories.dummy import DummyFactory
 from tests.factories.users import UserFactory
 
 
@@ -49,38 +49,38 @@ class ReportButtonTagTest(BaseTestCase):
         super().setUp()
         self.request = RequestFactory().get("/")
         self.context = Context({"request": self.request})
-        self.comment = CommentFactory()
+        self.reported_object = DummyFactory()
 
     def test_report_button_returns_correct_model_type(self):
         """Test that the correct model_type is returned."""
-        result = report_button(self.context, self.comment)
-        self.assertEqual(result["model_type"], "comment")
+        result = report_button(self.context, self.reported_object)
+        self.assertEqual(result["model_type"], "dummy")
 
     def test_report_button_returns_correct_object_id(self):
         """Test that the correct object_id is returned."""
-        result = report_button(self.context, self.comment)
-        self.assertEqual(result["object_id"], self.comment.id)
+        result = report_button(self.context, self.reported_object)
+        self.assertEqual(result["object_id"], self.reported_object.id)
 
     def test_report_button_returns_object(self):
         """Test that the original object is returned."""
-        result = report_button(self.context, self.comment)
-        self.assertEqual(result["object"], self.comment)
+        result = report_button(self.context, self.reported_object)
+        self.assertEqual(result["object"], self.reported_object)
 
     def test_report_button_returns_report_form(self):
         """Test that a ReportForm instance is returned."""
-        result = report_button(self.context, self.comment)
+        result = report_button(self.context, self.reported_object)
         self.assertIsInstance(result["report_form"], ReportForm)
 
     def test_report_button_returns_request(self):
         """Test that the request object is returned."""
-        result = report_button(self.context, self.comment)
+        result = report_button(self.context, self.reported_object)
         self.assertEqual(result["request"], self.request)
 
     def test_report_button_raises_error_without_request(self):
         """Test that KeyError is raised when request is missing from context."""
         empty_context = Context({})
         with self.assertRaises(KeyError):
-            report_button(empty_context, self.comment)
+            report_button(empty_context, self.reported_object)
 
 
 class PaginationTagsTest(BaseTestCase):

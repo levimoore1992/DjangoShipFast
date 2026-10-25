@@ -1,9 +1,10 @@
 from django.db import models
 
 from apps.main.mixins import CreateMediaLibraryMixin
+from apps.main.models import ReportableObject
 
 
-class Dummy(CreateMediaLibraryMixin, models.Model):
+class Dummy(CreateMediaLibraryMixin, ReportableObject):
     """
     A dummy model for testing purposes to test for other models with ContentType fields
     that we don't want dependent on other models.
