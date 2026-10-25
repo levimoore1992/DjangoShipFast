@@ -1,25 +1,25 @@
 import os
+from unittest.mock import patch
 
 from django.contrib.contenttypes.models import ContentType
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 
 from apps.main.models import (
-    TermsAndConditions,
-    PrivacyPolicy,
     Contact,
     Notification,
-    SocialMediaLink,
+    PrivacyPolicy,
     Report,
+    SocialMediaLink,
+    TermsAndConditions,
 )
 from tests.base import BaseTestCase
 from tests.factories.dummy import DummyFactory
-
 from tests.factories.main import (
-    NotificationFactory,
-    SocialMediaLinkFactory,
     FAQFactory,
     MediaLibraryFactory,
+    NotificationFactory,
+    SocialMediaLinkFactory,
 )
 from tests.factories.users import UserFactory
 from tests.utils import create_mock_image
@@ -76,6 +76,34 @@ class ContactTest(TestCase):
         )
         self.assertTrue(isinstance(contact, Contact))
         self.assertEqual(str(contact), "John Doe - Test Subject")
+
+    @override_settings(ENABLE_EMAILS=True)
+    @patch("apps.main.tasks.send_email_task.defer")
+    def test_contact_creation_notifies_admin_once(self, mock_defer):
+        UserFactory(email="admin@example.com", is_superuser=True, is_staff=True)
+        contact = Contact.objects.create(
+            name="John Doe",
+            email="john@example.com",
+            subject="Test Subject",
+            message="Test Message",
+            type="General",
+        )
+        mock_defer.assert_called_once()
+        kwargs = mock_defer.call_args.kwargs
+        self.assertEqual(kwargs["recipient_list"], ["admin@example.com"])
+        self.assertEqual(kwargs["subject"], "New contact request")
+        for detail in (
+            "John Doe",
+            "john@example.com",
+            "Test Subject",
+            "Test Message",
+            "General",
+        ):
+            self.assertIn(detail, kwargs["message"])
+
+        contact.admin_notes = "Reviewed"
+        contact.save()
+        mock_defer.assert_called_once()
 
 
 class NotificationTest(TestCase):

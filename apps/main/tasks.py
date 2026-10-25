@@ -2,11 +2,8 @@ import logging
 import smtplib
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
-
-from slack_sdk import WebClient
-from slack_sdk.errors import SlackApiError
-
 from procrastinate.contrib.django import app
 
 logger = logging.getLogger("procrastinate")
@@ -33,23 +30,21 @@ def send_email_task(
         return False
 
 
-@app.task()
-def send_slack_message(message: str) -> None:
-    """Send a Slack message with @channel mention"""
-    client = WebClient(token=settings.SLACK_BOT_TOKEN)
-    try:
-        client.chat_postMessage(
-            channel=settings.SLACK_DEFAULT_CHANNEL, text=f"@channel {message}"
-        )
-    except SlackApiError as e:
-        logger.error("Error sending Slack message: %s", e)
-        raise
-
-
-def notify_by_slack(message: str) -> None:
-    """Queue a Slack notification"""
-
-    if not settings.ENABLE_SLACK_MESSAGES:
+def notify_admins(subject: str, message: str) -> None:
+    """Queue an email notification to active superusers."""
+    if not settings.ENABLE_EMAILS:
         return
 
-    send_slack_message.defer(message)
+    recipients = list(
+        get_user_model()
+        .objects.filter(is_active=True, is_superuser=True)
+        .exclude(email="")
+        .values_list("email", flat=True)
+    )
+    if recipients:
+        send_email_task.defer(
+            subject=subject,
+            message=message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=recipients,
+        )
