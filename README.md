@@ -190,6 +190,11 @@ All Django email, including authentication and queued notifications, uses the cu
 `apps.main.backends.ResendEmailBackend` by default. Existing Django email templates
 and `send_mail()` calls use this backend automatically.
 
+Messages with Cc or Bcc recipients must also have at least one To recipient.
+Cc/Bcc-only messages raise `ValueError` before contacting Resend, including in
+DEBUG mode and with `fail_silently=True`. Blind recipients are never moved into To.
+Messages with no recipients are skipped.
+
 Set `RESEND_API_KEY` and `DEFAULT_FROM_EMAIL` in your environment. Production senders
 must use a domain verified with Resend; see the [Resend setup guide](https://resend.com/docs/send-with-python).
 `SERVER_EMAIL` defaults to `DEFAULT_FROM_EMAIL` and can be overridden separately for

@@ -89,6 +89,11 @@ class ResendEmailBackend(BaseEmailBackend):
     @staticmethod
     def _build_recipient_fields(email_message, message):
         """Collect To, Cc, Bcc, and Reply-To addresses."""
+        if not email_message.to:
+            raise ValueError(
+                "Resend requires at least one To recipient; "
+                "Cc/Bcc-only messages are not supported."
+            )
         payload = {"to": [str(recipient) for recipient in email_message.to]}
         for field in ("cc", "bcc"):
             if recipients := getattr(email_message, field):

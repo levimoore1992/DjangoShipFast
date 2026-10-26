@@ -2,6 +2,7 @@ import base64
 import json
 from email.headerregistry import Address
 from email.message import MIMEPart
+from itertools import product
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
@@ -188,16 +189,28 @@ class ResendEmailBackendTests(SimpleTestCase):
         self.assertEqual(self.message.cc, ["real-cc@example.com"])
         self.assertEqual(self.message.bcc, ["real-bcc@example.com"])
 
-    def test_bcc_only_message_keeps_bcc_private(self):
-        """Allow blind recipients without exposing them in the To field."""
-        self.message.to = []
-        self.message.bcc = ["private@example.com"]
-
-        self.assertEqual(self.backend.send_messages([self.message]), 1)
-
-        payload = self.send.call_args.args[0]
-        self.assertEqual(payload["to"], [])
-        self.assertEqual(payload["bcc"], ["private@example.com"])
+    def test_cc_or_bcc_without_to_is_rejected_before_delivery(self):
+        """Reject unsupported addressing without exposing or changing recipients."""
+        recipient_fields = (
+            {"cc": ["copy@example.com"]},
+            {"bcc": ["private@example.com"]},
+            {"cc": ["copy@example.com"], "bcc": ["private@example.com"]},
+        )
+        for debug, fail_silently, fields in product(
+            (False, True), (False, True), recipient_fields
+        ):
+            with self.subTest(debug=debug, fail_silently=fail_silently, fields=fields):
+                message = EmailMessage("Subject", "Body", to=[], **fields)
+                backend = ResendEmailBackend(fail_silently=fail_silently)
+                with (
+                    override_settings(DEBUG=debug),
+                    self.assertRaisesMessage(ValueError, "at least one To recipient"),
+                ):
+                    backend.send_messages([message])
+                self.assertEqual(message.to, [])
+                self.assertEqual(message.cc, fields.get("cc", []))
+                self.assertEqual(message.bcc, fields.get("bcc", []))
+                self.send.assert_not_called()
 
     def test_empty_batch_or_no_recipients_sends_nothing(self):
         """Avoid provider requests when there is nobody to receive a message."""
