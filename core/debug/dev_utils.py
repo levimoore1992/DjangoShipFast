@@ -1,9 +1,21 @@
 import os
+
 import requests
 from debug_toolbar.panels import Panel
 from django.conf import settings
 from django.http import Http404, HttpResponse
+from django.urls import path as url_path
 from django.views.static import serve
+
+from core.debug.email import (
+    DEBUG_EMAIL_SESSION_KEY,
+    debug_email_summary,
+    normalize_debug_email_destinations,
+)
+from core.debug.email_toolbar import (
+    email_destinations_context,
+    update_email_destinations,
+)
 
 
 class ReplaceImagesPanel(Panel):
@@ -40,6 +52,41 @@ class ReplaceImagesPanel(Panel):
             str: An empty string.
         """
         return ""
+
+
+class EmailDestinationsPanel(Panel):
+    """Choose the test outcomes used by development emails from this browser."""
+
+    title = "Email destinations"
+    template = "debug_toolbar/panels/email_destinations.html"
+    is_historical = False
+
+    @property
+    def nav_subtitle(self):
+        return self.get_stats().get("summary", "Delivered")
+
+    @classmethod
+    def get_urls(cls):
+        return [
+            url_path(
+                "email-destinations/",
+                update_email_destinations,
+                name="email_destinations",
+            )
+        ]
+
+    def generate_stats(self, request, response):
+        destinations = normalize_debug_email_destinations(
+            request.session.get(DEBUG_EMAIL_SESSION_KEY)
+        )
+        self.record_stats(
+            {
+                **email_destinations_context(
+                    request, destinations, request.get_full_path()
+                ),
+                "summary": debug_email_summary(destinations),
+            }
+        )
 
 
 def save_local_media(path: str, content: bytes):

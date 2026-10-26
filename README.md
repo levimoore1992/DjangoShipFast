@@ -41,7 +41,7 @@ environment to tune concurrency for its memory and measured workload.
 <li>If you want to change the branch style of your deployment then you would need to change the name of the workflows files to match the branch you want</li>
 <li>In the footer change "Your App Name" to its value</li>
 <li>Change the redis project name in docker-compose.yml</li>
-<li>In core.dev_utils line 99 replace the url in the code with your actual production url for media</li>
+<li>In core/debug/dev_utils.py, configure the production media URL in local_media_proxy.</li>
 <li>Change the value in 'meta_tags.html' to reflect what you want for you application</li>
 <li>Change the value of you app name in admin/base_site.html</li>
 <li>Marquee module text boxes and call to action should change</li>
@@ -195,10 +195,32 @@ must use a domain verified with Resend; see the [Resend setup guide](https://res
 `SERVER_EMAIL` defaults to `DEFAULT_FROM_EMAIL` and can be overridden separately for
 Django error notifications.
 
-With `DEBUG=True`, every message is addressed only to `delivered@resend.dev`; real
-To, Cc, and Bcc recipients are replaced or removed. This still uses the Resend API
-and requires a valid key and sender. With `DEBUG=False`, the intended recipients
-receive the message.
+With `DEBUG=True`, the **Email destinations** panel in Django Debug Toolbar lets you
+select one or more Resend test outcomes: Delivered, Bounced, Spam complaint, or
+Suppressed. Click **Apply** to save the selection for your browser session and return
+to the current page. Reopen the panel after the page reload to see the saved choices.
+Invalid submissions show a standard HTML form with validation errors and leave the
+saved selection unchanged. Delivered
+is the default, and at least one outcome is required. One email is addressed to all
+selected test addresses; real To, Cc, and Bcc recipients are replaced or removed.
+Background emails keep the selection captured when they were queued. Emails sent
+outside a browser request default to Delivered.
+
+The panel is registered in `core/settings/local_example.py`; existing local settings
+should also include `core.debug.dev_utils.EmailDestinationsPanel` in
+`DEBUG_TOOLBAR_PANELS` and register `core.debug.middleware.debug_email_middleware`
+after `SessionMiddleware` in the local middleware list. Both registrations
+belong only in local settings. This uses the Resend API and requires a valid key and sender.
+Test destinations simulate delivery events, rather than forcing an immediate API
+error. See [Resend's test addresses](https://resend.com/docs/dashboard/emails/send-test-emails).
+With `DEBUG=False`, the intended recipients receive the message and toolbar selections
+are ignored.
+
+Local development code is grouped under `core/debug`: toolbar panels and endpoints,
+middleware, email test context, development URLs, and templates. Local settings add
+`BASE_DIR / "debug" / "templates"` to the template search path. The email panel uses
+a standard Django form and requires no custom JavaScript or Vite entry point.
+Production email delivery does not import the debug package.
 
 Set `EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend` to print messages
 locally, or `EMAIL_BACKEND=django.core.mail.backends.dummy.EmailBackend` to disable

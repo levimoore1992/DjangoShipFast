@@ -3,6 +3,7 @@
 import base64
 from email.message import Message
 from email.utils import formataddr, getaddresses
+from importlib import import_module
 
 import resend
 from django.conf import settings
@@ -116,11 +117,14 @@ class ResendEmailBackend(BaseEmailBackend):
 
     @staticmethod
     def _apply_debug_recipients(payload):
-        """Limit development delivery to Resend's test inbox."""
-        if settings.DEBUG:
-            payload["to"] = ["delivered@resend.dev"]
-            payload.pop("cc", None)
-            payload.pop("bcc", None)
+        """Limit development delivery to this browser's selected test inboxes."""
+        if not settings.DEBUG:
+            return
+        # Production must not import optional local-development modules.
+        email_debug = import_module("core.debug.email")
+        payload["to"] = email_debug.get_debug_email_destinations()
+        payload.pop("cc", None)
+        payload.pop("bcc", None)
 
     def _serialize_attachment(self, attachment, encoding):
         """Build one attachment with its filename, contents, and content ID."""

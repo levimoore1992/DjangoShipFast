@@ -1,17 +1,16 @@
 import os
 
 import auto_prefetch
-from django_lifecycle import LifecycleModel, hook, BEFORE_CREATE, AFTER_CREATE
-
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
+from django_lifecycle import AFTER_CREATE, BEFORE_CREATE, LifecycleModel, hook
 from model_utils.models import TimeStampedModel
 
 from apps.main.consts import ContactStatus
-from apps.main.tasks import notify_by_slack, send_email_task
+from apps.main.tasks import notify_by_slack, queue_email
 
 
 class TermsAndConditions(models.Model):
@@ -153,7 +152,7 @@ class Report(auto_prefetch.Model, TimeStampedModel, LifecycleModel):
         from_email = settings.DEFAULT_FROM_EMAIL
         recipient_list = [self.reporter.email]
 
-        send_email_task.defer(
+        queue_email(
             subject=subject,
             message=message,
             from_email=from_email,
