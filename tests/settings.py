@@ -4,7 +4,7 @@ from core.settings.default import *
 
 ALLOWED_HOSTS = ["localhost", "testserver", "127.0.0.1", ".ngrok.io"]
 
-INSTALLED_APPS.append("tests.test_app")
+INSTALLED_APPS = [*INSTALLED_APPS, "tests.test_app", "debug_toolbar"]
 SECURE_SSL_REDIRECT = False
 
 

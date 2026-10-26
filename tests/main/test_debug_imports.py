@@ -8,6 +8,42 @@ import textwrap
 from django.test import SimpleTestCase
 
 
+class TestSettingsDebugIsolationTests(SimpleTestCase):
+    """Keep toolbar tests independent of a developer's local settings file."""
+
+    def test_toolbar_tests_import_without_local_settings(self):
+        """Register toolbar models before collecting tests in a clean CI process."""
+        script = textwrap.dedent(
+            """
+            import sys
+            from unittest.mock import patch
+
+            with patch.dict(sys.modules, {'core.settings.local': None}):
+                import django
+                django.setup()
+
+                from django.apps import apps
+                from tests.main import test_email_debug
+
+                assert apps.is_installed('debug_toolbar')
+                assert test_email_debug.EmailDestinationsPanel
+            """
+        )
+        result = subprocess.run(
+            [sys.executable, "-c", script],
+            env={
+                **os.environ,
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "ENABLE_SENTRY": "FALSE",
+            },
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=30,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+
 class ProductionDebugIsolationTests(SimpleTestCase):
     """Exercise startup and email delivery with debug modules unavailable."""
 
