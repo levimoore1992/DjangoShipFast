@@ -2,7 +2,6 @@
 
 from core.settings.default import *
 
-
 ALLOWED_HOSTS.extend(
     [
         "localhost",
@@ -13,6 +12,7 @@ ALLOWED_HOSTS.extend(
 # Toolbar requirements.
 MIDDLEWARE.extend(
     [
+        "core.debug.middleware.debug_email_middleware",
         "debug_toolbar.middleware.DebugToolbarMiddleware",
         "hijack.middleware.HijackUserMiddleware",
     ]
@@ -30,8 +30,11 @@ DEBUG_TOOLBAR_PANELS = [
     "debug_toolbar.panels.templates.TemplatesPanel",
     "debug_toolbar.panels.logging.LoggingPanel",
     "debug_toolbar.panels.redirects.RedirectsPanel",
-    "core.dev_utils.ReplaceImagesPanel",
+    "core.debug.dev_utils.ReplaceImagesPanel",
+    "core.debug.dev_utils.EmailDestinationsPanel",
 ]
+
+TEMPLATES[0]["DIRS"].append(BASE_DIR / "debug" / "templates")
 
 # For django hijack to redirect home after hijacking
 LOGIN_REDIRECT_URL = "/"

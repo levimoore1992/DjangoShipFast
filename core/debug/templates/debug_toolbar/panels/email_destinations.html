@@ -1,0 +1,26 @@
+{# Local development toolbar controls. #}
+<p>Choose the outcomes to test for emails triggered from this browser.</p>
+<p>One email is addressed to all selected destinations. Background emails keep the selection made when they were queued.</p>
+<form method="post" action="{{ save_url }}">
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    <input type="hidden" name="next" value="{{ return_url }}">
+    {% if error %}<p id="email-destinations-error" role="alert">{{ error }} Your saved destinations have not changed.</p>{% endif %}
+    <fieldset aria-describedby="email-destinations-help{% if error %} email-destinations-error{% endif %}">
+        <legend>Select one or more test outcomes (required)</legend>
+        <p id="email-destinations-help">These addresses simulate delivery events. They do not force the send request to fail.</p>
+        {% for choice in choices %}
+            <div>
+                <label for="email-destination-{{ forloop.counter }}" data-djdt-styles="display:flex;alignItems:center;gap:8px;minHeight:44px">
+                    <input type="checkbox"
+                           id="email-destination-{{ forloop.counter }}"
+                           name="destinations"
+                           value="{{ choice.address }}"
+                           {% if choice.selected %}checked{% endif %}>
+                    <span><strong>{{ choice.label }}</strong> — {{ choice.address }}<br>{{ choice.description }}</span>
+                </label>
+            </div>
+        {% endfor %}
+    </fieldset>
+    <button type="submit" data-djdt-styles="minHeight:44px">Apply</button>
+    {% if summary %}<p>Current destinations: {{ summary }}.</p>{% endif %}
+</form>

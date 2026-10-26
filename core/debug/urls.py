@@ -2,8 +2,7 @@ import importlib
 
 from django.conf import settings
 from django.conf.urls.static import static
-from django.urls import path, include
-
+from django.urls import include, path
 
 urlpatterns = []
 
@@ -14,8 +13,8 @@ urlpatterns.append(
 )
 
 # Load the local_media_proxy dynamically
-dev_utils = importlib.import_module("core.dev_utils")
-local_media_proxy = getattr(dev_utils, "local_media_proxy")
+dev_utils = importlib.import_module("core.debug.dev_utils")
+local_media_proxy = dev_utils.local_media_proxy
 
 urlpatterns += static(
     settings.MEDIA_URL,

@@ -1,18 +1,65 @@
 import smtplib
-from unittest.mock import patch, Mock
+from unittest.mock import Mock, patch
 
-from django.test import TestCase, override_settings
 from django.conf import settings
-
+from django.test import TestCase, override_settings
+from resend.exceptions import ResendError
 from slack_sdk.errors import SlackApiError
 
-from apps.main.tasks import send_email_task, send_slack_message, notify_by_slack
+from apps.main.tasks import (
+    notify_by_slack,
+    queue_email,
+    send_email_task,
+    send_slack_message,
+)
+from core.debug.email import (
+    get_debug_email_destinations,
+    override_debug_email_destinations,
+)
 
 
 class TestSendEmailTask(TestCase):
     """
     Test the send_email_task.
     """
+
+    @override_settings(DEBUG=True)
+    @patch("apps.main.tasks.send_email_task.defer")
+    def test_queue_captures_destinations_before_selection_changes(self, defer):
+        """Queue a snapshot so a later browser selection cannot change the job."""
+        with override_debug_email_destinations(["bounced@resend.dev"]):
+            queue_email("Subject", "Body", "from@example.com", ["to@example.com"])
+        with override_debug_email_destinations(["suppressed@resend.dev"]):
+            defer.assert_called_once_with(
+                subject="Subject",
+                message="Body",
+                from_email="from@example.com",
+                recipient_list=["to@example.com"],
+                debug_destinations=["bounced@resend.dev"],
+            )
+
+    @override_settings(DEBUG=True)
+    @patch("apps.main.tasks.send_mail")
+    def test_failed_debug_send_restores_worker_destinations(self, send):
+        """Apply captured destinations during delivery and reset them after failure."""
+
+        def fail_delivery(*_args):
+            self.assertEqual(get_debug_email_destinations(), ["bounced@resend.dev"])
+            raise smtplib.SMTPException("Delivery failed")
+
+        send.side_effect = fail_delivery
+        with override_debug_email_destinations(["suppressed@resend.dev"]):
+            self.assertFalse(
+                send_email_task(
+                    "Subject",
+                    "Body",
+                    "from@example.com",
+                    ["to@example.com"],
+                    debug_destinations=["bounced@resend.dev"],
+                )
+            )
+            self.assertEqual(get_debug_email_destinations(), ["suppressed@resend.dev"])
+        send.assert_called_once()
 
     @patch("apps.main.tasks.send_mail")
     def test_send_email_success(self, mock_send_mail):
@@ -31,6 +78,29 @@ class TestSendEmailTask(TestCase):
         mock_send_mail.assert_called_once_with(
             subject, message, from_email, recipient_list
         )
+
+    @patch("apps.main.tasks.send_mail", return_value=0)
+    def test_send_email_not_delivered(self, mock_send_mail):
+        """Do not report success when the backend sends no messages."""
+        self.assertFalse(
+            send_email_task("Subject", "Body", "from@example.com", ["to@example.com"])
+        )
+        mock_send_mail.assert_called_once()
+
+    @patch("apps.main.tasks.send_mail")
+    def test_resend_failure(self, mock_send_mail):
+        """Keep the task's failure result when Resend rejects delivery."""
+        mock_send_mail.side_effect = ResendError(
+            code=429,
+            error_type="rate_limit_exceeded",
+            message="Too many requests",
+            suggested_action="Try again later.",
+        )
+
+        self.assertFalse(
+            send_email_task("Subject", "Body", "from@example.com", ["to@example.com"])
+        )
+        mock_send_mail.assert_called_once()
 
     @patch("apps.main.tasks.send_mail")
     def test_send_email_failure(self, mock_send_mail):
