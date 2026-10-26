@@ -12,6 +12,7 @@ __pycache__
 *.egg
 .pytest_cache
 .coverage
+.app_coverage
 htmlcov
 .mypy_cache
 .ruff_cache
@@ -24,12 +25,15 @@ htmlcov
 
 # Node.js (node_modules can be hundreds of MB)
 frontend/node_modules
+frontend/.vite
 
 # Media files (user uploads - not needed in container)
 media
+core/media
 
 # Static files (generated, can be collected at runtime)
 core/staticfiles
+static/vite
 
 # Database dumps
 *.dump

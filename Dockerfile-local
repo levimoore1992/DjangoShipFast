@@ -1,33 +1,27 @@
-FROM python:3.14
+FROM python:3.14-slim
 
-#################################
-# For the restore db command
-#################################
-# Install prerequisites and add PostgreSQL repository
+# PostgreSQL 18 client tools support local database dumps and restores.
 RUN apt-get update && \
-    apt-get install -y wget ca-certificates && \
-    wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] http://apt.postgresql.org/pub/repos/apt trixie-pgdg main" > /etc/apt/sources.list.d/pgdg.list
-
-# Install PostgreSQL client (latest available)
-RUN apt-get update && \
-    apt-get install -y postgresql-client && \
-    apt-get clean && \
+    apt-get install -y --no-install-recommends ca-certificates wget && \
+    wget --quiet -O /usr/share/keyrings/postgresql.asc https://www.postgresql.org/media/keys/ACCC4CF8.asc && \
+    echo "deb [signed-by=/usr/share/keyrings/postgresql.asc] https://apt.postgresql.org/pub/repos/apt trixie-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends postgresql-client-18 && \
+    apt-get purge -y --auto-remove wget && \
     rm -rf /var/lib/apt/lists/*
-#################################
-#################################
 
-ENV PYTHONUNBUFFERED 1
-ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
 
-RUN mkdir /app
-COPY . /app/
 WORKDIR /app
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Install dependencies using pip
-RUN uv pip install -r requirements/dev.txt --system
+COPY requirements/ /app/requirements/
+RUN --mount=type=cache,target=/root/.cache/uv \
+    UV_LINK_MODE=copy uv pip install -r requirements/dev.txt --system
+
+COPY . /app/
 
 # Make port 8000 available to the world outside this container
 EXPOSE 8000

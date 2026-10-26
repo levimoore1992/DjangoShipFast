@@ -10,17 +10,8 @@ fi
 
 echo "Migrations completed successfully"
 
-# Calculate sensible default for workers: (2 * CPUs) + 1
-# Fallback to 3 workers if nproc is not available (though it should be in standard linux containers)
-if command -v nproc > /dev/null; then
-    CORES=$(nproc)
-else
-    CORES=1
-fi
-DEFAULT_WORKERS=$((2 * CORES + 1))
-
-# Allow env vars to override defaults
-WORKERS=${WORKERS:-$DEFAULT_WORKERS}
+# Keep the default modest; deployments can tune WORKERS to their memory and load.
+WORKERS=${WORKERS:-2}
 TIMEOUT=${GUNICORN_TIMEOUT:-120}
 LOG_LEVEL=${GUNICORN_LOG_LEVEL:-info}
 
