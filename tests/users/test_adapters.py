@@ -1,7 +1,9 @@
 from unittest.mock import Mock, patch
-from allauth.socialaccount.models import SocialLogin, SocialAccount
-from apps.users.models import User
+
+from allauth.socialaccount.models import SocialAccount, SocialLogin
+
 from apps.users.adapters import CustomAccountAdapter, CustomSocialAccountAdapter
+from apps.users.models import User
 from tests.base import BaseTestCase
 from tests.factories.users import UserFactory
 
@@ -107,9 +109,13 @@ class CustomSocialAccountAdapterTests(BaseTestCase):
         social_account = SocialAccount(provider="google", uid="12345", extra_data={})
         social_login = SocialLogin(user=new_social_user, account=social_account)
 
-        with patch.object(SocialLogin, "connect") as mock_connect:
+        with (
+            patch.object(SocialLogin, "connect") as mock_connect,
+            patch("apps.users.adapters.notify_admins") as mock_notify,
+        ):
             self.adapter.pre_social_login(self.client.request, social_login)
             mock_connect.assert_called_once_with(self.client.request, existing_user)
+            mock_notify.assert_not_called()
 
     def test_populate_user(self):
         """
@@ -138,7 +144,7 @@ class CustomSocialAccountAdapterTests(BaseTestCase):
 
         This test verifies that:
         1. When a social login attempt is made with an email that doesn't match any existing user,
-           the notify_by_slack method is called with the correct provider and email information.
+           the notify_admins method is called with the correct provider and email information.
         2. The connect method is not called since there's no existing user to connect to.
 
         It simulates a scenario where a new user tries to sign up using a social account.
@@ -148,14 +154,15 @@ class CustomSocialAccountAdapterTests(BaseTestCase):
         social_login = SocialLogin(user=new_social_user, account=social_account)
 
         with (
-            patch("apps.users.adapters.notify_by_slack") as mock_notify,
+            patch("apps.users.adapters.notify_admins") as mock_notify,
             patch.object(SocialLogin, "connect") as mock_connect,
         ):
             self.adapter.pre_social_login(self.client.request, social_login)
 
-            # Verify notify_by_slack was called with correct message
+            # Verify notify_admins was called with correct message
             mock_notify.assert_called_once_with(
-                "New user signing up via google: newuser@example.com"
+                subject="New social signup",
+                message="New user signing up via google: newuser@example.com",
             )
             # Verify connect was not called since there's no existing user
             mock_connect.assert_not_called()

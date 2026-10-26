@@ -423,10 +423,6 @@ CKEDITOR_5_CONFIGS = {
 }
 CK_EDITOR_5_UPLOAD_FILE_VIEW_NAME = "ckeditor_upload"
 
-SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
-SLACK_DEFAULT_CHANNEL = os.getenv("DEFAULT_SLACK_CHANNEL")
-ENABLE_SLACK_MESSAGES = os.getenv("ENABLE_SLACK_MESSAGES", "FALSE").upper() == "TRUE"
-
 # Email settings
 RESEND_API_KEY = os.getenv("RESEND_API_KEY")
 DEFAULT_FROM_EMAIL = "noreply@example.com"

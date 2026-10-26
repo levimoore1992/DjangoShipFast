@@ -1,17 +1,16 @@
 import os
 
 import auto_prefetch
-from django_lifecycle import LifecycleModel, hook, BEFORE_CREATE, AFTER_CREATE
-
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
+from django_lifecycle import AFTER_CREATE, BEFORE_CREATE, LifecycleModel, hook
 from model_utils.models import TimeStampedModel
 
 from apps.main.consts import ContactStatus
-from apps.main.tasks import notify_by_slack, send_email_task
+from apps.main.tasks import notify_admins, send_email_task
 
 
 class TermsAndConditions(models.Model):
@@ -73,7 +72,14 @@ class Contact(LifecycleModel):
         """
         Send email notification to admin when a new contact is created.
         """
-        notify_by_slack(f"Contact request made with {self.subject}")
+        notify_admins(
+            subject="New contact request",
+            message=(
+                f"Contact request made with {self.subject}\n\n"
+                f"Name: {self.name}\nEmail: {self.email}\n"
+                f"Type: {self.type}\n\n{self.message}"
+            ),
+        )
 
 
 class SocialMediaLink(models.Model):

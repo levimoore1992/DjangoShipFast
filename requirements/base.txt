@@ -28,8 +28,6 @@ django-ipware~=7.0.1
 # For lifecycle hooks signal-like feature
 django-lifecycle~=1.3
 
-# For Slack notifications
-slack-sdk~=3.35
 
 # icons for the app
 heroicons~=2.11

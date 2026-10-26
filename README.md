@@ -180,31 +180,15 @@ Generally speaking for local testing you can use your sandbox domain from resend
 They can both be represented in the env variables.
 The default FROM_EMAIL is "no-reply"@example.com but you can change that in default.py
 
-## Slack
-I'll give you a concise guide focused just on creating the Slack app and getting the required tokens.
+### Admin notifications
+New contact requests and social signup alerts are emailed to the addresses on active
+superuser accounts. Create an admin with `docker compose exec web python manage.py createsuperuser`
+and keep its email address up to date. Staff-only and inactive accounts do not receive these alerts.
 
-1. Create Slack App:
-   - Go to https://api.slack.com/apps
-   - Click "Create New App" 
-   - Choose "From scratch"
-   - Name your app and select your workspace
-   - Click "Create App"
-
-2. Get Bot Token:
-   - In your app's settings, go to "OAuth & Permissions"
-   - Under "Scopes", add these Bot Token Scopes:
-     * `chat:write`
-     * `chat:write.public`
-   - Click "Install to Workspace" at the top of the page
-   - After installation, copy the "Bot User OAuth Token" - it starts with `xoxb-`
-
-3. Set your environment variables:
-```
-SLACK_BOT_TOKEN=xoxb-your-bot-token-here  # The Bot User OAuth Token you copied
-DEFAULT_SLACK_CHANNEL=general              # The channel name without the # symbol
-```
-
-That's it! Your bot token will let you send messages to any public channel the bot is added to. Just add the bot to your desired channel by mentioning it (@your-bot-name) or inviting it through the channel menu.
+Notifications use the queued Django email task, `DEFAULT_FROM_EMAIL`, and your Django
+email backend configuration. A Procrastinate worker must be running to deliver them.
+Set `ENABLE_EMAILS=FALSE` to disable admin notifications. No notification is queued
+when there are no active superusers with an email address.
 
 ### Features
 - [x] Dockerized
@@ -235,4 +219,4 @@ That's it! Your bot token will let you send messages to any public channel the b
 - [x] Email settings with resend
 - [x] Marquee module for the landing page
 - [x] Django allauth account login with Google and Github
-- [x] Slack notifications for a specific chatroom
+- [x] Email notifications to active admin users
