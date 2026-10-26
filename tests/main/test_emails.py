@@ -285,6 +285,48 @@ class ResendEmailBackendTests(SimpleTestCase):
         self.send.assert_not_called()
 
 
+@override_settings(RESEND_API_KEY="test_api_key", DEBUG=False)
+class ResendMIMEAttachmentTests(SimpleTestCase):
+    """Cover forwarded MIME messages and unsupported nested attachments."""
+
+    def setUp(self):
+        self.backend = ResendEmailBackend()
+        self.message = EmailMessage("Subject", "Body", to=["recipient@example.com"])
+
+    @patch("apps.main.backends.resend.Emails.send", return_value={"id": "email-id"})
+    def test_forwarded_mime_attachment(self, send):
+        """Preserve a forwarded message supplied as a complete MIME attachment."""
+        forwarded = MIMEPart()
+        forwarded.set_content("Forwarded body")
+        attachment = MIMEPart()
+        attachment.set_content(forwarded)
+        attachment.add_header(
+            "Content-Disposition", "attachment", filename="forwarded.eml"
+        )
+        self.message.attach(attachment)
+
+        self.assertEqual(self.backend.send_messages([self.message]), 1)
+
+        result = send.call_args.args[0]["attachments"][0]
+        self.assertEqual(result["filename"], "forwarded.eml")
+        self.assertEqual(result["content_type"], "message/rfc822")
+        self.assertEqual(base64.b64decode(result["content"]), forwarded.as_bytes())
+
+    @patch("apps.main.backends.resend.Emails.send", return_value={"id": "email-id"})
+    def test_multipart_mime_attachment_is_rejected_before_delivery(self, send):
+        """Reject a multipart attachment rather than sending incomplete contents."""
+        attachment = MIMEPart()
+        attachment.make_mixed()
+        part = MIMEPart()
+        part.set_content("Nested body")
+        attachment.attach(part)
+        self.message.attach(attachment)
+
+        with self.assertRaisesMessage(ValueError, "multipart MIME attachments"):
+            self.backend.send_messages([self.message])
+        send.assert_not_called()
+
+
 @override_settings(RESEND_API_KEY="sdk-test-key", DEBUG=False)
 class ResendSDKIntegrationTests(SimpleTestCase):
     """Exercise the real SDK while replacing its HTTP transport."""

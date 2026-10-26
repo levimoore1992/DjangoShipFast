@@ -6,13 +6,60 @@ from django.test import TestCase, override_settings
 from resend.exceptions import ResendError
 from slack_sdk.errors import SlackApiError
 
-from apps.main.tasks import notify_by_slack, send_email_task, send_slack_message
+from apps.main.tasks import (
+    notify_by_slack,
+    queue_email,
+    send_email_task,
+    send_slack_message,
+)
+from core.debug.email import (
+    get_debug_email_destinations,
+    override_debug_email_destinations,
+)
 
 
 class TestSendEmailTask(TestCase):
     """
     Test the send_email_task.
     """
+
+    @override_settings(DEBUG=True)
+    @patch("apps.main.tasks.send_email_task.defer")
+    def test_queue_captures_destinations_before_selection_changes(self, defer):
+        """Queue a snapshot so a later browser selection cannot change the job."""
+        with override_debug_email_destinations(["bounced@resend.dev"]):
+            queue_email("Subject", "Body", "from@example.com", ["to@example.com"])
+        with override_debug_email_destinations(["suppressed@resend.dev"]):
+            defer.assert_called_once_with(
+                subject="Subject",
+                message="Body",
+                from_email="from@example.com",
+                recipient_list=["to@example.com"],
+                debug_destinations=["bounced@resend.dev"],
+            )
+
+    @override_settings(DEBUG=True)
+    @patch("apps.main.tasks.send_mail")
+    def test_failed_debug_send_restores_worker_destinations(self, send):
+        """Apply captured destinations during delivery and reset them after failure."""
+
+        def fail_delivery(*_args):
+            self.assertEqual(get_debug_email_destinations(), ["bounced@resend.dev"])
+            raise smtplib.SMTPException("Delivery failed")
+
+        send.side_effect = fail_delivery
+        with override_debug_email_destinations(["suppressed@resend.dev"]):
+            self.assertFalse(
+                send_email_task(
+                    "Subject",
+                    "Body",
+                    "from@example.com",
+                    ["to@example.com"],
+                    debug_destinations=["bounced@resend.dev"],
+                )
+            )
+            self.assertEqual(get_debug_email_destinations(), ["suppressed@resend.dev"])
+        send.assert_called_once()
 
     @patch("apps.main.tasks.send_mail")
     def test_send_email_success(self, mock_send_mail):
