@@ -31,11 +31,19 @@ services:
             -   .env
 
     frontend:
-        image: node:23-slim  # Using the slim variant
-        working_dir: /app/frontend
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: frontend-development
+            args:
+                NODE_VERSION: "23"
         volumes:
-            - .:/app
-        command: bash -c "npm install && npm run dev"
+            - ./frontend/src:/app/frontend/src
+            - ./frontend/vite.config.mjs:/app/frontend/vite.config.mjs:ro
+            - ./templates:/app/templates:ro
+            - ./apps:/app/apps:ro
+            - ./.mock_certs:/app/.mock_certs:ro
+            - ./static/vite:/app/static/vite
         environment:
             - ROLLUP_SKIP_NODE_RESOLUTION=true
             - NODE_OPTIONS=--max-old-space-size=4096

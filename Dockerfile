@@ -1,9 +1,14 @@
-FROM node:20-slim AS frontend-builder
+ARG NODE_VERSION=20
+FROM node:${NODE_VERSION}-slim AS frontend-dependencies
 WORKDIR /app/frontend
 
 COPY frontend/package.json frontend/package-lock.json ./
-RUN npm ci
+RUN --mount=type=cache,target=/root/.npm npm ci
 
+FROM frontend-dependencies AS frontend-development
+CMD ["npm", "run", "dev"]
+
+FROM frontend-dependencies AS frontend-builder
 COPY frontend/ .
 RUN npm run build
 # Fix manifest location for Django-Vite compatibility (Vite 5+ puts it in .vite/)

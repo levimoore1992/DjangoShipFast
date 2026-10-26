@@ -22,6 +22,14 @@ To start the docker container with the application you only need 1 command
 docker compose up --build
 ```
 
+Frontend dependencies are installed when its image is built and reused on restart.
+Source files and templates stay mounted for live reload. After changing
+`frontend/package.json` or `frontend/package-lock.json`, rebuild the frontend:
+
+```bash
+docker compose up -d --build frontend
+```
+
 ## Things you may consider replacing
 
 <ul>
