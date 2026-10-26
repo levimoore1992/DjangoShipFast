@@ -30,6 +30,9 @@ Source files and templates stay mounted for live reload. After changing
 docker compose up -d --build frontend
 ```
 
+Production starts with two Gunicorn workers. Set `WORKERS` in the deployment
+environment to tune concurrency for its memory and measured workload.
+
 ## Things you may consider replacing
 
 <ul>
