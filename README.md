@@ -186,10 +186,23 @@ Because we use npm to minify our styles its possible that 2 developers working o
 The solution is simply for a developer to accept the changes of anything, then the file will recompile it anyways.
 
 ## Email
-The repo is opinionated to using resend for emails. Check the resend docs for full setup guide
-Generally speaking for local testing you can use your sandbox domain from resend and for production you can use yours
-They can both be represented in the env variables.
-The default FROM_EMAIL is "no-reply"@example.com but you can change that in default.py
+All Django email, including authentication and queued notifications, uses the custom
+`apps.main.backends.ResendEmailBackend` by default. Existing Django email templates
+and `send_mail()` calls use this backend automatically.
+
+Set `RESEND_API_KEY` and `DEFAULT_FROM_EMAIL` in your environment. Production senders
+must use a domain verified with Resend; see the [Resend setup guide](https://resend.com/docs/send-with-python).
+`SERVER_EMAIL` defaults to `DEFAULT_FROM_EMAIL` and can be overridden separately for
+Django error notifications.
+
+With `DEBUG=True`, every message is addressed only to `delivered@resend.dev`; real
+To, Cc, and Bcc recipients are replaced or removed. This still uses the Resend API
+and requires a valid key and sender. With `DEBUG=False`, the intended recipients
+receive the message.
+
+Set `EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend` to print messages
+locally, or `EMAIL_BACKEND=django.core.mail.backends.dummy.EmailBackend` to disable
+delivery. `ENABLE_EMAILS` is no longer used. Tests use Django's in-memory backend.
 
 ## Slack
 I'll give you a concise guide focused just on creating the Slack app and getting the required tokens.

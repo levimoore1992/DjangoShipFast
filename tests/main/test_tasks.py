@@ -1,12 +1,12 @@
 import smtplib
-from unittest.mock import patch, Mock
+from unittest.mock import Mock, patch
 
-from django.test import TestCase, override_settings
 from django.conf import settings
-
+from django.test import TestCase, override_settings
+from resend.exceptions import ResendError
 from slack_sdk.errors import SlackApiError
 
-from apps.main.tasks import send_email_task, send_slack_message, notify_by_slack
+from apps.main.tasks import notify_by_slack, send_email_task, send_slack_message
 
 
 class TestSendEmailTask(TestCase):
@@ -31,6 +31,29 @@ class TestSendEmailTask(TestCase):
         mock_send_mail.assert_called_once_with(
             subject, message, from_email, recipient_list
         )
+
+    @patch("apps.main.tasks.send_mail", return_value=0)
+    def test_send_email_not_delivered(self, mock_send_mail):
+        """Do not report success when the backend sends no messages."""
+        self.assertFalse(
+            send_email_task("Subject", "Body", "from@example.com", ["to@example.com"])
+        )
+        mock_send_mail.assert_called_once()
+
+    @patch("apps.main.tasks.send_mail")
+    def test_resend_failure(self, mock_send_mail):
+        """Keep the task's failure result when Resend rejects delivery."""
+        mock_send_mail.side_effect = ResendError(
+            code=429,
+            error_type="rate_limit_exceeded",
+            message="Too many requests",
+            suggested_action="Try again later.",
+        )
+
+        self.assertFalse(
+            send_email_task("Subject", "Body", "from@example.com", ["to@example.com"])
+        )
+        mock_send_mail.assert_called_once()
 
     @patch("apps.main.tasks.send_mail")
     def test_send_email_failure(self, mock_send_mail):

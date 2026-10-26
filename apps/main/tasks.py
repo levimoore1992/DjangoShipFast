@@ -3,11 +3,10 @@ import smtplib
 
 from django.conf import settings
 from django.core.mail import send_mail
-
+from procrastinate.contrib.django import app
+from resend.exceptions import ResendError
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
-
-from procrastinate.contrib.django import app
 
 logger = logging.getLogger("procrastinate")
 
@@ -26,9 +25,8 @@ def send_email_task(
     :return: True if the email is sent successfully, False otherwise.
     """
     try:
-        send_mail(subject, message, from_email, recipient_list)
-        return True
-    except smtplib.SMTPException as e:
+        return send_mail(subject, message, from_email, recipient_list) > 0
+    except (ResendError, smtplib.SMTPException) as e:
         logger.error(e)
         return False
 

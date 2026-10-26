@@ -15,7 +15,6 @@ from pathlib import Path
 
 import dj_database_url
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 ROOT_DIR = BASE_DIR.parent
@@ -429,5 +428,10 @@ ENABLE_SLACK_MESSAGES = os.getenv("ENABLE_SLACK_MESSAGES", "FALSE").upper() == "
 
 # Email settings
 RESEND_API_KEY = os.getenv("RESEND_API_KEY")
-DEFAULT_FROM_EMAIL = "noreply@example.com"
-ENABLE_EMAILS = os.getenv("ENABLE_EMAILS", "TRUE").upper() == "TRUE"
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "noreply@example.com")
+SERVER_EMAIL = os.getenv("SERVER_EMAIL", DEFAULT_FROM_EMAIL)
+MAILERS = {
+    "default": {
+        "BACKEND": os.getenv("EMAIL_BACKEND", "apps.main.backends.ResendEmailBackend")
+    }
+}
