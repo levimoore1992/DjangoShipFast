@@ -17,17 +17,18 @@ RUN apt-get update && \
 #################################
 #################################
 
-ENV PYTHONUNBUFFERED 1
-ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
 
-RUN mkdir /app
-COPY . /app/
 WORKDIR /app
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Install dependencies using pip
-RUN uv pip install -r requirements/dev.txt --system
+COPY requirements/ /app/requirements/
+RUN --mount=type=cache,target=/root/.cache/uv \
+    UV_LINK_MODE=copy uv pip install -r requirements/dev.txt --system
+
+COPY . /app/
 
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
