@@ -38,6 +38,8 @@ services:
             args:
                 NODE_VERSION: "23"
         volumes:
+            - ./frontend/package.json:/app/frontend/package.json
+            - ./frontend/package-lock.json:/app/frontend/package-lock.json
             - ./frontend/src:/app/frontend/src
             - ./frontend/vite.config.mjs:/app/frontend/vite.config.mjs:ro
             - ./templates:/app/templates:ro
