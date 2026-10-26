@@ -17,6 +17,11 @@ ENV PYTHONUNBUFFERED=1 \
     PORT=8080 \
     DJANGO_SETTINGS_MODULE=core.settings
 
+# psycopg requires the PostgreSQL runtime library.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends libpq5 && \
+    rm -rf /var/lib/apt/lists/*
+
 # Install dependencies
 COPY requirements/ /app/requirements/
 RUN pip install --no-cache-dir -r requirements/prod.txt
