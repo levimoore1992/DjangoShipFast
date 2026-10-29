@@ -9,3 +9,6 @@ Always use the grill me skill
 
 never use django signals use django lifecycle library
 
+All classes and methods must come with docstring describing in detail what the method or class is for
+
+You must follow the django principle of fat models and skinny views
